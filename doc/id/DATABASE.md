@@ -694,6 +694,18 @@ DELETE FROM cache WHERE expiration < UNIX_TIMESTAMP(NOW());
 DELETE FROM failed_jobs WHERE failed_at < NOW() - INTERVAL 30 DAY;
 ```
 
+## Perubahan Penting
+
+### Perubahan Database (Versi 1.1.0)
+- Mengganti tabel `berita_desa` yang spesifik dengan tabel `berita` yang umum
+- Tabel `berita` sekarang dapat digunakan untuk berbagai jenis organisasi, bukan hanya desa
+- Menghapus tabel `berita_desa` yang tidak digunakan untuk mengurangi kompleksitas sistem
+
+### Perubahan Tema (Versi 1.1.0)
+- Mengganti tema admin default dari CoreUI ke AdminLTE untuk stabilitas yang lebih baik
+- Menghapus tema CoreUI yang tidak digunakan untuk mengurangi ukuran sistem
+- Menyederhanakan struktur tema untuk kemudahan pemeliharaan
+
 ## Troubleshooting
 
 ### Connection Issues

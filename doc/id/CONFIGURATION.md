@@ -1715,4 +1715,4 @@ Dengan dokumentasi konfigurasi sistem yang komprehensif ini, pengguna dan pengem
 4. **Maintainability**: Struktur konfigurasi yang terorganisir dengan baik
 5. **Scalability**: Konfigurasi yang mendukung scaling dan distribusi
 
-Plugin "Berita Desa" telah dihapus dan diganti dengan plugin "Berita" yang lebih umum, sesuai dengan kebutuhan sistem yang fleksibel untuk berbagai jenis organisasi, bukan hanya desa.
+Plugin "BeritaDesa" telah dihapus dan diganti dengan plugin "Berita" yang lebih umum, sesuai dengan kebutuhan sistem yang fleksibel untuk berbagai jenis organisasi, bukan hanya desa.

@@ -478,6 +478,18 @@ class MenusTableSeeder extends Seeder
 - Periksa format icon (harus dimulai dengan `fas fa-`)
 - Bersihkan cache browser
 
+## Perubahan Penting
+
+### Perubahan Menu (Versi 1.1.0)
+- Mengganti menu "Berita Desa" yang spesifik dengan menu "Berita" yang umum
+- Menu "Berita" sekarang dapat digunakan untuk berbagai jenis organisasi, bukan hanya desa
+- Menghapus menu "BeritaDesa" yang tidak digunakan untuk mengurangi kompleksitas sistem
+
+### Perubahan Tema (Versi 1.1.0)
+- Mengganti tema admin default dari CoreUI ke AdminLTE untuk stabilitas yang lebih baik
+- Menghapus tema CoreUI yang tidak digunakan untuk mengurangi ukuran sistem
+- Menyederhanakan struktur tema untuk kemudahan pemeliharaan
+
 ## Pengembangan Lebih Lanjut
 
 ### Extending Menu Model

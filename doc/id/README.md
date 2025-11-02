@@ -14,6 +14,9 @@ stelloCMS adalah Content Management System (CMS) berbasis Laravel yang dirancang
 ### 2. Sistem Plugin Modular
 - Plugin dapat diinstal, diaktifkan, dan dihapus secara dinamis
 - Setiap plugin dapat memiliki database, migrasi, dan routing sendiri
+- Plugin "Berita" sebagai plugin default untuk manajemen konten umum
+- Mengganti plugin "Berita Desa" yang spesifik dengan plugin "Berita" yang umum
+- Plugin "Berita" sekarang dapat digunakan untuk berbagai jenis organisasi, bukan hanya desa
 - Sistem menu otomatis untuk plugin yang diinstal
 
 ### 3. Manajemen Pengguna dan Hak Akses
@@ -136,6 +139,43 @@ Untuk membuat plugin baru:
 2. Gunakan namespace yang sesuai (`App\Plugins\{NamaPlugin}\...`)
 3. Tambahkan migrasi database jika diperlukan
 4. Gunakan helper `view_theme()` untuk rendering view plugin
+
+## Sistem Plugin
+
+### Plugin Berita
+Plugin untuk mengelola berita dan informasi secara umum.
+
+#### Fitur:
+- Manajemen berita dengan CRUD
+- Upload gambar untuk berita
+- Penjadwalan publikasi
+- Status aktif/tidak aktif
+- Integrasi dengan sistem menu
+
+#### Instalasi:
+Plugin ini diinstal secara default saat sistem dijalankan pertama kali.
+
+#### Konfigurasi:
+- Tidak memerlukan konfigurasi khusus
+- Dapat diakses melalui menu "Berita" di panel administrasi
+
+#### Database:
+Membuat tabel `berita` dengan struktur:
+```sql
+CREATE TABLE `berita` (
+    `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `judul` VARCHAR(255) NOT NULL,
+    `isi` TEXT NOT NULL,
+    `gambar` VARCHAR(255) NULL,
+    `tanggal_publikasi` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `aktif` BOOLEAN DEFAULT TRUE,
+    `user_id` BIGINT UNSIGNED NULL,
+    `created_at` TIMESTAMP NULL DEFAULT NULL,
+    `updated_at` TIMESTAMP NULL DEFAULT NULL,
+    
+    FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE SET NULL
+);
+```
 
 ## Troubleshooting
 

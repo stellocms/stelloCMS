@@ -245,6 +245,18 @@ FRONTEND_THEME=kind_heart
 - Periksa permission file
 - Bersihkan cache browser
 
+## Perubahan Penting
+
+### Perubahan Tema (Versi 1.1.0)
+- Mengganti tema admin default dari CoreUI ke AdminLTE untuk stabilitas yang lebih baik
+- Menghapus tema CoreUI yang tidak digunakan untuk mengurangi ukuran sistem
+- Menyederhanakan struktur tema untuk kemudahan pemeliharaan
+
+### Perubahan Plugin (Versi 1.1.0)
+- Mengganti plugin "Berita Desa" yang spesifik dengan plugin "Berita" yang umum
+- Plugin "Berita" sekarang dapat digunakan untuk berbagai jenis organisasi, bukan hanya desa
+- Menghapus plugin "BeritaDesa" yang tidak digunakan untuk mengurangi kompleksitas sistem
+
 ## Pengembangan Lebih Lanjut
 
 ### Tema Dinamis

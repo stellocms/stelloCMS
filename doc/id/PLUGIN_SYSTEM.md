@@ -805,6 +805,18 @@ protected function getPluginIcon($pluginName)
 - Periksa konfigurasi menu plugin
 - Bersihkan cache konfigurasi dan view
 
+## Perubahan Penting
+
+### Perubahan Plugin (Versi 1.1.0)
+- Mengganti plugin "Berita Desa" yang spesifik dengan plugin "Berita" yang umum
+- Plugin "Berita" sekarang dapat digunakan untuk berbagai jenis organisasi, bukan hanya desa
+- Menghapus plugin "BeritaDesa" yang tidak digunakan untuk mengurangi kompleksitas sistem
+
+### Perubahan Tema (Versi 1.1.0)
+- Mengganti tema admin default dari CoreUI ke AdminLTE sesuai permintaan pengguna
+- Menghapus tema CoreUI yang tidak digunakan untuk mengurangi ukuran sistem
+- Menyederhanakan struktur tema untuk kemudahan pemeliharaan
+
 ## Pengembangan Lebih Lanjut
 
 ### Plugin dengan Submenu
@@ -1002,3 +1014,20 @@ public function updatePlugin($pluginName, $newVersionPath)
     return false;
 }
 ```
+
+## Plugin yang Telah Dihapus
+
+### Plugin BeritaDesa (Deprecated)
+Plugin spesifik untuk mengelola berita dan informasi desa telah dihapus dan diganti dengan plugin "Berita" yang lebih umum. Plugin ini tidak lagi tersedia dalam sistem stelloCMS versi terbaru.
+
+Perubahan ini dilakukan untuk:
+1. Membuat plugin lebih umum dan dapat digunakan untuk berbagai jenis organisasi
+2. Mengurangi kompleksitas sistem dengan menghilangkan plugin duplikat
+3. Mempermudah pemeliharaan dan pengembangan sistem
+
+Plugin "Berita" sekarang dapat digunakan untuk:
+- Organisasi pemerintahan desa
+- Organisasi pemerintahan kota
+- Organisasi swasta
+- Organisasi nirlaba
+- Dan berbagai jenis organisasi lainnya
