@@ -1,0 +1,81 @@
+name: Deploy stelloCMS
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: mbstring, intl, gd, mysql, pdo, xml, ctype, json, openssl, tokenizer, bcmath
+        coverage: none
+        
+    - name: Validate composer.json and composer.lock
+      run: composer validate --strict
+      
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v3
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-
+          
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress
+      
+    - name: Run tests
+      run: |
+        cp .env.example .env
+        php artisan key:generate
+        php artisan config:clear
+        php artisan route:clear
+        php artisan view:clear
+        # Uncomment the following lines if you have tests
+        # php artisan test
+        
+    - name: Deploy to server
+      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSHKEY }}
+        source: "."
+        target: "/var/www/html/stelloCMS"
+        strip_components: 1
+        overwrite: true
+        
+    - name: Run post-deploy commands
+      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSHKEY }}
+        script: |
+          cd /var/www/html/stelloCMS
+          composer install --no-dev
+          php artisan config:clear
+          php artisan route:clear
+          php artisan view:clear
+          php artisan cache:clear
+          php artisan config:cache
+          php artisan route:cache
+          php artisan view:cache
+          sudo chown -R www-data:www-data storage bootstrap/cache
+          sudo chmod -R 755 storage bootstrap/cache
+          # If you need to run migrations, uncomment the following line:
+          # php artisan migrate --force

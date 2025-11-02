@@ -1,0 +1,75 @@
+name: Test stelloCMS
+
+on:
+  push:
+    branches: [ develop, feature/* ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: stello_test
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: mbstring, intl, gd, mysql, pdo, xml, ctype, json, openssl, tokenizer, bcmath
+        coverage: none
+        
+    - name: Validate composer.json and composer.lock
+      run: composer validate --strict
+      
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v3
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-
+          
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress
+      
+    - name: Prepare .env.testing
+      run: |
+        cp .env.example .env.testing
+        sed -i 's/DB_DATABASE=stello_cms/DB_DATABASE=stello_test/g' .env.testing
+        sed -i 's/DB_USERNAME=root/DB_USERNAME=root/g' .env.testing
+        sed -i 's/DB_PASSWORD=/DB_PASSWORD=root/g' .env.testing
+        
+    - name: Generate application key
+      run: php artisan key:generate --env=testing
+      
+    - name: Run migrations
+      run: php artisan migrate --env=testing
+      
+    - name: Run tests
+      run: |
+        # Uncomment the following lines if you have tests
+        # php artisan test --env=testing
+        
+    - name: PHPStan Analysis
+      run: |
+        composer require --dev phpstan/phpstan
+        ./vendor/bin/phpstan analyse app --level=5
+        
+    - name: PHP_CodeSniffer Analysis
+      run: |
+        composer require --dev squizlabs/php_codesniffer
+        ./vendor/bin/phpcs app --standard=PSR12

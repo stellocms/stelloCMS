@@ -1,0 +1,9 @@
+{
+    "name": "AdminLTE",
+    "version": "3.2.0",
+    "description": "AdminLTE Free Bootstrap Admin Template",
+    "author": "AdminLTE.io",
+    "author_url": "https://adminlte.io",
+    "screenshot": "screenshot.png",
+    "tags": ["admin", "bootstrap", "responsive"]
+}
