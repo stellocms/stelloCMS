@@ -26,8 +26,22 @@ if (!function_exists('view_theme')) {
      */
     function view_theme($type, $view, $data = [])
     {
-        // Get theme with fallback to default
-        $theme = config("themes.{$type}", $type === 'admin' ? 'adminlte' : 'kind_heart');
+        // Get theme from database first, fallback to config if not found
+        try {
+            $themeService = app(\App\Services\ThemeService::class);
+            $dbTheme = $themeService->getDefaultTheme($type);
+            
+            if ($dbTheme) {
+                $theme = $dbTheme->name;
+            } else {
+                // Fallback to config if no theme found in database
+                $theme = config("themes.{$type}", $type === 'admin' ? 'adminlte' : 'stocker');
+            }
+        } catch (\Exception $e) {
+            // If there's an issue with the service, fallback to config
+            $theme = config("themes.{$type}", $type === 'admin' ? 'adminlte' : 'stocker');
+        }
+        
         $namespace = "theme.{$type}.{$theme}";
         $viewName = "{$namespace}::{$view}";
 

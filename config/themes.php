@@ -2,5 +2,5 @@
 
 return [
     'admin' => env('ADMIN_THEME', 'adminlte'),
-    'frontend' => env('FRONTEND_THEME', 'kind_heart'),
+    'frontend' => env('FRONTEND_THEME', 'stocker'),
 ];

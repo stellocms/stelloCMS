@@ -12,15 +12,9 @@
                     <h3 class="card-title">Manajemen Plugin</h3>
 
                     <div class="card-tools">
-                        <div class="input-group input-group-sm" style="width: 150px;">
-                            <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
-
-                            <div class="input-group-append">
-                                <button type="submit" class="btn btn-default">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                            </div>
-                        </div>
+                        <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#uploadPluginModal">
+                            <i class="fas fa-upload"></i> Upload Plugin
+                        </button>
                     </div>
                 </div>
                 <!-- /.card-header -->
@@ -119,4 +113,52 @@
         </div>
     </div>
 </div>
+
+<!-- Upload Plugin Modal -->
+<div class="modal fade" id="uploadPluginModal" tabindex="-1" role="dialog" aria-labelledby="uploadPluginModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form action="{{ route('plugins.upload') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title" id="uploadPluginModalLabel">Upload Plugin Baru</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="plugin_file">Pilih File ZIP Plugin</label>
+                        <div class="input-group">
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="plugin_file" name="plugin_file" accept=".zip" required>
+                                <label class="custom-file-label" for="plugin_file">Pilih file...</label>
+                            </div>
+                        </div>
+                        <small class="form-text text-muted">
+                            File harus berupa ZIP yang berisi struktur plugin yang benar.<br>
+                            Format: nama_plugin.zip/nama_plugin/{files}<br>
+                            Contoh: berita.zip/Berita/{files}
+                        </small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-upload"></i> Upload Plugin
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Update file label saat memilih file -->
+<script>
+document.querySelector('#plugin_file').addEventListener('change', function(e) {
+    var fileName = e.target.files[0].name;
+    var nextSibling = e.target.nextElementSibling;
+    nextSibling.innerText = fileName;
+});
+</script>
 @endsection

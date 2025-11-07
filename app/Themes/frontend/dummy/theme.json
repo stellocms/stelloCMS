@@ -1,0 +1,9 @@
+{
+    "name": "Dummy",
+    "version": "1.0.0",
+    "description": "Dummy theme for testing purposes",
+    "author": "stelloCMS Development Team",
+    "author_url": "https://stello-cms.com",
+    "screenshot": "",
+    "tags": ["dummy", "testing"]
+}

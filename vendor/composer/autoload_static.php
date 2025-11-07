@@ -41,7 +41,7 @@ class ComposerStaticInit3e60d52d17b6b42a046fc7b35b77994d
         'ce9671a430e4846b44e1c68c7611f9f5' => __DIR__ . '/..' . '/mockery/mockery/library/Mockery.php',
         'a1cfe24d14977df6878b9bf804af2d1c' => __DIR__ . '/..' . '/nunomaduro/collision/src/Adapters/Phpunit/Autoload.php',
         'ec07570ca5a812141189b1fa81503674' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Assert/Functions.php',
-        'b4e3f29b106af37a2bb239f73cdf68c7' => __DIR__ . '/../..' . '/app/helpers.php',
+        'ea0503f509ea47275980b8360abba202' => __DIR__ . '/../..' . '/app/helpers.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -531,16 +531,20 @@ class ComposerStaticInit3e60d52d17b6b42a046fc7b35b77994d
     public static $classMap = array (
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
         'App\\Http\\Controllers\\LoginController' => __DIR__ . '/../..' . '/app/Http/Controllers/LoginController.php',
+        'App\\Http\\Controllers\\MenuManagementController' => __DIR__ . '/../..' . '/app/Http/Controllers/MenuManagementController.php',
         'App\\Http\\Controllers\\PluginController' => __DIR__ . '/../..' . '/app/Http/Controllers/PluginController.php',
         'App\\Http\\Controllers\\ThemeController' => __DIR__ . '/../..' . '/app/Http/Controllers/ThemeController.php',
         'App\\Http\\Middleware\\RoleMiddleware' => __DIR__ . '/../..' . '/app/Http/Middleware/RoleMiddleware.php',
         'App\\Models\\Menu' => __DIR__ . '/../..' . '/app/Models/Menu.php',
         'App\\Models\\Plugin' => __DIR__ . '/../..' . '/app/Models/Plugin.php',
         'App\\Models\\Role' => __DIR__ . '/../..' . '/app/Models/Role.php',
+        'App\\Models\\Theme' => __DIR__ . '/../..' . '/app/Models/Theme.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Plugins\\Berita\\Controllers\\BeritaController' => __DIR__ . '/../..' . '/app/Plugins/Berita/Controllers/BeritaController.php',
         'App\\Plugins\\Berita\\Database\\Seeders\\BeritaTableSeeder' => __DIR__ . '/../..' . '/app/Plugins/Berita/Database/Seeders/BeritaTableSeeder.php',
         'App\\Plugins\\Berita\\Models\\Berita' => __DIR__ . '/../..' . '/app/Plugins/Berita/Models/Berita.php',
+        'App\\Plugins\\SimplePage\\Controllers\\SimplePageController' => __DIR__ . '/../..' . '/app/Plugins/SimplePage/Controllers/SimplePageController.php',
+        'App\\Plugins\\SimplePage\\Plugin' => __DIR__ . '/../..' . '/app/Plugins/SimplePage/Plugin.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'App\\Providers\\AuthServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AuthServiceProvider.php',
         'App\\Providers\\EventServiceProvider' => __DIR__ . '/../..' . '/app/Providers/EventServiceProvider.php',
@@ -549,6 +553,7 @@ class ComposerStaticInit3e60d52d17b6b42a046fc7b35b77994d
         'App\\Providers\\ThemeServiceProvider' => __DIR__ . '/../..' . '/app/Providers/ThemeServiceProvider.php',
         'App\\Services\\PluginManager' => __DIR__ . '/../..' . '/app/Services/PluginManager.php',
         'App\\Services\\ThemeManager' => __DIR__ . '/../..' . '/app/Services/ThemeManager.php',
+        'App\\Services\\ThemeService' => __DIR__ . '/../..' . '/app/Services/ThemeService.php',
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'Brick\\Math\\BigDecimal' => __DIR__ . '/..' . '/brick/math/src/BigDecimal.php',
         'Brick\\Math\\BigInteger' => __DIR__ . '/..' . '/brick/math/src/BigInteger.php',

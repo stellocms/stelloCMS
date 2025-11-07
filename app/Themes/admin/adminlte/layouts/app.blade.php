@@ -238,6 +238,14 @@
               </p>
             </a>
           </li>
+          <li class="nav-item">
+            <a href="{{ route('menus.index') }}" class="nav-link">
+              <i class="nav-icon fas fa-list"></i>
+              <p>
+                Manajemen Menu
+              </p>
+            </a>
+          </li>
           
           <!-- Dynamic plugin menu items from database -->
           @php
