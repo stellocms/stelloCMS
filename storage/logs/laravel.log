@@ -6194,3 +6194,60 @@
 #59 D:\\htdocs\\stelloCMS\\public\\index.php(51): Illuminate\\Foundation\\Http\\Kernel->handle(Object(Illuminate\\Http\\Request))
 #60 {main}
 "} 
+[2025-11-07 07:33:45] local.ERROR: The "1" argument does not exist. {"exception":"[object] (Symfony\\Component\\Console\\Exception\\InvalidArgumentException(code: 0): The \"1\" argument does not exist. at D:\\htdocs\\stelloCMS\\vendor\\symfony\\console\\Input\\ArrayInput.php:186)
+[stacktrace]
+#0 D:\\htdocs\\stelloCMS\\vendor\\symfony\\console\\Input\\ArrayInput.php(125): Symfony\\Component\\Console\\Input\\ArrayInput->addArgument(1, '--ansi')
+#1 D:\\htdocs\\stelloCMS\\vendor\\symfony\\console\\Input\\Input.php(53): Symfony\\Component\\Console\\Input\\ArrayInput->parse()
+#2 D:\\htdocs\\stelloCMS\\vendor\\symfony\\console\\Command\\Command.php(276): Symfony\\Component\\Console\\Input\\Input->bind(Object(Symfony\\Component\\Console\\Input\\InputDefinition))
+#3 D:\\htdocs\\stelloCMS\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Command.php(180): Symfony\\Component\\Console\\Command\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArrayInput), Object(Illuminate\\Console\\OutputStyle))
+#4 D:\\htdocs\\stelloCMS\\vendor\\symfony\\console\\Application.php(1073): Illuminate\\Console\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArrayInput), Object(Symfony\\Component\\Console\\Output\\BufferedOutput))
+#5 D:\\htdocs\\stelloCMS\\vendor\\symfony\\console\\Application.php(356): Symfony\\Component\\Console\\Application->doRunCommand(Object(Illuminate\\Foundation\\Console\\PackageDiscoverCommand), Object(Symfony\\Component\\Console\\Input\\ArrayInput), Object(Symfony\\Component\\Console\\Output\\BufferedOutput))
+#6 D:\\htdocs\\stelloCMS\\vendor\\symfony\\console\\Application.php(195): Symfony\\Component\\Console\\Application->doRun(Object(Symfony\\Component\\Console\\Input\\ArrayInput), Object(Symfony\\Component\\Console\\Output\\BufferedOutput))
+#7 D:\\htdocs\\stelloCMS\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Application.php(165): Symfony\\Component\\Console\\Application->run(Object(Symfony\\Component\\Console\\Input\\ArrayInput), Object(Symfony\\Component\\Console\\Output\\BufferedOutput))
+#8 D:\\htdocs\\stelloCMS\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(426): Illuminate\\Console\\Application->call('package:discove...', Array, NULL)
+#9 D:\\htdocs\\stelloCMS\\artisan(35): Illuminate\\Foundation\\Console\\Kernel->call('package:discove...', Array)
+#10 {main}
+"} 
+[2025-11-07 07:34:15] local.ERROR: The "1" argument does not exist. {"exception":"[object] (Symfony\\Component\\Console\\Exception\\InvalidArgumentException(code: 0): The \"1\" argument does not exist. at D:\\htdocs\\stelloCMS\\vendor\\symfony\\console\\Input\\ArrayInput.php:186)
+[stacktrace]
+#0 D:\\htdocs\\stelloCMS\\vendor\\symfony\\console\\Input\\ArrayInput.php(125): Symfony\\Component\\Console\\Input\\ArrayInput->addArgument(1, '--path=panel/us...')
+#1 D:\\htdocs\\stelloCMS\\vendor\\symfony\\console\\Input\\Input.php(53): Symfony\\Component\\Console\\Input\\ArrayInput->parse()
+#2 D:\\htdocs\\stelloCMS\\vendor\\symfony\\console\\Command\\Command.php(276): Symfony\\Component\\Console\\Input\\Input->bind(Object(Symfony\\Component\\Console\\Input\\InputDefinition))
+#3 D:\\htdocs\\stelloCMS\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Command.php(180): Symfony\\Component\\Console\\Command\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArrayInput), Object(Illuminate\\Console\\OutputStyle))
+#4 D:\\htdocs\\stelloCMS\\vendor\\symfony\\console\\Application.php(1073): Illuminate\\Console\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArrayInput), Object(Symfony\\Component\\Console\\Output\\BufferedOutput))
+#5 D:\\htdocs\\stelloCMS\\vendor\\symfony\\console\\Application.php(356): Symfony\\Component\\Console\\Application->doRunCommand(Object(Illuminate\\Foundation\\Console\\RouteListCommand), Object(Symfony\\Component\\Console\\Input\\ArrayInput), Object(Symfony\\Component\\Console\\Output\\BufferedOutput))
+#6 D:\\htdocs\\stelloCMS\\vendor\\symfony\\console\\Application.php(195): Symfony\\Component\\Console\\Application->doRun(Object(Symfony\\Component\\Console\\Input\\ArrayInput), Object(Symfony\\Component\\Console\\Output\\BufferedOutput))
+#7 D:\\htdocs\\stelloCMS\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Application.php(165): Symfony\\Component\\Console\\Application->run(Object(Symfony\\Component\\Console\\Input\\ArrayInput), Object(Symfony\\Component\\Console\\Output\\BufferedOutput))
+#8 D:\\htdocs\\stelloCMS\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(426): Illuminate\\Console\\Application->call('route:list', Array, NULL)
+#9 D:\\htdocs\\stelloCMS\\artisan(35): Illuminate\\Foundation\\Console\\Kernel->call('route:list', Array)
+#10 {main}
+"} 
+[2025-11-07 07:35:32] local.ERROR: Aborted. {"exception":"[object] (Symfony\\Component\\Console\\Exception\\MissingInputException(code: 0): Aborted. at D:\\htdocs\\stelloCMS\\vendor\\symfony\\console\\Helper\\QuestionHelper.php:132)
+[stacktrace]
+#0 D:\\htdocs\\stelloCMS\\vendor\\symfony\\console\\Helper\\QuestionHelper.php(62): Symfony\\Component\\Console\\Helper\\QuestionHelper->doAsk(Resource id #1, Object(Illuminate\\Console\\OutputStyle), Object(Symfony\\Component\\Console\\Question\\Question))
+#1 D:\\htdocs\\stelloCMS\\vendor\\symfony\\console\\Style\\SymfonyStyle.php(307): Symfony\\Component\\Console\\Helper\\QuestionHelper->ask(Object(Symfony\\Component\\Console\\Input\\ArrayInput), Object(Illuminate\\Console\\OutputStyle), Object(Symfony\\Component\\Console\\Question\\Question))
+#2 D:\\htdocs\\stelloCMS\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\OutputStyle.php(58): Symfony\\Component\\Console\\Style\\SymfonyStyle->askQuestion(Object(Symfony\\Component\\Console\\Question\\Question))
+#3 D:\\htdocs\\stelloCMS\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\View\\Components\\Ask.php(20): Illuminate\\Console\\OutputStyle->askQuestion(Object(Symfony\\Component\\Console\\Question\\Question))
+#4 D:\\htdocs\\stelloCMS\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\View\\Components\\Component.php(117): Illuminate\\Console\\View\\Components\\Ask->Illuminate\\Console\\View\\Components\\{closure}()
+#5 D:\\htdocs\\stelloCMS\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\View\\Components\\Ask.php(19): Illuminate\\Console\\View\\Components\\Component->usingQuestionHelper(Object(Closure))
+#6 D:\\htdocs\\stelloCMS\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\View\\Components\\Factory.php(59): Illuminate\\Console\\View\\Components\\Ask->render('What should the...', NULL)
+#7 D:\\htdocs\\stelloCMS\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Concerns\\ConfiguresPrompts.php(39): Illuminate\\Console\\View\\Components\\Factory->__call('ask', Array)
+#8 D:\\htdocs\\stelloCMS\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Concerns\\ConfiguresPrompts.php(126): Illuminate\\Console\\Command->Illuminate\\Console\\Concerns\\{closure}()
+#9 D:\\htdocs\\stelloCMS\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Concerns\\ConfiguresPrompts.php(38): Illuminate\\Console\\Command->promptUntilValid(Object(Closure), false, Object(Closure))
+#10 D:\\htdocs\\stelloCMS\\vendor\\laravel\\prompts\\src\\Concerns\\Fallback.php(59): Illuminate\\Console\\Command->Illuminate\\Console\\Concerns\\{closure}(Object(Laravel\\Prompts\\TextPrompt))
+#11 D:\\htdocs\\stelloCMS\\vendor\\laravel\\prompts\\src\\Prompt.php(108): Laravel\\Prompts\\Prompt->fallback()
+#12 D:\\htdocs\\stelloCMS\\vendor\\laravel\\prompts\\src\\helpers.php(21): Laravel\\Prompts\\Prompt->prompt()
+#13 D:\\htdocs\\stelloCMS\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Concerns\\PromptsForMissingInput.php(60): Laravel\\Prompts\\text('What should the...', 'E.g. UserSeeder', '', false, Object(Closure))
+#14 D:\\htdocs\\stelloCMS\\vendor\\laravel\\framework\\src\\Illuminate\\Collections\\Traits\\EnumeratesValues.php(271): Illuminate\\Console\\Command->Illuminate\\Console\\Concerns\\{closure}(Object(Symfony\\Component\\Console\\Input\\InputArgument), 'name')
+#15 D:\\htdocs\\stelloCMS\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Concerns\\PromptsForMissingInput.php(48): Illuminate\\Support\\Collection->each(Object(Closure))
+#16 D:\\htdocs\\stelloCMS\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Concerns\\PromptsForMissingInput.php(29): Illuminate\\Console\\Command->promptForMissingArguments(Object(Symfony\\Component\\Console\\Input\\ArrayInput), Object(Illuminate\\Console\\OutputStyle))
+#17 D:\\htdocs\\stelloCMS\\vendor\\symfony\\console\\Command\\Command.php(302): Illuminate\\Console\\Command->interact(Object(Symfony\\Component\\Console\\Input\\ArrayInput), Object(Illuminate\\Console\\OutputStyle))
+#18 D:\\htdocs\\stelloCMS\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Command.php(180): Symfony\\Component\\Console\\Command\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArrayInput), Object(Illuminate\\Console\\OutputStyle))
+#19 D:\\htdocs\\stelloCMS\\vendor\\symfony\\console\\Application.php(1073): Illuminate\\Console\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArrayInput), Object(Symfony\\Component\\Console\\Output\\BufferedOutput))
+#20 D:\\htdocs\\stelloCMS\\vendor\\symfony\\console\\Application.php(356): Symfony\\Component\\Console\\Application->doRunCommand(Object(Illuminate\\Database\\Console\\Seeds\\SeederMakeCommand), Object(Symfony\\Component\\Console\\Input\\ArrayInput), Object(Symfony\\Component\\Console\\Output\\BufferedOutput))
+#21 D:\\htdocs\\stelloCMS\\vendor\\symfony\\console\\Application.php(195): Symfony\\Component\\Console\\Application->doRun(Object(Symfony\\Component\\Console\\Input\\ArrayInput), Object(Symfony\\Component\\Console\\Output\\BufferedOutput))
+#22 D:\\htdocs\\stelloCMS\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Application.php(165): Symfony\\Component\\Console\\Application->run(Object(Symfony\\Component\\Console\\Input\\ArrayInput), Object(Symfony\\Component\\Console\\Output\\BufferedOutput))
+#23 D:\\htdocs\\stelloCMS\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(426): Illuminate\\Console\\Application->call('make:seeder', Array, NULL)
+#24 D:\\htdocs\\stelloCMS\\artisan(35): Illuminate\\Foundation\\Console\\Kernel->call('make:seeder', Array)
+#25 {main}
+"} 
