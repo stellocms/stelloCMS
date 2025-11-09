@@ -17,8 +17,8 @@ Route::prefix('panel/contohplugin')->middleware(['auth'])->group(function () {
     Route::get('/{id}', [ContohPluginController::class, 'show'])->name('contohplugin.show');
 });
 
-// Jika perlu rute frontend untuk menampilkan contoh plugin publik (opsional)
-// Route::prefix('contoh-plugin')->group(function () {
-//     Route::get('/', [ContohPluginController::class, 'index'])->name('contohplugin.public.index');
-//     Route::get('/{id}', [ContohPluginController::class, 'show'])->name('contohplugin.public.show');
-// });
+// Rute frontend untuk menampilkan contoh plugin publik
+Route::prefix('contohplugin')->group(function () {
+    Route::get('/', [ContohPluginController::class, 'frontpageIndex'])->name('contohplugin.frontpage.index');
+    Route::get('/{slug}', [ContohPluginController::class, 'frontpageShow'])->name('contohplugin.frontpage.show');
+});

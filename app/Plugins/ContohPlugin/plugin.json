@@ -1,14 +1,12 @@
-<?php
-
-return [
-    'name' => 'ContohPlugin',
-    'version' => '1.0.0',
-    'description' => 'Plugin contoh untuk pengembang - Plugin dengan struktur standar',
-    'author' => 'StelloCMS Developer',
-    'author_url' => 'https://stello-cms.com',
-    'required_version' => '1.0.0',
-    'database' => [
-        'migrations' => 'Database/Migrations',
-        'seeders' => 'Database/Seeders',
-    ],
-];
+{
+    "name": "ContohPlugin",
+    "version": "1.0.0",
+    "description": "Plugin contoh untuk pengembang - Plugin dengan struktur standar",
+    "author": "StelloCMS Developer",
+    "author_url": "https://stello-cms.com",
+    "required_version": "1.0.0",
+    "database": {
+        "migrations": "Database/Migrations",
+        "seeders": "Database/Seeders"
+    }
+}

@@ -1,0 +1,635 @@
+# Panduan Pengembangan Plugin untuk stelloCMS
+
+## Persiapan Awal
+
+Sebelum membuat plugin baru untuk stelloCMS, pastikan Anda memiliki:
+- Pengetahuan dasar tentang Laravel Framework
+- Struktur direktori plugin yang benar
+- Pemahaman tentang arsitektur MVC
+- Pengetahuan tentang Blade templating
+
+## Struktur Plugin Standar
+
+Setiap plugin di stelloCMS harus mengikuti struktur standar:
+
+```
+app/Plugins/{NamaPlugin}/
+├── Controllers/
+│   └── {NamaPlugin}Controller.php
+├── Models/
+│   └── {ModelName}.php
+├── Views/
+│   ├── index.blade.php
+│   ├── create.blade.php
+│   ├── edit.blade.php
+│   └── show.blade.php
+├── Views/frontpage/ (opsional)
+│   ├── index.blade.php
+│   └── show.blade.php
+├── Database/
+│   └── Migrations/
+│       └── {timestamp}_create_{table}_table.php
+├── plugin.json
+├── routes.php
+└── Doc/ (opsional)
+    └── README.md
+```
+
+## Langkah-langkah Membuat Plugin Baru
+
+### 1. Membuat Struktur Direktori
+
+Buat direktori plugin dalam `app/Plugins/`:
+
+```bash
+mkdir -p app/Plugins/NamaPlugin/{Controllers,Models,Views,Views/frontpage,Database/Migrations,Doc}
+```
+
+### 2. Membuat File Konfigurasi (plugin.json)
+
+Buat file `plugin.json` untuk metadata plugin:
+
+```json
+{
+    "name": "NamaPlugin",
+    "version": "1.0.0",
+    "description": "Deskripsi plugin",
+    "author": "Nama Pengembang",
+    "author_url": "https://contoh.com",
+    "required_version": "1.0.0",
+    "database": {
+        "migrations": "Database/Migrations",
+        "seeders": "Database/Seeders"
+    }
+}
+```
+
+### 3. Membuat Model
+
+Buat model plugin di `Models/`:
+
+```php
+<?php
+
+namespace App\Plugins\NamaPlugin\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class NamaPlugin extends Model
+{
+    protected $fillable = [
+        'judul',
+        'deskripsi',
+        'gambar',
+        'tanggal_dibuat',
+        'aktif',
+        'slug'
+    ];
+    
+    protected $table = 'nama_plugin';
+    
+    protected $casts = [
+        'tanggal_dibuat' => 'datetime',
+        'aktif' => 'boolean'
+    ];
+    
+    /**
+     * Generate a unique slug before saving
+     */
+    protected static function boot()
+    {
+        parent::boot();
+        
+        static::saving(function ($model) {
+            if (empty($model->slug) || $model->isDirty('judul')) {
+                $model->slug = $model->generateUniqueSlug();
+            }
+        });
+    }
+    
+    /**
+     * Generate a unique slug based on the title
+     */
+    private function generateUniqueSlug()
+    {
+        $slug = generate_slug($this->judul);
+        $originalSlug = $slug;
+        $counter = 1;
+        
+        // If this is an update, exclude current record from the check
+        $query = static::where('slug', $slug);
+        if ($this->exists) {
+            $query->where('id', '!=', $this->id);
+        }
+        
+        while ($query->first()) {
+            $slug = $originalSlug . '-' . $counter;
+            $query = static::where('slug', $slug);
+            
+            if ($this->exists) {
+                $query->where('id', '!=', $this->id);
+            }
+            
+            $counter++;
+        }
+        
+        return $slug;
+    }
+    
+    /**
+     * Scope to find by slug
+     */
+    public function scopeBySlug($query, $slug)
+    {
+        return $query->where('slug', $slug);
+    }
+}
+```
+
+### 4. Membuat Controller
+
+Buat controller di `Controllers/`:
+
+```php
+<?php
+
+namespace App\Plugins\NamaPlugin\Controllers;
+
+use App\Plugins\NamaPlugin\Models\NamaPlugin;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Log;
+
+class NamaPluginController extends Controller
+{
+    public function index()
+    {
+        try {
+            $items = NamaPlugin::where('aktif', true)->orderBy('tanggal_dibuat', 'desc')->paginate(10);
+            
+            return view('namaplugin::index', compact('items'));
+        } catch (\Exception $e) {
+            Log::error('Error in NamaPluginController@index: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+    
+    public function create()
+    {
+        try {
+            return view('namaplugin::create');
+        } catch (\Exception $e) {
+            Log::error('Error in NamaPluginController@create: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+    
+    public function store(Request $request)
+    {
+        try {
+            $request->validate([
+                'judul' => 'required|string|max:255',
+                'deskripsi' => 'required',
+                'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            ]);
+            
+            $data = $request->all();
+            
+            if ($request->hasFile('gambar')) {
+                $gambarPath = $request->file('gambar')->store('namaplugin', 'public');
+                $data['gambar'] = $gambarPath;
+            }
+            
+            NamaPlugin::create($data);
+            
+            return redirect()->route('namaplugin.index')->with('success', 'Item berhasil ditambahkan.');
+        } catch (\Exception $e) {
+            Log::error('Error in NamaPluginController@store: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+    
+    public function show($id)
+    {
+        try {
+            $item = NamaPlugin::findOrFail($id);
+            
+            return view('namaplugin::show', compact('item'));
+        } catch (\Exception $e) {
+            Log::error('Error in NamaPluginController@show: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+    
+    public function edit($id)
+    {
+        try {
+            $item = NamaPlugin::findOrFail($id);
+            
+            return view('namaplugin::edit', compact('item'));
+        } catch (\Exception $e) {
+            Log::error('Error in NamaPluginController@edit: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+    
+    public function update(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'judul' => 'required|string|max:255',
+                'deskripsi' => 'required',
+                'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            ]);
+            
+            $item = NamaPlugin::findOrFail($id);
+            $data = $request->all();
+            
+            if ($request->hasFile('gambar')) {
+                // Hapus gambar lama jika ada
+                if ($item->gambar && file_exists(storage_path('app/public/' . $item->gambar))) {
+                    unlink(storage_path('app/public/' . $item->gambar));
+                }
+                
+                $gambarPath = $request->file('gambar')->store('namaplugin', 'public');
+                $data['gambar'] = $gambarPath;
+            }
+            
+            $item->update($data);
+            
+            return redirect()->route('namaplugin.index')->with('success', 'Item berhasil diperbarui.');
+        } catch (\Exception $e) {
+            Log::error('Error in NamaPluginController@update: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+    
+    public function destroy($id)
+    {
+        try {
+            $item = NamaPlugin::findOrFail($id);
+            
+            // Hapus gambar jika ada
+            if ($item->gambar && file_exists(storage_path('app/public/' . $item->gambar))) {
+                unlink(storage_path('app/public/' . $item->gambar));
+            }
+            
+            $item->delete();
+            
+            return redirect()->route('namaplugin.index')->with('success', 'Item berhasil dihapus.');
+        } catch (\Exception $e) {
+            Log::error('Error in NamaPluginController@destroy: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+    
+    /**
+     * Frontend methods
+     */
+    
+    public function frontpageIndex()
+    {
+        try {
+            $items = NamaPlugin::where('aktif', true)
+                ->orderBy('tanggal_dibuat', 'desc')
+                ->paginate(9);
+            
+            return view('namaplugin::frontpage.index', compact('items'));
+        } catch (\Exception $e) {
+            Log::error('Error in NamaPluginController@frontpageIndex: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+    
+    public function frontpageShow($slug)
+    {
+        try {
+            $item = NamaPlugin::where('aktif', true)->bySlug($slug)->firstOrFail();
+            
+            return view('namaplugin::frontpage.show', compact('item'));
+        } catch (\Exception $e) {
+            Log::error('Error in NamaPluginController@frontpageShow: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+}
+```
+
+### 5. Membuat Routes
+
+Buat file `routes.php`:
+
+```php
+<?php
+
+use App\Plugins\NamaPlugin\Controllers\NamaPluginController;
+use Illuminate\Support\Facades\Route;
+
+// Rute untuk admin panel
+Route::prefix('panel/namaplugin')->middleware(['auth'])->group(function () {
+    Route::get('/', [NamaPluginController::class, 'index'])->name('namaplugin.index');
+    Route::get('/create', [NamaPluginController::class, 'create'])->name('namaplugin.create');
+    Route::post('/', [NamaPluginController::class, 'store'])->name('namaplugin.store');
+    Route::get('/{id}/edit', [NamaPluginController::class, 'edit'])->name('namaplugin.edit');
+    Route::put('/{id}', [NamaPluginController::class, 'update'])->name('namaplugin.update');
+    Route::delete('/{id}', [NamaPluginController::class, 'destroy'])->name('namaplugin.destroy');
+    Route::get('/{id}', [NamaPluginController::class, 'show'])->name('namaplugin.show');
+});
+
+// Rute untuk frontend publik
+Route::prefix('namaplugin')->group(function () {
+    Route::get('/', [NamaPluginController::class, 'frontpageIndex'])->name('namaplugin.frontpage.index');
+    Route::get('/{slug}', [NamaPluginController::class, 'frontpageShow'])->name('namaplugin.frontpage.show');
+});
+```
+
+### 6. Membuat Migrasi Database
+
+Buat file migrasi di `Database/Migrations/`:
+
+```php
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('namaplugin', function (Blueprint $table) {
+            $table->id();
+            $table->string('judul');
+            $table->text('deskripsi');
+            $table->string('gambar')->nullable();
+            $table->timestamp('tanggal_dibuat')->nullable();
+            $table->boolean('aktif')->default(true);
+            $table->string('slug')->unique();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('namaplugin');
+    }
+};
+```
+
+### 7. Membuat Views Admin
+
+Contoh view `Views/index.blade.php`:
+
+```blade
+@extends('theme.admin.' . config('themes.admin') . '::layouts.app')
+
+@section('title', 'Manajemen Nama Plugin - ' . cms_name())
+@section('page_title', 'Manajemen Nama Plugin')
+
+@section('content')
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Daftar Item Nama Plugin</h3>
+                    <div class="card-tools">
+                        <a href="{{ route('namaplugin.create') }}" class="btn btn-primary">Tambah Item</a>
+                    </div>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body table-responsive p-0">
+                    @if(session('success'))
+                        <div class="alert alert-success alert-dismissible">
+                            {{ session('success') }}
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        </div>
+                    @endif
+                    
+                    <table class="table table-hover text-nowrap">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Judul</th>
+                                <th>Deskripsi Singkat</th>
+                                <th>Tanggal Dibuat</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($items as $item)
+                            <tr>
+                                <td>{{ $item->id }}</td>
+                                <td>{{ $item->judul }}</td>
+                                <td>{{ Str::limit(strip_tags($item->deskripsi), 100) }}</td>
+                                <td>{{ $item->tanggal_dibuat ? $item->tanggal_dibuat->format('d M Y') : '-' }}</td>
+                                <td>
+                                    <span class="badge {{ $item->aktif ? 'badge-success' : 'badge-warning' }}">
+                                        {{ $item->aktif ? 'Aktif' : 'Tidak Aktif' }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="{{ route('namaplugin.show', $item->id) }}" class="btn btn-sm btn-info">Lihat</a>
+                                    <a href="{{ route('namaplugin.edit', $item->id) }}" class="btn btn-sm btn-primary">Edit</a>
+                                    <form action="{{ route('namaplugin.destroy', $item->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus item ini?')">Hapus</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="6" class="text-center">Tidak ada item ditemukan</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.card-body -->
+                <div class="card-footer clearfix">
+                    {{ $items->links() }}
+                </div>
+            </div>
+            <!-- /.card -->
+        </div>
+    </div>
+</div>
+@endsection
+```
+
+### 8. Membuat Views Frontend
+
+Contoh view `Views/frontpage/index.blade.php`:
+
+```blade
+@extends('theme.frontend.' . config('themes.frontend') . '::layouts.app')
+
+@section('title', 'Nama Plugin - ' . cms_name())
+@section('description', 'Daftar item dari Nama Plugin')
+
+@section('content')
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">Nama Plugin</h1>
+            
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Daftar Item</h5>
+                    
+                    @if($items && $items->count() > 0)
+                        <div class="row">
+                            @foreach($items as $item)
+                                <div class="col-md-4 mb-4">
+                                    <div class="card h-100">
+                                        @if($item->gambar)
+                                            <img src="{{ asset('storage/' . $item->gambar) }}" 
+                                                 class="card-img-top" 
+                                                 alt="{{ $item->judul }}"
+                                                 style="height: 200px; object-fit: cover;">
+                                        @endif
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ $item->judul }}</h5>
+                                            <p class="card-text">
+                                                {!! Str::limit(strip_tags($item->deskripsi), 100) !!}
+                                            </p>
+                                            <p class="text-muted">
+                                                <small>Dipublikasikan: {{ $item->tanggal_dibuat ? $item->tanggal_dibuat->format('d M Y') : '-' }}</small>
+                                            </p>
+                                        </div>
+                                        <div class="card-footer">
+                                            <a href="{{ route('namaplugin.frontpage.show', $item->slug) }}" 
+                                               class="btn btn-primary btn-sm">Lihat Detail</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                        
+                        <div class="d-flex justify-content-center">
+                            {{ $items->links() }}
+                        </div>
+                    @else
+                        <div class="alert alert-info">
+                            <p>Belum ada item dalam Nama Plugin.</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+```
+
+## Best Practices
+
+### 1. Namespace
+Gunakan namespace yang konsisten:
+```
+App\Plugins\{NamaPlugin}\Controllers\{NamaPlugin}Controller
+App\Plugins\{NamaPlugin}\Models\{ModelName}
+```
+
+### 2. View Namespaces
+Plugin view namespace otomatis terdaftar sebagai `{lowercase_nama_plugin}::`. Contoh: `contohplugin::index`
+
+### 3. Nama Route
+Gunakan pola: `{plugin_name}.{action}` atau `{plugin_name}.frontpage.{action}`
+
+### 4. Database
+- Gunakan nama tabel yang deskriptif
+- Gunakan timestamps (created_at, updated_at)
+- Gunakan soft deletes jika diperlukan
+
+### 5. Validasi
+Selalu tambahkan validasi pada form input:
+```php
+$request->validate([
+    'judul' => 'required|string|max:255',
+    'deskripsi' => 'required',
+    'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+]);
+```
+
+### 6. Error Handling
+Gunakan try-catch dan logging:
+```php
+try {
+    // kode
+} catch (\Exception $e) {
+    Log::error('Error description: ' . $e->getMessage());
+    throw $e;
+}
+```
+
+## Integrasi dengan Sistem
+
+### Menu Otomatis
+PluginManager akan secara otomatis membuat menu di sistem jika plugin diinstal.
+
+### Hak Akses
+Menu plugin akan mengikuti hak akses role yang telah ditentukan di sistem.
+
+## Testing Plugin
+
+### Manual Testing
+1. Instal plugin melalui panel
+2. Uji semua fitur CRUD
+3. Periksa tampilan frontend dan backend
+4. Uji validasi input
+5. Pastikan slug di-generate dengan benar
+
+### Debugging
+Gunakan logging untuk melacak error:
+```php
+Log::info('Debug message', ['data' => $variable]);
+Log::error('Error message', ['error' => $exception]);
+```
+
+## Deployment
+
+### Instalasi Plugin
+1. Salin folder plugin ke `app/Plugins/`
+2. Buat backup database sebelum instalasi
+3. Gunakan panel administrasi untuk menginstal plugin
+4. Verifikasi bahwa plugin berfungsi dengan benar
+
+### Update Plugin
+1. Backup data dan file sebelum update
+2. Ganti file plugin dengan versi baru
+3. Jalankan migrasi jika ada perubahan database
+4. Clear cache jika diperlukan
+
+## Troubleshooting
+
+### Plugin Tidak Muncul
+- Periksa struktur direktori
+- Pastikan plugin.json valid
+- Verifikasi nama plugin sesuai dengan nama folder
+
+### Route Tidak Bekerja
+- Pastikan route didaftarkan dengan benar
+- Clear route cache: `php artisan route:clear`
+
+### View Tidak Ditemukan
+- Pastikan namespace view benar
+- Pastikan PluginServiceProvider aktif
+- Periksa apakah plugin dianggap aktif
+
+## Kesimpulan
+
+Dengan mengikuti pedoman ini, Anda dapat membuat plugin yang:
+- Konsisten dengan arsitektur stelloCMS
+- Mudah dipelihara dan dikembangkan
+- Mengikuti praktik terbaik Laravel
+- Dapat diintegrasikan dengan sistem tema dan plugin

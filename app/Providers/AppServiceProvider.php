@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use App\Services\PluginManager;
+use App\Console\Commands\InstallContohPlugin;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -26,6 +27,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->registerThemeViews();
         $this->loadPlugins();
+        $this->registerCommands();
     }
 
     /**
@@ -65,13 +67,20 @@ class AppServiceProvider extends ServiceProvider
      */
     protected function loadPlugins(): void
     {
-        $pluginManager = app(PluginManager::class);
-        $plugins = $pluginManager->getPlugins();
-        
-        foreach ($plugins as $plugin) {
-            if ($plugin['active']) {
-                $pluginManager->loadPlugin($plugin['name']);
-            }
+        // Plugin loading is handled by PluginServiceProvider
+        // This method exists to maintain compatibility but does nothing
+        // PluginServiceProvider handles the loading to ensure proper timing
+    }
+    
+    /**
+     * Register console commands
+     */
+    protected function registerCommands(): void
+    {
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                InstallContohPlugin::class,
+            ]);
         }
     }
 }

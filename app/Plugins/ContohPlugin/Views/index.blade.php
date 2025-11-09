@@ -40,7 +40,7 @@
                                 <td>{{ $item->id }}</td>
                                 <td>{{ $item->judul }}</td>
                                 <td>{{ Str::limit(strip_tags($item->deskripsi), 100) }}</td>
-                                <td>{{ $item->tanggal_dibuat->format('d M Y') }}</td>
+                                <td>{{ $item->tanggal_dibuat ? $item->tanggal_dibuat->format('d M Y') : '-' }}</td>
                                 <td>
                                     <span class="badge {{ $item->aktif ? 'badge-success' : 'badge-warning' }}">
                                         {{ $item->aktif ? 'Aktif' : 'Tidak Aktif' }}

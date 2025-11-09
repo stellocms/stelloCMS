@@ -117,10 +117,16 @@ class PluginManager
         // Handle database tables for specific plugins
         if ($pluginName === 'Berita') {
             $this->createOrUpdateBeritaTable();
+        } else {
+            // For other plugins, run migrations from plugin's Database/Migrations directory
+            $this->runPluginMigrations($pluginName);
         }
         
         // Create menu for the plugin
         $this->createPluginMenu($pluginName);
+        
+        // Immediately load the plugin's routes and views after installation
+        $this->loadPlugin($pluginName);
         
         return true;
     }
@@ -178,6 +184,146 @@ class PluginManager
             if (!in_array('user_id', $columnNames)) {
                 \DB::statement("ALTER TABLE `berita` ADD COLUMN `user_id` BIGINT UNSIGNED NULL");
                 \DB::statement("ALTER TABLE `berita` ADD FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE SET NULL");
+            }
+        }
+    }
+    
+    /**
+     * Run plugin migrations
+     */
+    protected function runPluginMigrations($pluginName)
+    {
+        // Handle database tables for specific plugins
+        switch ($pluginName) {
+            case 'ContohPlugin':
+                $this->createOrUpdateContohPluginTable();
+                break;
+            // Tambahkan case lain jika diperlukan
+            default:
+                // For other plugins, run migrations from plugin's Database/Migrations directory
+                $this->runStandardPluginMigrations($pluginName);
+                break;
+        }
+    }
+    
+    /**
+     * Create or update contoh_plugins table
+     */
+    protected function createOrUpdateContohPluginTable()
+    {
+        // Check if contoh_plugins table exists
+        $tableExists = \DB::select("SHOW TABLES LIKE 'contoh_plugins'");
+        
+        if (empty($tableExists)) {
+            // Create contoh_plugins table
+            \DB::statement("
+                CREATE TABLE `contoh_plugins` (
+                    `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                    `judul` VARCHAR(255) NOT NULL,
+                    `deskripsi` TEXT NOT NULL,
+                    `gambar` VARCHAR(255) NULL,
+                    `tanggal_dibuat` TIMESTAMP NULL,
+                    `aktif` BOOLEAN DEFAULT TRUE,
+                    `slug` VARCHAR(255) NOT NULL,
+                    `created_at` TIMESTAMP NULL DEFAULT NULL,
+                    `updated_at` TIMESTAMP NULL DEFAULT NULL
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+            ");
+        } else {
+            // Check if columns exist and add them if missing
+            $columns = \DB::select("SHOW COLUMNS FROM `contoh_plugins`");
+            $columnNames = array_column($columns, 'Field');
+            
+            // Add missing columns if needed
+            if (!in_array('judul', $columnNames)) {
+                \DB::statement("ALTER TABLE `contoh_plugins` ADD COLUMN `judul` VARCHAR(255) NOT NULL");
+            }
+            
+            if (!in_array('deskripsi', $columnNames)) {
+                \DB::statement("ALTER TABLE `contoh_plugins` ADD COLUMN `deskripsi` TEXT NOT NULL");
+            }
+            
+            if (!in_array('gambar', $columnNames)) {
+                \DB::statement("ALTER TABLE `contoh_plugins` ADD COLUMN `gambar` VARCHAR(255) NULL");
+            }
+            
+            if (!in_array('tanggal_dibuat', $columnNames)) {
+                \DB::statement("ALTER TABLE `contoh_plugins` ADD COLUMN `tanggal_dibuat` TIMESTAMP NULL");
+            }
+            
+            if (!in_array('aktif', $columnNames)) {
+                \DB::statement("ALTER TABLE `contoh_plugins` ADD COLUMN `aktif` BOOLEAN DEFAULT TRUE");
+            }
+            
+            // Add slug column if it doesn't exist
+            if (!in_array('slug', $columnNames)) {
+                \DB::statement("ALTER TABLE `contoh_plugins` ADD COLUMN `slug` VARCHAR(255) NOT NULL");
+                // Generate slugs for existing records
+                $this->generateSlugsForExistingRecords();
+            }
+        }
+    }
+    
+    /**
+     * Generate slugs for existing records
+     */
+    protected function generateSlugsForExistingRecords()
+    {
+        $records = \DB::table('contoh_plugins')->get();
+        
+        foreach ($records as $record) {
+            $slug = generate_slug($record->judul);
+            // Check if slug already exists and make it unique
+            $originalSlug = $slug;
+            $counter = 1;
+            
+            while (\DB::table('contoh_plugins')->where('slug', $slug)->where('id', '!=', $record->id)->first()) {
+                $slug = $originalSlug . '-' . $counter;
+                $counter++;
+            }
+            
+            \DB::table('contoh_plugins')
+                ->where('id', $record->id)
+                ->update(['slug' => $slug]);
+        }
+    }
+    
+    /**
+     * Run standard plugin migrations from file
+     */
+    protected function runStandardPluginMigrations($pluginName)
+    {
+        $pluginPath = $this->pluginsPath . '/' . $pluginName;
+        $migrationsPath = $pluginPath . '/Database/Migrations';
+        
+        if (!File::exists($migrationsPath)) {
+            return;
+        }
+        
+        $migrationFiles = File::glob($migrationsPath . '/*.php');
+        
+        foreach ($migrationFiles as $migrationFile) {
+            if (preg_match('/[0-9]{4}_[0-9]{2}_[0-9]{2}_[0-9]{6}_.*\.php$/', basename($migrationFile))) {
+                require_once $migrationFile;
+                
+                // Extract migration class name from file
+                $fileName = pathinfo($migrationFile, PATHINFO_FILENAME);
+                $className = str_replace('_', '', ucwords($fileName, '_'));
+                
+                // Handle Laravel-style migration class names
+                $className = preg_replace('/[0-9_]+/', '', $className);
+                
+                // Run the migration class's up method if it exists
+                if (class_exists($className)) {
+                    $migration = new $className();
+                    if (method_exists($migration, 'up')) {
+                        try {
+                            $migration->up();
+                        } catch (\Exception $e) {
+                            \Log::error("Migration failed for $fileName: " . $e->getMessage());
+                        }
+                    }
+                }
             }
         }
     }

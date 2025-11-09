@@ -60,3 +60,30 @@ if (!function_exists('view_theme')) {
         return view($view, $data);
     }
 }
+
+if (!function_exists('generate_slug')) {
+    /**
+     * Generate a URL-friendly slug from a string
+     */
+    function generate_slug($string, $separator = '-')
+    {
+        // Convert to lowercase
+        $string = strtolower($string);
+        
+        // Remove special characters and replace spaces with separator
+        $string = preg_replace('/[^a-z0-9-_.]+/', $separator, $string);
+        
+        // Remove multiple occurrences of separator
+        $string = preg_replace('/' . preg_quote($separator) . '+/', $separator, $string);
+        
+        // Trim separator from the beginning and end
+        $string = trim($string, $separator);
+        
+        // If string is empty after processing, use a default
+        if (empty($string)) {
+            $string = 'untitled-' . time();
+        }
+        
+        return $string;
+    }
+}

@@ -25,6 +25,7 @@ class LoginController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
+            // Redirect to intended URL, fallback to dashboard
             return redirect()->intended('/panel/dashboard');
         }
 
@@ -42,6 +43,7 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
+        // After logout, redirect to login page instead of panel
         return redirect('/panel');
     }
 }
