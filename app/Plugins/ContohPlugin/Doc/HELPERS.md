@@ -233,3 +233,7 @@ Sistem slug yang diimplementasikan dalam plugin Contoh:
 - Dapat digunakan untuk URL-friendly
 - Dapat dicari dengan cepat
 - Mendukung SEO yang baik
+
+## Panduan Pengembangan Plugin
+
+Untuk panduan lengkap tentang cara membuat dan mengembangkan plugin seperti ContohPlugin, lihat dokumentasi di [DEVELOPING.md](DEVELOPING.md).

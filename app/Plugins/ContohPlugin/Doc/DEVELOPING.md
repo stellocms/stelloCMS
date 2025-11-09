@@ -3,10 +3,12 @@
 ## Persiapan Awal
 
 Sebelum membuat plugin baru untuk stelloCMS, pastikan Anda memiliki:
-- Pengetahuan dasar tentang Laravel Framework
+- Pengetahuan dasar tentang Laravel Framework 11
+- Pemahaman tentang struktur dan konvensi stelloCMS
 - Struktur direktori plugin yang benar
 - Pemahaman tentang arsitektur MVC
-- Pengetahuan tentang Blade templating
+- Pengetahuan tentang Blade templating dan AdminLTE
+- Pengetahuan dasar tentang routing, middleware, dan Eloquent ORM
 
 ## Struktur Plugin Standar
 
@@ -19,20 +21,18 @@ app/Plugins/{NamaPlugin}/
 ├── Models/
 │   └── {ModelName}.php
 ├── Views/
-│   ├── index.blade.php
 │   ├── create.blade.php
 │   ├── edit.blade.php
-│   └── show.blade.php
-├── Views/frontpage/ (opsional)
 │   ├── index.blade.php
-│   └── show.blade.php
-├── Database/
-│   └── Migrations/
-│       └── {timestamp}_create_{table}_table.php
-├── plugin.json
+│   ├── show.blade.php
+│   └── frontpage/ (opsional)
+│       ├── index.blade.php
+│       └── show.blade.php
 ├── routes.php
+├── plugin.json
 └── Doc/ (opsional)
-    └── README.md
+    ├── README.md
+    └── DEVELOPING.md
 ```
 
 ## Langkah-langkah Membuat Plugin Baru
@@ -42,7 +42,7 @@ app/Plugins/{NamaPlugin}/
 Buat direktori plugin dalam `app/Plugins/`:
 
 ```bash
-mkdir -p app/Plugins/NamaPlugin/{Controllers,Models,Views,Views/frontpage,Database/Migrations,Doc}
+mkdir -p app/Plugins/NamaPlugin/{Controllers,Models,Views,Views/frontpage,Doc}
 ```
 
 ### 2. Membuat File Konfigurasi (plugin.json)
@@ -66,7 +66,7 @@ Buat file `plugin.json` untuk metadata plugin:
 
 ### 3. Membuat Model
 
-Buat model plugin di `Models/`:
+Buat model plugin di `Models/`. Untuk sistem slug otomatis seperti plugin ContohPlugin:
 
 ```php
 <?php
@@ -86,7 +86,7 @@ class NamaPlugin extends Model
         'slug'
     ];
     
-    protected $table = 'nama_plugin';
+    protected $table = 'nama_plugin_table'; // Ganti dengan nama tabel yang sesuai
     
     protected $casts = [
         'tanggal_dibuat' => 'datetime',
@@ -167,7 +167,7 @@ class NamaPluginController extends Controller
         try {
             $items = NamaPlugin::where('aktif', true)->orderBy('tanggal_dibuat', 'desc')->paginate(10);
             
-            return view('namaplugin::index', compact('items'));
+            return view('namaplugin::index', compact('items')); // Pastikan namespace view benar
         } catch (\Exception $e) {
             Log::error('Error in NamaPluginController@index: ' . $e->getMessage());
             throw $e;
@@ -191,6 +191,7 @@ class NamaPluginController extends Controller
                 'judul' => 'required|string|max:255',
                 'deskripsi' => 'required',
                 'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'aktif' => 'boolean'
             ]);
             
             $data = $request->all();
@@ -240,6 +241,7 @@ class NamaPluginController extends Controller
                 'judul' => 'required|string|max:255',
                 'deskripsi' => 'required',
                 'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'aktif' => 'boolean'
             ]);
             
             $item = NamaPlugin::findOrFail($id);
@@ -325,7 +327,8 @@ Buat file `routes.php`:
 use App\Plugins\NamaPlugin\Controllers\NamaPluginController;
 use Illuminate\Support\Facades\Route;
 
-// Rute untuk admin panel
+// Rute untuk admin panel - semua user terotentikasi bisa mengakses
+// Pengaturan role spesifik akan dilakukan melalui manajemen menu
 Route::prefix('panel/namaplugin')->middleware(['auth'])->group(function () {
     Route::get('/', [NamaPluginController::class, 'index'])->name('namaplugin.index');
     Route::get('/create', [NamaPluginController::class, 'create'])->name('namaplugin.create');
@@ -343,47 +346,7 @@ Route::prefix('namaplugin')->group(function () {
 });
 ```
 
-### 6. Membuat Migrasi Database
-
-Buat file migrasi di `Database/Migrations/`:
-
-```php
-<?php
-
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
-
-return new class extends Migration
-{
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
-    {
-        Schema::create('namaplugin', function (Blueprint $table) {
-            $table->id();
-            $table->string('judul');
-            $table->text('deskripsi');
-            $table->string('gambar')->nullable();
-            $table->timestamp('tanggal_dibuat')->nullable();
-            $table->boolean('aktif')->default(true);
-            $table->string('slug')->unique();
-            $table->timestamps();
-        });
-    }
-
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('namaplugin');
-    }
-};
-```
-
-### 7. Membuat Views Admin
+### 6. Membuat Views Admin
 
 Contoh view `Views/index.blade.php`:
 
@@ -429,7 +392,7 @@ Contoh view `Views/index.blade.php`:
                             <tr>
                                 <td>{{ $item->id }}</td>
                                 <td>{{ $item->judul }}</td>
-                                <td>{{ Str::limit(strip_tags($item->deskripsi), 100) }}</td>
+                                <td>{!! Str::limit(strip_tags($item->deskripsi), 100) !!}</td>
                                 <td>{{ $item->tanggal_dibuat ? $item->tanggal_dibuat->format('d M Y') : '-' }}</td>
                                 <td>
                                     <span class="badge {{ $item->aktif ? 'badge-success' : 'badge-warning' }}">
@@ -466,7 +429,7 @@ Contoh view `Views/index.blade.php`:
 @endsection
 ```
 
-### 8. Membuat Views Frontend
+### 7. Membuat Views Frontend
 
 Contoh view `Views/frontpage/index.blade.php`:
 
@@ -547,9 +510,9 @@ Plugin view namespace otomatis terdaftar sebagai `{lowercase_nama_plugin}::`. Co
 Gunakan pola: `{plugin_name}.{action}` atau `{plugin_name}.frontpage.{action}`
 
 ### 4. Database
-- Gunakan nama tabel yang deskriptif
+- Gunakan nama tabel yang deskriptif (misal: `nama_plugin` bukan `nama_plugin_table`)
 - Gunakan timestamps (created_at, updated_at)
-- Gunakan soft deletes jika diperlukan
+- Gunakan tipe data yang sesuai untuk setiap kolom
 
 ### 5. Validasi
 Selalu tambahkan validasi pada form input:
@@ -558,6 +521,7 @@ $request->validate([
     'judul' => 'required|string|max:255',
     'deskripsi' => 'required',
     'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+    'aktif' => 'boolean'
 ]);
 ```
 
@@ -572,13 +536,26 @@ try {
 }
 ```
 
+### 7. Security
+- Gunakan validation untuk semua input
+- Gunakan authorization untuk mencegah akses ilegal
+- Sanitasi output saat menampilkan data
+
+### 8. SEO
+- Gunakan meta tags untuk setiap halaman
+- Gunakan slug untuk URL yang friendly
+- Gunakan title dan description yang relevan
+
 ## Integrasi dengan Sistem
 
-### Menu Otomatis
-PluginManager akan secara otomatis membuat menu di sistem jika plugin diinstal.
+### Plugin Management
+- Plugin harus bisa diinstal via sistem manajemen plugin
+- Tabel harus dibuat secara otomatis saat instalasi
+- Menu harus otomatis muncul di sidebar
 
 ### Hak Akses
-Menu plugin akan mengikuti hak akses role yang telah ditentukan di sistem.
+- Menu plugin akan mengikuti hak akses role yang telah ditentukan
+- Gunakan sistem role untuk mengatur akses
 
 ## Testing Plugin
 
@@ -588,6 +565,7 @@ Menu plugin akan mengikuti hak akses role yang telah ditentukan di sistem.
 3. Periksa tampilan frontend dan backend
 4. Uji validasi input
 5. Pastikan slug di-generate dengan benar
+6. Cek akses sesuai role
 
 ### Debugging
 Gunakan logging untuk melacak error:
@@ -623,8 +601,12 @@ Log::error('Error message', ['error' => $exception]);
 
 ### View Tidak Ditemukan
 - Pastikan namespace view benar
-- Pastikan PluginServiceProvider aktif
-- Periksa apakah plugin dianggap aktif
+- Periksa apakah PluginServiceProvider aktif
+- Pastikan plugin dianggap aktif dalam database
+
+### Tabel Tidak Dibuat
+- Pastikan sistem pembuatan tabel berjalan saat instalasi
+- Periksa log error untuk informasi lebih lanjut
 
 ## Kesimpulan
 
@@ -633,3 +615,4 @@ Dengan mengikuti pedoman ini, Anda dapat membuat plugin yang:
 - Mudah dipelihara dan dikembangkan
 - Mengikuti praktik terbaik Laravel
 - Dapat diintegrasikan dengan sistem tema dan plugin
+- Aman dan sesuai dengan standar keamanan web

@@ -25,7 +25,7 @@ class MenusSeeder extends Seeder
             ],
             [
                 'name' => 'themes',
-                'title' => 'Manajemen Tema',
+                'title' => 'Tema',
                 'route' => 'themes.index',
                 'icon' => 'nav-icon fas fa-paint-brush',
                 'order' => 2,
@@ -34,7 +34,7 @@ class MenusSeeder extends Seeder
             ],
             [
                 'name' => 'plugins',
-                'title' => 'Manajemen Plugin',
+                'title' => 'Plugin',
                 'route' => 'plugins.index',
                 'icon' => 'nav-icon fas fa-plug',
                 'order' => 3,
@@ -42,21 +42,21 @@ class MenusSeeder extends Seeder
                 'roles' => ['admin', 'kepala-desa']
             ],
             [
+                'name' => 'menus',
+                'title' => 'Menu',
+                'route' => 'menus.index',
+                'icon' => 'nav-icon fas fa-bars',
+                'order' => 4,
+                'is_active' => true,
+                'roles' => ['admin', 'kepala-desa']
+            ],
+            [
                 'name' => 'users',
                 'title' => 'Pengguna',
                 'icon' => 'nav-icon fas fa-users',
-                'order' => 4,
-                'is_active' => true,
-                'roles' => ['admin', 'kepala-desa'],
-                'url' => '#'
-            ],
-            [
-                'name' => 'settings',
-                'title' => 'Pengaturan',
-                'icon' => 'nav-icon fas fa-cog',
                 'order' => 5,
                 'is_active' => true,
-                'roles' => ['admin'],
+                'roles' => ['admin', 'kepala-desa'],
                 'url' => '#'
             ]
         ];

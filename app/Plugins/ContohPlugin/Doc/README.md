@@ -12,6 +12,7 @@ Plugin Contoh adalah plugin demonstrasi untuk sistem stelloCMS. Plugin ini menun
 - **Slug Otomatis**: Pembuatan slug otomatis dari judul item
 - **Gambar Pendukung**: Upload dan tampilan gambar untuk setiap item
 - **Status Aktif/Nonaktif**: Pengaturan status publikasi item
+- **SEO Friendly**: URL menggunakan slug untuk optimasi pencarian
 
 ## Struktur Plugin
 
@@ -29,22 +30,30 @@ app/Plugins/ContohPlugin/
 │   └── frontpage/
 │       ├── index.blade.php
 │       └── show.blade.php
-├── Database/
 ├── routes.php
 ├── plugin.json
 ├── Doc/
 │   ├── README.md
-│   └── DEVELOPING.md
-└── helpers.php (opsional)
+│   ├── DEVELOPING.md
+│   ├── HELPERS.md
+│   └── INSTALLATION.md
 ```
 
 ## Instalasi
 
+### Manual
 1. Salin folder plugin ke `app/Plugins/ContohPlugin/`
 2. Login ke panel administrasi
 3. Buka menu "Plugin"
 4. Klik "Instal" pada ContohPlugin
 5. Plugin siap digunakan
+
+### Via Upload
+1. Buka menu "Plugin" di panel administrasi
+2. Klik tombol "Upload Plugin"
+3. Pilih file `ContohPlugin.zip`
+4. Tunggu proses upload dan instalasi selesai
+5. Plugin otomatis aktif
 
 ## Penggunaan
 
@@ -89,6 +98,8 @@ Model `ContohPlugin` menggunakan fitur berikut:
 
 ### Struktur Tabel
 
+Tabel `contoh_plugins` dibuat secara otomatis saat plugin diinstal:
+
 ```sql
 CREATE TABLE `contoh_plugins` (
     `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -126,9 +137,25 @@ $slug = generate_slug($judul);
 - `GET /contohplugin` - Daftar item (publik)
 - `GET /contohplugin/{slug}` - Detail item (publik)
 
+## Hak Akses
+
+Plugin ini mengikuti hak akses role berbasis sistem stelloCMS:
+- Akses admin: Full CRUD
+- Akses role lainnya: Dapat ditentukan melalui sistem manajemen menu
+
 ## Panduan Pengembangan Plugin
 
 Lihat dokumentasi lengkap di [DEVELOPING.md](DEVELOPING.md) untuk informasi tentang cara membuat plugin baru dari awal.
+
+## Troubleshooting
+
+### Tabel tidak ditemukan
+- Jika muncul error "table not found", cek kembali bahwa plugin telah diinstal dengan benar
+- Jalankan ulang instalasi jika diperlukan
+
+### Slug tidak tergenerate
+- Pastikan helper `generate_slug()` tersedia
+- Cek bahwa model menggunakan boot event dengan benar
 
 ## Lisensi
 

@@ -222,30 +222,6 @@
               </p>
             </a>
           </li>
-          <li class="nav-item">
-            <a href="{{ route('themes.index') }}" class="nav-link">
-              <i class="nav-icon fas fa-paint-brush"></i>
-              <p>
-                Manajemen Tema
-              </p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{{ route('plugins.index') }}" class="nav-link">
-              <i class="nav-icon fas fa-plug"></i>
-              <p>
-                Manajemen Plugin
-              </p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{{ route('menus.index') }}" class="nav-link">
-              <i class="nav-icon fas fa-list"></i>
-              <p>
-                Manajemen Menu
-              </p>
-            </a>
-          </li>
           
           <!-- Dynamic plugin menu items from database -->
           @php
@@ -295,14 +271,38 @@
               </li>
             </ul>
           </li>
-          <li class="nav-item">
+          
+          <!-- Pengaturan menu with submenu -->
+          <li class="nav-item has-treeview">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-cog"></i>
               <p>
                 Pengaturan
+                <i class="right fas fa-angle-left"></i>
               </p>
             </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{ route('themes.index') }}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Tema</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('plugins.index') }}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Plugin</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('menus.index') }}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Menu</p>
+                </a>
+              </li>
+            </ul>
           </li>
+          
           <li class="nav-item">
             <a href="#" class="nav-link" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
               <i class="nav-icon fas fa-sign-out-alt"></i>

@@ -93,7 +93,7 @@ Dengan berkontribusi pada stelloCMS, Anda setuju bahwa kontribusi Anda akan dili
 
 Jika Anda memiliki pertanyaan tentang kontribusi:
 1. Buka issue di repository
-2. Hubungi tim pengembang di hello@stello-cms.com
+2. Hubungi tim pengembang di hello@stellocms.com
 3. Bergabung dengan komunitas Discord (jika tersedia)
 
 Terima kasih atas kontribusi Anda untuk stelloCMS!
