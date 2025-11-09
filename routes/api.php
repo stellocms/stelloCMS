@@ -19,29 +19,29 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 // Update-related API routes
-Route::prefix('update')->group(function () {
-    Route::get('/check-version', function () {
-        // Mock response for version check - replace with actual implementation
-        return response()->json([
-            'current_version' => config('app.version', '1.0.0'),
-            'latest_version' => '1.0.0', // This would normally come from an external source
-            'has_update' => false,
-            'message' => 'Versi terbaru'
-        ]);
-    })->name('api.check_version');
+Route::get('/check-version', function () {
+    // Mock response for version check - replace with actual implementation
+    return response()->json([
+        'current_version' => config('app.version', '1.0.0'),
+        'latest_version' => '1.0.0', // This would normally come from an external source
+        'has_update' => false,
+        'message' => 'Versi terbaru'
+    ]);
+})->name('api.check_version');
 
-    Route::get('/changelog', function () {
-        // Mock response for changelog - replace with actual implementation
-        return response()->json([
-            'changelog' => '# Changelog\n\n- Update terbaru\n- Perbaikan bug'
-        ]);
-    })->name('api.changelog');
+Route::get('/changelog', function () {
+    // Mock response for changelog in markdown format - matches what the JS expects as text
+    return response('# Changelog
 
-    Route::post('/update', function () {
-        // Mock response for update - replace with actual implementation
-        return response()->json([
-            'success' => true,
-            'message' => 'Pembaruan berhasil dilakukan'
-        ]);
-    })->name('api.update');
-});
+- Update terbaru
+- Perbaikan bug
+- Fitur tambahan');
+})->name('api.changelog');
+
+Route::post('/update', function () {
+    // Mock response for update - replace with actual implementation
+    return response()->json([
+        'success' => true,
+        'message' => 'Pembaruan berhasil dilakukan'
+    ]);
+})->name('api.update');

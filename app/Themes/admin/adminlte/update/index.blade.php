@@ -155,7 +155,20 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('show-changelog-btn').addEventListener('click', function() {
         fetch('{{ route("api.changelog") }}')
             .then(response => response.text())
-            .then(html => {
+            .then(markdown => {
+                // Simple conversion from markdown to HTML for basic formatting
+                let html = markdown
+                    .replace(/^# (.*$)/gim, '<h1>$1</h1>')  // Headers
+                    .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+                    .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+                    .replace(/^\- (.*$)/gim, '<li>$1</li>')  // List items
+                    .replace(/\n\n/gim, '</p><p>')  // Paragraphs
+                    .replace(/\n/gim, '<br>');  // Line breaks
+                    
+                // Wrap in paragraph tags
+                html = '<p>' + html + '</p>';
+                html = html.replace('<p></p>', ''); // Clean up empty paragraphs
+                
                 document.getElementById('changelog-content').innerHTML = html;
                 document.getElementById('changelog-modal').classList.remove('d-none');
             })
@@ -183,7 +196,20 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('update-btn').addEventListener('click', function() {
         fetch('{{ route("api.changelog") }}')
             .then(response => response.text())
-            .then(html => {
+            .then(markdown => {
+                // Simple conversion from markdown to HTML for basic formatting
+                let html = markdown
+                    .replace(/^# (.*$)/gim, '<h1>$1</h1>')  // Headers
+                    .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+                    .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+                    .replace(/^\- (.*$)/gim, '<li>$1</li>')  // List items
+                    .replace(/\n\n/gim, '</p><p>')  // Paragraphs
+                    .replace(/\n/gim, '<br>');  // Line breaks
+                    
+                // Wrap in paragraph tags
+                html = '<p>' + html + '</p>';
+                html = html.replace('<p></p>', ''); // Clean up empty paragraphs
+                
                 document.getElementById('changelog-content').innerHTML = html;
                 document.getElementById('changelog-modal').classList.remove('d-none');
             })
