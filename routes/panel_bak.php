@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ThemeController;
@@ -319,60 +319,3 @@ Route::get('/panel/check-testimonial-status', function() {
         if ($testimonialInManager) {
             $result .= "<p>Plugin found in plugin manager:</p>";
             $result .= "<ul>";
-            $result .= "<li>Name: " . $testimonialInManager['name'] . "</li>";
-            $result .= "<li>Active: " . ($testimonialInManager['active'] ? 'YES' : 'NO') . "</li>";
-            $result .= "<li>Installed: " . ($testimonialInManager['installed'] ? 'YES' : 'NO') . "</li>";
-            $result .= "</ul>";
-        } else {
-            $result .= "<p>Plugin NOT found in plugin manager</p>";
-        }
-        
-        $result .= "<p>Routes file exists: " . ($routesFileExists ? 'YES' : 'NO') . "</p>";
-        
-        return $result;
-    } catch (\Exception $e) {
-        return "Error checking plugin status: " . $e->getMessage();
-    }
-
-    // Update management routes - placed within the main panel middleware group
-    Route::get('/panel/update', [\App\Http\Controllers\UpdateController::class, 'index'])->name('update.index');
-    Route::get('/panel/api/check-version', [\App\Http\Controllers\UpdateController::class, 'checkLatestVersion'])->name('api.check_version');
-    Route::get('/panel/api/changelog', [\App\Http\Controllers\UpdateController::class, 'getChangelog'])->name('api.changelog');
-    Route::post('/panel/api/update', [\App\Http\Controllers\UpdateController::class, 'performUpdate'])->name('api.update');
-
-
-// Test route to check if SimplePage controller works
-
-
-// Test route to check if SimplePage view renders
-
-
-// Route to test SimplePage controller without plugin middleware
-Route::get('/panel/simplepage-direct', function() {
-    try {
-        $controller = app(\App\Plugins\SimplePage\Controllers\SimplePageController::class);
-        return $controller->index();
-    } catch (\Exception $e) {
-        return 'Error: ' . $e->getMessage() . '<br>File: ' . $e->getFile() . '<br>Line: ' . $e->getLine();
-    }
-});
-
-// Route to create example plugin entry in database
-
-
-
-
-// Debug route to trace why example plugin redirects
-
-
-// Route to check example plugin status
-
-
-// Route to test controller method directly
-
-
-// Route to create menu entry for ContohPlugin in database
-
-
-// Route to manually load ContohPlugin routes for debugging
-
