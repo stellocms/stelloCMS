@@ -142,4 +142,4 @@ stelloCMS dilisensikan di bawah lisensi MIT. Lihat file [LICENSE](LICENSE) untuk
 
 ## Dukungan dan Komunitas
 
-Untuk pertanyaan dan dukungan, silakan hubungi tim pengembang stelloCMS di hello@stello-cms.com.
+Untuk pertanyaan dan dukungan, silakan hubungi tim pengembang stelloCMS di hello@stellocms.com.

@@ -52,7 +52,7 @@ Jika Anda ingin berkontribusi pada pengembangan stelloCMS:
 ## Dukungan Komersial
 
 Untuk dukungan komersial, konsultasi, atau layanan khusus:
-- Email: support@stello-cms.com
+- Email: support@stellocms.com
 - WhatsApp: +62-812-3456-7890
 
 ## Kode Etik

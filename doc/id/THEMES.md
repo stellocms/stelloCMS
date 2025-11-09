@@ -102,7 +102,7 @@ echo cms_description(); // Limitless Online Content Management
     "version": "1.0.0",
     "description": "Tema admin dengan tampilan gelap",
     "author": "stelloCMS Team",
-    "author_url": "https://stello-cms.com",
+    "author_url": "https://stellocms.com",
     "screenshot": "images/screenshot.png",
     "tags": ["admin", "dark", "responsive"]
 }

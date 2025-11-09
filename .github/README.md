@@ -57,6 +57,6 @@ Kode sumber ini dilisensikan di bawah lisensi MIT. Lihat file [LICENSE](LICENSE)
 ## Kontak
 
 Untuk pertanyaan dan dukungan:
-- Email: hello@stello-cms.com
-- Website: https://stello-cms.com
+- Email: hello@stellocms.com
+- Website: https://stellocms.com
 - GitHub Discussions: [Diskusi Komunitas](https://github.com/stellocms/core/discussions)

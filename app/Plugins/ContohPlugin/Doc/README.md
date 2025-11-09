@@ -80,7 +80,7 @@ Plugin menyediakan tampilan publik:
     "version": "1.0.0",
     "description": "Plugin contoh untuk pengembang - Plugin dengan struktur standar",
     "author": "StelloCMS Developer",
-    "author_url": "https://stello-cms.com",
+    "author_url": "https://stellocms.com",
     "required_version": "1.0.0",
     "database": {
         "migrations": "Database/Migrations",

@@ -243,7 +243,7 @@ Route::get('/panel/register-simplepage-plugin', function() {
             'version' => '1.0.0',
             'description' => 'A simple plugin for creating pages',
             'author' => 'StelloCMS Developer',
-            'author_url' => 'https://stello-cms.com',
+            'author_url' => 'https://stellocms.com',
             'category' => 'utility',
             'screenshot' => '',
             'tags' => json_encode(['pages', 'simple', 'utility']),

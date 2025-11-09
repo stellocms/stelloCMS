@@ -65,7 +65,7 @@ File `plugin.json` berisi informasi metadata tentang plugin:
     "version": "1.0.0",
     "description": "Plugin untuk mengelola berita dan informasi",
     "author": "stelloCMS Development Team",
-    "author_url": "https://stello-cms.com",
+    "author_url": "https://stellocms.com",
     "required_version": "1.0.0"
 }
 ```

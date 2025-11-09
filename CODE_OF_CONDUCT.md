@@ -36,7 +36,7 @@ Kode Etik ini berlaku di semua ruang lingkup komunitas, serta juga berlaku ketik
 
 ## Enforcement
 
-Kejadian perilaku kasar, melecehkan, atau tidak dapat diterima lainnya dapat dilaporkan kepada pimpinan komunitas di hello@stello-cms.com. Semua keluhan akan ditinjau dan diselidiki secara cepat dan adil.
+Kejadian perilaku kasar, melecehkan, atau tidak dapat diterima lainnya dapat dilaporkan kepada pimpinan komunitas di hello@stellocms.com. Semua keluhan akan ditinjau dan diselidiki secara cepat dan adil.
 
 Semua pimpinan komunitas berkewajiban menjaga kerahasiaan dan keamanan pelapor suatu insiden.
 

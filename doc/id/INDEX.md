@@ -71,7 +71,7 @@ php artisan serve
 - **GitHub Issues**: Laporkan bug dan permintaan fitur
 - **Forum Komunitas**: Diskusi dan bantuan pengguna
 - **Documentation**: Dokumentasi resmi dan panduan
-- **Email Support**: support@stello-cms.com
+- **Email Support**: support@stellocms.com
 
 ### Kontribusi
 Kami menyambut kontribusi dari komunitas:
@@ -92,4 +92,4 @@ Kami menyambut kontribusi dari komunitas:
 stelloCMS dilisensikan di bawah lisensi MIT. Lihat file [LICENSE](../LICENSE) untuk detail lebih lanjut.
 
 ## Kontak
-Untuk pertanyaan dan dukungan, silakan hubungi tim pengembang stelloCMS di hello@stello-cms.com.
+Untuk pertanyaan dan dukungan, silakan hubungi tim pengembang stelloCMS di hello@stellocms.com.
