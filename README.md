@@ -4,6 +4,8 @@
 [![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/stellocms/core/run-tests?label=tests)](https://github.com/stellocms/core/actions?query=workflow%3Arun-tests+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/stellocms/core.svg?style=flat-square)](https://packagist.org/packages/stellocms/core)
 
+**Version: 1.0.0**
+
 stelloCMS adalah Content Management System (CMS) open-source berbasis Laravel yang dirancang untuk memudahkan pengelolaan konten website. Sistem ini menawarkan fleksibilitas tinggi melalui sistem tema dan plugin yang modular, serta manajemen pengguna berbasis role yang komprehensif.
 
 ## Fitur Utama
