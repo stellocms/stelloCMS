@@ -83,7 +83,21 @@ Route::middleware(['auth', 'role:admin,kepala-desa,sekdes,kaur,kadus,rw,rt'])->g
         Route::delete('/{id}', [\App\Plugins\ContohPlugin\Controllers\ContohPluginController::class, 'destroy'])->name('contohplugin.destroy');
         Route::get('/{id}', [\App\Plugins\ContohPlugin\Controllers\ContohPluginController::class, 'show'])->name('contohplugin.show');
     });
+    
+    // Settings management routes
+
+    
+    // Settings management routes - following the same pattern as other panel routes
+    Route::get('/panel/setting', [\App\Http\Controllers\SettingController::class, 'index'])->name('setting.index');
+    Route::get('/panel/setting/create', [\App\Http\Controllers\SettingController::class, 'create'])->name('setting.create');
+    Route::post('/panel/setting', [\App\Http\Controllers\SettingController::class, 'store'])->name('setting.store');
+    Route::get('/panel/setting/{id}/edit', [\App\Http\Controllers\SettingController::class, 'edit'])->name('setting.edit');
+    Route::put('/panel/setting/{id}', [\App\Http\Controllers\SettingController::class, 'update'])->name('setting.update');
+    Route::delete('/panel/setting/{id}', [\App\Http\Controllers\SettingController::class, 'destroy'])->name('setting.destroy');
 });
+
+// Dynamic plugin routes - automatically handle routes for installed and active plugins
+// This catches routes that are registered by plugin's routes.php but not explicitly defined above
 
 // Dynamic plugin routes - automatically handle routes for installed and active plugins
 // This catches routes that are registered by plugin's routes.php but not explicitly defined above

@@ -79,7 +79,7 @@ Plugin menyediakan tampilan publik:
     "name": "ContohPlugin",
     "version": "1.0.0",
     "description": "Plugin contoh untuk pengembang - Plugin dengan struktur standar",
-    "author": "StelloCMS Developer",
+    "author": "stelloCMS Developer",
     "author_url": "https://stellocms.com",
     "required_version": "1.0.0",
     "database": {
@@ -98,8 +98,6 @@ Model `ContohPlugin` menggunakan fitur berikut:
 
 ### Struktur Tabel
 
-Tabel `contoh_plugins` dibuat secara otomatis saat plugin diinstal:
-
 ```sql
 CREATE TABLE `contoh_plugins` (
     `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -108,7 +106,7 @@ CREATE TABLE `contoh_plugins` (
     `gambar` VARCHAR(255) NULL,
     `tanggal_dibuat` TIMESTAMP NULL,
     `aktif` BOOLEAN DEFAULT TRUE,
-    `slug` VARCHAR(255) NOT NULL,
+    `slug` VARCHAR(255) NOT NULL UNIQUE,
     `created_at` TIMESTAMP NULL DEFAULT NULL,
     `updated_at` TIMESTAMP NULL DEFAULT NULL
 );
@@ -137,25 +135,25 @@ $slug = generate_slug($judul);
 - `GET /contohplugin` - Daftar item (publik)
 - `GET /contohplugin/{slug}` - Detail item (publik)
 
-## Hak Akses
-
-Plugin ini mengikuti hak akses role berbasis sistem stelloCMS:
-- Akses admin: Full CRUD
-- Akses role lainnya: Dapat ditentukan melalui sistem manajemen menu
-
 ## Panduan Pengembangan Plugin
 
 Lihat dokumentasi lengkap di [DEVELOPING.md](DEVELOPING.md) untuk informasi tentang cara membuat plugin baru dari awal.
 
 ## Troubleshooting
 
-### Tabel tidak ditemukan
-- Jika muncul error "table not found", cek kembali bahwa plugin telah diinstal dengan benar
-- Jalankan ulang instalasi jika diperlukan
+### Plugin Tidak Muncul di Menu
+- Pastikan plugin telah diinstal dengan benar di sistem
+- Cek apakah nama plugin sesuai dengan nama folder
+- Pastikan plugin.json valid dan komplit
 
-### Slug tidak tergenerate
-- Pastikan helper `generate_slug()` tersedia
-- Cek bahwa model menggunakan boot event dengan benar
+### Route Tidak Bekerja
+- Pastikan route telah di-definisikan dengan benar
+- Clear route cache: `php artisan route:clear`
+
+### View Tidak Ditemukan
+- Pastikan namespace view benar
+- Pastikan file view berada di lokasi yang benar
+- Clear view cache: `php artisan view:clear`
 
 ## Lisensi
 

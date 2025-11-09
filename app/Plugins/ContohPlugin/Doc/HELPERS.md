@@ -1,8 +1,8 @@
-# Helper Functions Plugin Contoh
+# Helper Functions di stelloCMS
 
 ## Gambaran Umum
 
-Plugin Contoh menggunakan beberapa helper functions yang disediakan oleh sistem stelloCMS untuk mendukung fungsionalitas plugin.
+stelloCMS menyediakan beberapa helper functions yang dapat digunakan oleh plugin untuk mendukung fungsionalitas sistem. Helper ini mencakup berbagai kebutuhan seperti pembuatan slug, informasi CMS, dan rendering view dengan tema.
 
 ## Helper yang Tersedia
 
@@ -13,21 +13,20 @@ Helper untuk membuat slug URL-friendly dari string:
 ```php
 /**
  * Generate a URL-friendly slug from a string
+ * @param string $string String to convert to slug
+ * @param string $separator Separator to use (default: '-')
+ * @return string Slugified string
  */
 function generate_slug($string, $separator = '-')
 ```
 
-#### Parameter:
-- `$string`: String yang akan diubah menjadi slug
-- `$separator`: Karakter pemisah (default: '-')
-
 #### Contoh Penggunaan:
 ```php
-$judul = "Contoh Plugin Terbaik";
-$slug = generate_slug($judul); // hasil: "contoh-plugin-terbaik"
+$judul = "Contoh Plugin Terbaru Laravel 11";
+$slug = generate_slug($judul); // hasil: "contoh-plugin-terbaru-laravel-11"
 
-$judul = "Plugin dengan Spesial Karakter!";
-$slug = generate_slug($judul); // hasil: "plugin-dengan-spesial-karakter"
+$judul = "Plugin dengan Karakter Spesial!";
+$slug = generate_slug($judul); // hasil: "plugin-dengan-karakter-spesial"
 ```
 
 #### Fitur:
@@ -44,8 +43,14 @@ Mendapatkan nama CMS dari konfigurasi:
 ```php
 /**
  * Get the CMS name from configuration
+ * @return string CMS name
  */
 function cms_name()
+```
+
+#### Contoh Penggunaan:
+```php
+$cmsName = cms_name(); // hasil: "stelloCMS"
 ```
 
 ### 3. cms_description()
@@ -55,9 +60,14 @@ Mendapatkan deskripsi CMS dari konfigurasi:
 ```php
 /**
  * Get the CMS description from configuration
- */
+ * @return string CMS description
  */
 function cms_description()
+```
+
+#### Contoh Penggunaan:
+```php
+$description = cms_description(); // hasil: "Limitless Online Content Management"
 ```
 
 ### 4. view_theme()
@@ -67,57 +77,40 @@ Merender view dengan dukungan tema:
 ```php
 /**
  * Render a view with theme support
+ * @param string $type Type of theme (admin or frontend)
+ * @param string $view View name
+ * @param array $data Data to pass to view
+ * @return mixed Rendered view
  */
 function view_theme($type, $view, $data = [])
 ```
 
-#### Parameter:
-- `$type`: Jenis tema ('admin' atau 'frontend')
-- `$view`: Nama view
-- `$data`: Data untuk dikirim ke view
-
-## Implementasi Slug di Model
-
-Model plugin secara otomatis mengenerate slug dari judul saat menyimpan data:
-
+#### Contoh Penggunaan:
 ```php
-protected static function boot()
-{
-    parent::boot();
-    
-    static::saving(function ($model) {
-        if (empty($model->slug) || $model->isDirty('judul')) {
-            $model->slug = $model->generateUniqueSlug();
-        }
-    });
-}
+// Render view untuk tema admin
+return view_theme('admin', 'dashboard.index', $data);
+
+// Render view untuk tema frontend
+return view_theme('frontend', 'home.index', $data);
 ```
 
-### Mekanisme Generate Slug:
-1. Menggunakan helper `generate_slug()` untuk membuat slug dasar
-2. Memastikan slug unik dengan menambahkan angka jika diperlukan
-3. Menyimpan slug ke dalam database
-4. Menggunakan scope `bySlug()` untuk pencarian berdasarkan slug
+#### Parameter:
+- `$type`: Jenis tema ('admin' atau 'frontend')
+- `$view`: Nama view (tanpa ekstensi)
+- `$data`: Array data untuk dikirim ke view
 
-## Validasi dan Keunikan Slug
+## Implementasi Sistem Slug
 
-Sistem menjamin keunikan slug dengan:
-- Mengecek slug yang sudah ada sebelum menyimpan
-- Menambahkan angka increment jika slug sudah digunakan
-- Meregenerasi slug saat judul diubah
-
-## Contoh Implementasi Lengkap
-
-Berikut contoh implementasi lengkap dari sistem slug dalam model:
+Helper `generate_slug()` sangat berguna dalam pembuatan plugin yang memerlukan URL-friendly slugs. Berikut implementasi tipikal dalam model:
 
 ```php
 <?php
 
-namespace App\Plugins\ContohPlugin\Models;
+namespace App\Plugins\NamaPlugin\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ContohPlugin extends Model
+class NamaPlugin extends Model
 {
     protected $fillable = [
         'judul',
@@ -128,15 +121,10 @@ class ContohPlugin extends Model
         'slug'
     ];
     
-    protected $table = 'contoh_plugins';
-    
-    protected $casts = [
-        'tanggal_dibuat' => 'datetime',
-        'aktif' => 'boolean'
-    ];
+    protected $table = 'nama_plugins';
     
     /**
-     * Generate a unique slug before saving
+     * Generate slug before saving
      */
     protected static function boot()
     {
@@ -190,50 +178,62 @@ class ContohPlugin extends Model
 
 ## Penggunaan di Controller
 
-Di controller, method untuk menampilkan data berdasarkan slug:
+Di controller plugin, helper ini dapat digunakan saat membuat atau memperbarui data:
 
 ```php
+public function store(Request $request)
+{
+    $request->validate([
+        'judul' => 'required|string|unique:nama_plugins,judul',
+        'deskripsi' => 'required',
+        'aktif' => 'boolean'
+    ]);
+    
+    // Data akan secara otomatis mengenerate slug melalui model hook
+    $item = NamaPlugin::create($request->all());
+    
+    return redirect()->route('namaplugin.index')->with('success', 'Data berhasil disimpan.');
+}
+
 public function frontpageShow($slug)
 {
-    $item = ContohPlugin::where('aktif', true)->bySlug($slug)->firstOrFail();
-    return view('contohplugin::frontpage.show', compact('item'));
+    $item = NamaPlugin::where('aktif', true)->bySlug($slug)->firstOrFail();
+    
+    return view('namaplugin::frontpage.show', compact('item'));
 }
 ```
 
-## Integrasi dengan Route
+## Penggunaan di Route
 
-Route menggunakan parameter slug:
+Untuk route frontend, gunakan slug sebagai parameter:
 
 ```php
-Route::get('/{slug}', [ContohPluginController::class, 'frontpageShow'])
-    ->name('contohplugin.frontpage.show');
+Route::get('/namaplugin/{slug}', [NamaPluginController::class, 'frontpageShow'])
+    ->name('namaplugin.frontpage.show');
 ```
 
 ## Best Practices
 
-### 1. Konsistensi Nama
+### 1. Konsistensi Slug
 Pastikan slug tetap konsisten meskipun judul diubah:
 - Gunakan logika `isDirty('judul')` untuk mendeteksi perubahan
 - Hanya regenerasi slug jika judul berubah
 
-### 2. Performa
-- Gunakan indeks database pada kolom slug untuk performa pencarian
-- Gunakan scope untuk query berdasarkan slug
+### 2. Keunikan Slug
+- Pastikan slug unik dalam satu tabel
+- Tambahkan angka increment jika slug sudah digunakan
 
-### 3. SEO
-- Pastikan slug SEO-friendly
+### 3. SEO-Friendly
 - Gunakan karakter alfanumerik dan tanda hubung
 - Hindari karakter khusus dan spasi
+- Buat slug deskriptif dan relevan
 
 ## Kesimpulan
 
-Sistem slug yang diimplementasikan dalam plugin Contoh:
-- Otomatis menggenerate slug dari judul
-- Menjamin keunikan slug
-- Dapat digunakan untuk URL-friendly
-- Dapat dicari dengan cepat
-- Mendukung SEO yang baik
+Helper functions di stelloCMS:
+- Mempermudah pengembangan plugin
+- Mendukung fungsionalitas penting seperti slug generation
+- Mengikuti standar Laravel
+- Meningkatkan konsistensi antar plugin
 
-## Panduan Pengembangan Plugin
-
-Untuk panduan lengkap tentang cara membuat dan mengembangkan plugin seperti ContohPlugin, lihat dokumentasi di [DEVELOPING.md](DEVELOPING.md).
+Dengan helper `generate_slug()`, plugin dapat dengan mudah membuat URL-friendly slugs yang mendukung SEO dan pengalaman pengguna yang baik.

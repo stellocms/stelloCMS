@@ -1,90 +1,63 @@
-# Instalasi dan Konfigurasi Plugin Contoh
+# Panduan Instalasi Plugin Contoh
 
 ## Prasyarat Sistem
 
-Sebelum menginstal plugin Contoh, pastikan sistem Anda memenuhi syarat berikut:
+Sebelum menginstal plugin Contoh, pastikan sistem Anda memenuhi persyaratan berikut:
 
 ### Server Requirements
 - PHP >= 8.2
 - MySQL >= 5.7 atau MariaDB >= 10.2
-- Composer
 - Ekstensi PHP: OpenSSL, PDO, Mbstring, Tokenizer, XML, Ctype, JSON, BCMath
+- Web server (Apache/Nginx)
+- Composer
 
 ### Sistem stelloCMS
-- Sistem stelloCMS terinstal dan berfungsi
-- Akses ke panel administrasi
-- Hak akses administrator
+- Sistem stelloCMS terinstal dan berjalan
+- Hak akses administrator ke panel CMS
+- Akses ke direktori `app/Plugins/`
 
 ## Metode Instalasi
 
-### Metode 1: Instalasi Melalui Panel Administrasi (Direkomendasikan)
+### Metode 1: Instalasi Melalui Panel Administrasi (Disarankan)
 
-1. **Mengunduh Plugin**
-   - Siapkan file plugin dalam format ZIP
-   - Pastikan struktur file sesuai dengan standar stelloCMS
-
-2. **Login ke Panel Administrasi**
-   - Buka browser dan akses `http://domaintools/stelloCMS/public/panel`
-   - Login dengan akun administrator
-
-3. **Upload Plugin**
+1. **Upload Plugin**
+   - Login ke panel administrasi
    - Buka menu "Plugin"
    - Klik tombol "Upload Plugin"
-   - Pilih file ZIP plugin (ContohPlugin.zip)
+   - Pilih file `ContohPlugin.zip`
    - Tunggu proses upload selesai
 
-4. **Instal Plugin**
-   - Setelah upload, plugin akan otomatis dikenali sistem
-   - Klik tombol "Instal" pada plugin ContohPlugin
+2. **Instal Plugin**
+   - Setelah upload, plugin akan muncul dalam daftar
+   - Klik tombol "Instal" pada ContohPlugin
    - Tunggu proses instalasi selesai
-   - Sistem akan membuat tabel database dan menu secara otomatis
+   - Plugin otomatis aktif
 
-5. **Verifikasi Instalasi**
-   - Plugin seharusnya muncul sebagai "Terinstal" dan "Aktif"
-   - Menu plugin akan muncul di sidebar panel
+3. **Verifikasi Instalasi**
+   - Pastikan plugin muncul sebagai "Terinstal" dan "Aktif"
+   - Periksa bahwa menu plugin muncul di sidebar
 
 ### Metode 2: Instalasi Manual
 
-Jika fitur upload plugin tidak tersedia, ikuti langkah ini:
+1. **Ekstrak Plugin**
+   - Ekstrak file plugin ke direktori sementara
+   - Pastikan struktur direktori benar
 
-1. **Menyalin Plugin ke Direktori**
+2. **Salin ke Direktori Plugin**
    ```bash
-   # Salin folder plugin ke direktori plugins
+   # Salin ke direktori plugins
    cp -r /path/to/ContohPlugin /path/to/stelloCMS/app/Plugins/
    ```
 
-2. **Login ke Panel Administrasi**
-   - Buka browser dan akses `http://localhost/stelloCMS/public/panel`
+3. **Login ke Panel Administrasi**
+   - Buka `http://localhost/stelloCMS/public/panel`
    - Login dengan akun administrator
 
-3. **Instal Plugin**
+4. **Instal melalui Panel**
    - Buka menu "Plugin"
-   - Cari "ContohPlugin" dalam daftar
+   - Temukan "ContohPlugin" dalam daftar
    - Klik tombol "Instal"
    - Tunggu proses instalasi selesai
-
-4. **Verifikasi Instalasi**
-   - Plugin seharusnya muncul sebagai "Terinstal" dan "Aktif"
-   - Menu plugin akan muncul di sidebar
-
-### Metode 3: Instalasi Melalui Command Line (Advanced)
-
-1. **Salin Plugin ke Direktori**
-   ```bash
-   # Salin folder ContohPlugin ke app/Plugins/
-   ```
-
-2. **Jalankan Instalasi Melalui Tinker**
-   ```bash
-   cd /path/to/stelloCMS
-   php artisan tinker
-   ```
-
-   Di tinker:
-   ```php
-   $pluginManager = app(App\Services\PluginManager::class);
-   $pluginManager->installPlugin('ContohPlugin');
-   ```
 
 ## Struktur File Setelah Instalasi
 
@@ -106,15 +79,17 @@ app/Plugins/ContohPlugin/
 │       └── show.blade.php
 ├── routes.php
 ├── plugin.json
-└── Doc/
-    ├── README.md
-    ├── DEVELOPING.md
-    └── INSTALLATION.md
+├── Doc/
+│   ├── README.md
+│   ├── DEVELOPING.md
+│   └── HELPERS.md
 ```
 
-## Konfigurasi Database
+## Konfigurasi Setelah Instalasi
 
-Plugin Contoh akan otomatis membuat tabel berikut dalam database:
+### Verifikasi Tabel Database
+
+Plugin akan membuat tabel berikut secara otomatis:
 
 ```sql
 CREATE TABLE `contoh_plugins` (
@@ -130,196 +105,148 @@ CREATE TABLE `contoh_plugins` (
 );
 ```
 
-## Konfigurasi dan Pengaturan
+### Menu yang Dibuat
 
-### Pengaturan Awal
+Setelah instalasi, sistem akan membuat menu:
 
-1. **Verifikasi Plugin Aktif**
-   - Pastikan plugin muncul di menu "Plugin" dengan status "Aktif"
-   - Menu "Manajemen Plugin Contoh" seharusnya muncul di sidebar
+- **Menu Utama**: "Manajemen Plugin Contoh"
+- **URL Backend**: `/panel/contohplugin`
+- **URL Frontend**: `/contohplugin`
+- **Route**: `contohplugin.index`
+- **Hak Akses**: Berdasarkan role pengguna
 
-2. **Cek Hak Akses**
-   - Plugin secara otomatis akan mengikuti hak akses role
-   - Default: Akses untuk admin, kepala-desa, sekdes, kaur, kadus, rw, rt
+## Penggunaan Plugin
 
-3. **Cek Menu Plugin**
-   - Menu plugin akan otomatis ditambahkan ke sidebar
-   - Nama menu: "Manajemen Plugin Contoh"
-   - Route: `/panel/contohplugin`
+### Backend (Admin Panel)
 
-### Route yang Tersedia
+Setelah instalasi, plugin menyediakan:
 
-Setelah instalasi, berikut adalah route yang tersedia:
+- **Daftar Item**: `/panel/contohplugin`
+- **Form Tambah**: `/panel/contohplugin/create`
+- **Form Edit**: `/panel/contohplugin/{id}/edit`
+- **Detail Item**: `/panel/contohplugin/{id}`
 
-#### Backend (Admin)
-- `GET /panel/contohplugin` - Daftar item
-- `GET /panel/contohplugin/create` - Form tambah item
-- `POST /panel/contohplugin` - Simpan item baru
-- `GET /panel/contohplugin/{id}/edit` - Form edit item
-- `PUT /panel/contohplugin/{id}` - Update item
-- `DELETE /panel/contohplugin/{id}` - Hapus item
-- `GET /panel/contohplugin/{id}` - Lihat detail item
+### Frontend (Publik)
 
-#### Frontend (Publik)
-- `GET /contohplugin` - Daftar item publik
-- `GET /contohplugin/{slug}` - Detail item dengan slug
+Plugin juga menyediakan tampilan publik:
 
-## Konfigurasi Tema
+- **Daftar Item Publik**: `/contohplugin`
+- **Detail Item Publik**: `/contohplugin/{slug}`
 
-Plugin menggunakan tema yang aktif:
+## Fitur-Fitur Plugin
 
-### Backend Tema
-- Menggunakan tema admin yang sedang aktif (default: adminlte)
-- Template: `theme.admin.{tema}::layouts.app`
+### 1. CRUD Lengkap
+- **Create**: Form tambah item baru
+- **Read**: Tampilan daftar dan detail item
+- **Update**: Form edit item
+- **Delete**: Fungsi hapus item
 
-### Frontend Tema
-- Menggunakan tema frontend yang sedang aktif
-- Template: `theme.frontend.{tema}::layouts.app`
+### 2. Sistem Slug Otomatis
+- Slug dibuat otomatis dari judul
+- Slug unik (dengan angka jika bentrok)
+- Mendukung SEO
+
+### 3. Upload Gambar
+- Dukungan upload gambar untuk setiap item
+- Gambar disimpan di direktori `storage/app/public/`
+- Tampilan responsif
+
+### 4. Status Aktif/Nonaktif
+- Pengaturan status publikasi item
+- Hanya item aktif yang ditampilkan di frontend
 
 ## Troubleshooting
 
-### Plugin Tidak Muncul di Menu
-**Kemungkinan Penyebab:**
-- Plugin tidak diaktifkan
-- Cache menu tidak diperbarui
+### Plugin Tidak Muncul di Panel
+**Gejala**: Plugin tidak muncul setelah diinstal
+**Kemungkinan Penyebab**:
+- Struktur direktori salah
+- File `plugin.json` tidak valid
+- Nama plugin tidak sesuai dengan nama folder
 
-**Solusi:**
-1. Buka menu "Plugin" di panel administrasi
-2. Pastikan status plugin adalah "Aktif"
-3. Refresh halaman browser
+**Solusi**:
+1. Periksa struktur direktori
+2. Verifikasi file `plugin.json`
+3. Pastikan nama plugin sesuai dengan nama folder
 
-### Route Tidak Bekerja
-**Kemungkinan Penyebab:**
-- Route cache tidak diperbarui
-- Plugin tidak benar-benar diinstal
+### Route Tidak Ditemukan
+**Gejala**: URL plugin menghasilkan 404
+**Kemungkinan Penyabab**:
+- Route cache belum diperbarui
+- Plugin belum benar-benar aktif
 
-**Solusi:**
+**Solusi**:
 ```bash
-cd /path/to/stelloCMS
+# Clear route cache
 php artisan route:clear
+
+# Clear all caches
+php artisan cache:clear
 ```
 
 ### Tabel Database Tidak Dibuat
-**Kemungkinan Penyabab:**
-- Error saat instalasi plugin
+**Gejala**: Error terkait tabel tidak ditemukan
+**Kemungkinan Penyebab**:
 - Hak akses database tidak mencukupi
+- Proses instalasi tidak selesai
 
-**Solusi:**
-1. Cek log error di `storage/logs/laravel.log`
-2. Pastikan user database memiliki hak CREATE dan ALTER
-3. Jalankan ulang instalasi plugin
-
-### Slug Tidak Di-generate
-**Kemungkinan Penyebab:**
-- Helper `generate_slug` tidak ditemukan
-- Error pada model hook
-
-**Solusi:**
-1. Pastikan `app/helpers.php` telah dimuat
-2. Cek apakah fungsi `generate_slug` ada dan dapat diakses
+**Solusi**:
+1. Cek hak akses database
+2. Ulangi proses instalasi
+3. Pastikan konfigurasi database benar
 
 ### View Tidak Ditemukan
-**Kemungkinan Penyebab:**
-- Namespace view tidak benar
-- Plugin tidak dianggap aktif
+**Gejala**: Error "View not found"
+**Kemungkinan Penyebab**:
+- Namespace view salah
+- PluginServiceProvider tidak aktif
 
-**Solusi:**
-1. Pastikan PluginServiceProvider terdaftar di config/app.php
-2. Clear view cache: `php artisan view:clear`
+**Solusi**:
+```bash
+# Clear view cache
+php artisan view:clear
 
-### Upload Plugin Gagal
-**Kemungkinan Penyebab:**
-- Ukuran file terlalu besar
-- Format file tidak didukung
-- Izin direktori tidak mencukupi
+# Clear configuration cache
+php artisan config:clear
+```
 
-**Solusi:**
-1. Cek konfigurasi upload_max_filesize
-2. Pastikan file dalam format ZIP
-3. Cek izin tulis pada direktori app/Plugins/
+## Update Plugin
+
+### Manual Update
+1. Backup file plugin lama
+2. Ganti file plugin dengan versi baru
+3. Jalankan `php artisan route:clear`
+4. Verifikasi fungsionalitas plugin
+
+### Via Panel (Jika Tersedia)
+1. Buka menu "Plugin"
+2. Temukan ContohPlugin
+3. Klik tombol "Update"
+4. Pilih file plugin baru dalam format ZIP
 
 ## Uninstall Plugin
 
 ### Melalui Panel Administrasi
 1. Login ke panel administrasi
 2. Buka menu "Plugin"
-3. Cari "ContohPlugin"
+3. Temukan "ContohPlugin"
 4. Klik tombol "Hapus"
 5. Konfirmasi penghapusan
 
-Catatan: Saat uninstall, data plugin tidak dihapus secara otomatis untuk mencegah kehilangan data penting.
+**Catatan**: Data plugin biasanya disimpan untuk mencegah kehilangan informasi penting.
 
-### Melalui Command Line
-```php
-php artisan tinker
-```
-
-Di tinker:
-```php
-$pluginManager = app(App\Services\PluginManager::class);
-$pluginManager->uninstallPlugin('ContohPlugin');
-```
-
-## Pemeliharaan dan Update
-
-### Update Plugin
-1. Backup sistem dan database
-2. Ganti file plugin dengan versi baru
-3. Jalankan `php artisan route:clear`
-4. Verifikasi fungsionalitas
-
-### Backup dan Restore
-Backup Plugin:
-```bash
-# Backup folder plugin
-tar -czf contohplugin-backup.tar.gz app/Plugins/ContohPlugin/
-
-# Backup tabel database
-mysqldump -u username -p database_name contoh_plugins > contoh_plugins_backup.sql
-```
-
-## Testing Setelah Instalasi
-
-### Fungsi Backend
-- [ ] Menu muncul di sidebar
-- [ ] Dapat mengakses halaman daftar
-- [ ] Dapat membuat item baru
-- [ ] Dapat mengedit item
-- [ ] Dapat menghapus item
-- [ ] Validasi bekerja dengan benar
-
-### Fungsi Frontend
-- [ ] Halaman daftar publik dapat diakses
-- [ ] Detail item dapat diakses melalui slug
-- [ ] Tampilan sesuai dengan tema aktif
-- [ ] Gambar ditampilkan dengan benar
-
-### Fungsi Slug
-- [ ] Slug di-generate otomatis dari judul
-- [ ] Slug unik dan tidak bentrok
-- [ ] URL menggunakan slug yang benar
-- [ ] Halaman detail dapat diakses lewat slug
-
-## Catatan Penting
-
-1. **Keamanan**: Selalu backup sistem sebelum menginstal plugin
-2. **Kompatibilitas**: Pastikan plugin kompatibel dengan versi stelloCMS yang digunakan
-3. **Performance**: Plugin yang terlalu kompleks bisa mempengaruhi kinerja sistem
-4. **Maintenance**: Pastikan plugin terus di-update jika ada pembaruan keamanan
-
-## Dukungan
-
-Jika mengalami masalah saat instalasi:
-- Periksa kembali dokumentasi
-- Cek log error di `storage/logs/laravel.log`
-- Hubungi pengembang plugin jika terdapat masalah teknis
+### Manual Uninstall
+1. Hapus direktori `app/Plugins/ContohPlugin/`
+2. Hapus entri menu dari tabel `menus` di database
+3. Hapus tabel `contoh_plugins` jika diperlukan
 
 ## Kesimpulan
 
-Plugin Contoh sekarang telah berhasil diinstal dan siap digunakan. Plugin ini menyediakan contoh lengkap dari struktur dan fungsionalitas plugin di sistem stelloCMS, termasuk:
-
-- Sistem CRUD lengkap
-- Frontend dan backend
+Plugin Contoh sekarang telah berhasil diinstal dan siap digunakan. Plugin ini menyediakan contoh lengkap dari struktur dan fungsi plugin dalam sistem stelloCMS, termasuk:
+- CRUD operasi lengkap
+- Frontend dan backend interfaces
 - Sistem slug otomatis
-- Integrasi dengan tema sistem
-- Hak akses berbasis role
+- Upload dan tampilan gambar
+- Integrasi dengan sistem tema dan role
+
+Pastikan untuk selalu backup sistem sebelum instalasi plugin baru dan verifikasi bahwa semua fitur berfungsi dengan benar setelah instalasi.

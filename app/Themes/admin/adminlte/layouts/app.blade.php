@@ -33,7 +33,7 @@
 
   <!-- Preloader -->
   <div class="preloader flex-column justify-content-center align-items-center">
-    <img class="animation__shake" src="https://placehold.co/150x70?text=SimPeDe" alt="AdminLTELogo" height="60" width="60">
+    <img class="animation__shake" src="{{ asset('img/icon/logo_96x96.png') }}" alt="AdminLTELogo" height="60" width="60">
   </div>
 
   <!-- Navbar -->
@@ -85,7 +85,7 @@
           <a href="#" class="dropdown-item">
             <!-- Message Start -->
             <div class="media">
-              <img src="https://placehold.co/150x70" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+              <img src="{{ asset('img/icon/logo_96x96.png') }}" alt="User Avatar" class="img-size-50 mr-3 img-circle">
               <div class="media-body">
                 <h3 class="dropdown-item-title">
                   Brad Diesel
@@ -101,7 +101,7 @@
           <a href="#" class="dropdown-item">
             <!-- Message Start -->
             <div class="media">
-              <img src="https://placehold.co/150x70" alt="User Avatar" class="img-size-50 img-circle mr-3">
+              <img src="{{ asset('img/icon/logo_96x96.png') }}" alt="User Avatar" class="img-size-50 img-circle mr-3">
               <div class="media-body">
                 <h3 class="dropdown-item-title">
                   John Pierce
@@ -117,7 +117,7 @@
           <a href="#" class="dropdown-item">
             <!-- Message Start -->
             <div class="media">
-              <img src="https://placehold.co/150x70" alt="User Avatar" class="img-size-50 img-circle mr-3">
+              <img src="{{ asset('img/icon/logo_96x96.png') }}" alt="User Avatar" class="img-size-50 img-circle mr-3">
               <div class="media-body">
                 <h3 class="dropdown-item-title">
                   Nora Silvester
@@ -181,7 +181,7 @@
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="{{ url('/panel/dashboard') }}" class="brand-link">
-      <img src="https://placehold.co/150x70" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+      <img src="{{ asset('img/icon/logo_96x96.png') }}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
       <span class="brand-text font-weight-light">{{ cms_name() }}</span>
     </a>
 
@@ -190,7 +190,7 @@
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
-          <img src="https://placehold.co/150x70" class="img-circle elevation-2" alt="User Image">
+          <img src="{{ asset('img/icon/logo_96x96.png') }}" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
           <a href="#" class="d-block">{{ auth()->user()->name ?? 'Admin' }}</a>
@@ -300,6 +300,12 @@
                   <p>Menu</p>
                 </a>
               </li>
+              <li class="nav-item">
+                <a href="{{ route('setting.index') }}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Setting</p>
+                </a>
+              </li>
             </ul>
           </li>
           
@@ -350,7 +356,7 @@
   <footer class="main-footer">
     <strong>Copyright &copy; 2025 <a href="{{ url('/') }}">{{ cms_name() }}</a>.</strong> All rights reserved.
     <div class="float-right d-none d-sm-inline-block">
-      <b>Version</b> 1.0.0
+      <b>Version</b> {{ config('app.version') }}
     </div>
   </footer>
 

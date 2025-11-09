@@ -4,11 +4,10 @@
 
 Sebelum membuat plugin baru untuk stelloCMS, pastikan Anda memiliki:
 - Pengetahuan dasar tentang Laravel Framework 11
-- Pemahaman tentang struktur dan konvensi stelloCMS
 - Struktur direktori plugin yang benar
 - Pemahaman tentang arsitektur MVC
-- Pengetahuan tentang Blade templating dan AdminLTE
-- Pengetahuan dasar tentang routing, middleware, dan Eloquent ORM
+- Pengetahuan tentang Blade templating
+- Pemahaman tentang sistem tema dan plugin stelloCMS
 
 ## Struktur Plugin Standar
 
@@ -25,14 +24,17 @@ app/Plugins/{NamaPlugin}/
 │   ├── edit.blade.php
 │   ├── index.blade.php
 │   ├── show.blade.php
-│   └── frontpage/ (opsional)
+│   └── frontpage/
 │       ├── index.blade.php
 │       └── show.blade.php
+├── Database/Migrations/ (opsional)
 ├── routes.php
 ├── plugin.json
-└── Doc/ (opsional)
+└── Doc/
     ├── README.md
-    └── DEVELOPING.md
+    ├── DEVELOPING.md
+    ├── HELPERS.md
+    └── INSTALLATION.md
 ```
 
 ## Langkah-langkah Membuat Plugin Baru
@@ -42,7 +44,7 @@ app/Plugins/{NamaPlugin}/
 Buat direktori plugin dalam `app/Plugins/`:
 
 ```bash
-mkdir -p app/Plugins/NamaPlugin/{Controllers,Models,Views,Views/frontpage,Doc}
+mkdir -p app/Plugins/NamaPlugin/{Controllers,Models,Views,Views/frontpage,Database/Migrations,Doc}
 ```
 
 ### 2. Membuat File Konfigurasi (plugin.json)
@@ -55,7 +57,7 @@ Buat file `plugin.json` untuk metadata plugin:
     "version": "1.0.0",
     "description": "Deskripsi plugin",
     "author": "Nama Pengembang",
-    "author_url": "https://contoh.com",
+    "author_url": "https://stellocms.com",
     "required_version": "1.0.0",
     "database": {
         "migrations": "Database/Migrations",
@@ -66,7 +68,7 @@ Buat file `plugin.json` untuk metadata plugin:
 
 ### 3. Membuat Model
 
-Buat model plugin di `Models/`. Untuk sistem slug otomatis seperti plugin ContohPlugin:
+Buat model plugin di `Models/`. Contoh struktur untuk sistem slug otomatis:
 
 ```php
 <?php
@@ -86,7 +88,7 @@ class NamaPlugin extends Model
         'slug'
     ];
     
-    protected $table = 'nama_plugin_table'; // Ganti dengan nama tabel yang sesuai
+    protected $table = 'nama_plugins'; // Gunakan jamak
     
     protected $casts = [
         'tanggal_dibuat' => 'datetime',
@@ -167,7 +169,7 @@ class NamaPluginController extends Controller
         try {
             $items = NamaPlugin::where('aktif', true)->orderBy('tanggal_dibuat', 'desc')->paginate(10);
             
-            return view('namaplugin::index', compact('items')); // Pastikan namespace view benar
+            return view('namaplugin::index', compact('items'));
         } catch (\Exception $e) {
             Log::error('Error in NamaPluginController@index: ' . $e->getMessage());
             throw $e;
@@ -188,7 +190,7 @@ class NamaPluginController extends Controller
     {
         try {
             $request->validate([
-                'judul' => 'required|string|max:255',
+                'judul' => 'required|string|max:255|unique:nama_plugins,judul',
                 'deskripsi' => 'required',
                 'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
                 'aktif' => 'boolean'
@@ -206,7 +208,7 @@ class NamaPluginController extends Controller
             return redirect()->route('namaplugin.index')->with('success', 'Item berhasil ditambahkan.');
         } catch (\Exception $e) {
             Log::error('Error in NamaPluginController@store: ' . $e->getMessage());
-            throw $e;
+            return redirect()->back()->withErrors(['error' => $e->getMessage()])->withInput();
         }
     }
     
@@ -238,7 +240,7 @@ class NamaPluginController extends Controller
     {
         try {
             $request->validate([
-                'judul' => 'required|string|max:255',
+                'judul' => 'required|string|max:255|unique:nama_plugins,judul,' . $id,
                 'deskripsi' => 'required',
                 'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
                 'aktif' => 'boolean'
@@ -262,7 +264,7 @@ class NamaPluginController extends Controller
             return redirect()->route('namaplugin.index')->with('success', 'Item berhasil diperbarui.');
         } catch (\Exception $e) {
             Log::error('Error in NamaPluginController@update: ' . $e->getMessage());
-            throw $e;
+            return redirect()->back()->withErrors(['error' => $e->getMessage()])->withInput();
         }
     }
     
@@ -327,7 +329,7 @@ Buat file `routes.php`:
 use App\Plugins\NamaPlugin\Controllers\NamaPluginController;
 use Illuminate\Support\Facades\Route;
 
-// Rute untuk admin panel - semua user terotentikasi bisa mengakses
+// Routes untuk admin panel - semua user terotentikasi bisa mengakses
 // Pengaturan role spesifik akan dilakukan melalui manajemen menu
 Route::prefix('panel/namaplugin')->middleware(['auth'])->group(function () {
     Route::get('/', [NamaPluginController::class, 'index'])->name('namaplugin.index');
@@ -339,16 +341,16 @@ Route::prefix('panel/namaplugin')->middleware(['auth'])->group(function () {
     Route::get('/{id}', [NamaPluginController::class, 'show'])->name('namaplugin.show');
 });
 
-// Rute untuk frontend publik
+// Routes untuk frontend publik
 Route::prefix('namaplugin')->group(function () {
     Route::get('/', [NamaPluginController::class, 'frontpageIndex'])->name('namaplugin.frontpage.index');
     Route::get('/{slug}', [NamaPluginController::class, 'frontpageShow'])->name('namaplugin.frontpage.show');
 });
 ```
 
-### 6. Membuat Views Admin
+### 6. Membuat Views
 
-Contoh view `Views/index.blade.php`:
+Contoh `Views/index.blade.php`:
 
 ```blade
 @extends('theme.admin.' . config('themes.admin') . '::layouts.app')
@@ -396,7 +398,7 @@ Contoh view `Views/index.blade.php`:
                                 <td>{{ $item->tanggal_dibuat ? $item->tanggal_dibuat->format('d M Y') : '-' }}</td>
                                 <td>
                                     <span class="badge {{ $item->aktif ? 'badge-success' : 'badge-warning' }}">
-                                        {{ $item->aktif ? 'Aktif' : 'Tidak Aktif' }}
+                                        {{ $item->aktif ? 'Aktif' : 'Nonaktif' }}
                                     </span>
                                 </td>
                                 <td>
@@ -429,71 +431,6 @@ Contoh view `Views/index.blade.php`:
 @endsection
 ```
 
-### 7. Membuat Views Frontend
-
-Contoh view `Views/frontpage/index.blade.php`:
-
-```blade
-@extends('theme.frontend.' . config('themes.frontend') . '::layouts.app')
-
-@section('title', 'Nama Plugin - ' . cms_name())
-@section('description', 'Daftar item dari Nama Plugin')
-
-@section('content')
-<div class="container mt-5">
-    <div class="row">
-        <div class="col-12">
-            <h1 class="mb-4">Nama Plugin</h1>
-            
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Daftar Item</h5>
-                    
-                    @if($items && $items->count() > 0)
-                        <div class="row">
-                            @foreach($items as $item)
-                                <div class="col-md-4 mb-4">
-                                    <div class="card h-100">
-                                        @if($item->gambar)
-                                            <img src="{{ asset('storage/' . $item->gambar) }}" 
-                                                 class="card-img-top" 
-                                                 alt="{{ $item->judul }}"
-                                                 style="height: 200px; object-fit: cover;">
-                                        @endif
-                                        <div class="card-body">
-                                            <h5 class="card-title">{{ $item->judul }}</h5>
-                                            <p class="card-text">
-                                                {!! Str::limit(strip_tags($item->deskripsi), 100) !!}
-                                            </p>
-                                            <p class="text-muted">
-                                                <small>Dipublikasikan: {{ $item->tanggal_dibuat ? $item->tanggal_dibuat->format('d M Y') : '-' }}</small>
-                                            </p>
-                                        </div>
-                                        <div class="card-footer">
-                                            <a href="{{ route('namaplugin.frontpage.show', $item->slug) }}" 
-                                               class="btn btn-primary btn-sm">Lihat Detail</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                        
-                        <div class="d-flex justify-content-center">
-                            {{ $items->links() }}
-                        </div>
-                    @else
-                        <div class="alert alert-info">
-                            <p>Belum ada item dalam Nama Plugin.</p>
-                        </div>
-                    @endif
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-@endsection
-```
-
 ## Best Practices
 
 ### 1. Namespace
@@ -510,18 +447,17 @@ Plugin view namespace otomatis terdaftar sebagai `{lowercase_nama_plugin}::`. Co
 Gunakan pola: `{plugin_name}.{action}` atau `{plugin_name}.frontpage.{action}`
 
 ### 4. Database
-- Gunakan nama tabel yang deskriptif (misal: `nama_plugin` bukan `nama_plugin_table`)
+- Gunakan nama tabel jamak (misalnya: `nama_plugins`)
 - Gunakan timestamps (created_at, updated_at)
-- Gunakan tipe data yang sesuai untuk setiap kolom
+- Gunakan tipe data yang sesuai
 
 ### 5. Validasi
 Selalu tambahkan validasi pada form input:
 ```php
 $request->validate([
-    'judul' => 'required|string|max:255',
+    'judul' => 'required|string|max:255|unique:nama_plugins,judul',
     'deskripsi' => 'required',
     'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-    'aktif' => 'boolean'
 ]);
 ```
 
@@ -531,8 +467,8 @@ Gunakan try-catch dan logging:
 try {
     // kode
 } catch (\Exception $e) {
-    Log::error('Error description: ' . $e->getMessage());
-    throw $e;
+    Log::error('Deskripsi error: ' . $e->getMessage());
+    return redirect()->back()->withErrors(['error' => $e->getMessage()]);
 }
 ```
 
@@ -542,15 +478,15 @@ try {
 - Sanitasi output saat menampilkan data
 
 ### 8. SEO
-- Gunakan meta tags untuk setiap halaman
-- Gunakan slug untuk URL yang friendly
-- Gunakan title dan description yang relevan
+- Gunakan metatags untuk setiap halaman
+- Gunakan slug untuk URL yang SEO-friendly
+- Gunakan title dan description yang bermanfaat
 
-## Integrasi dengan Sistem
+## Integrasi Sistem
 
 ### Plugin Management
-- Plugin harus bisa diinstal via sistem manajemen plugin
-- Tabel harus dibuat secara otomatis saat instalasi
+- Plugin harus bisa diinstal dan diaktifkan melalui sistem plugin
+- Tabel harus dibuat saat plugin diinstal
 - Menu harus otomatis muncul di sidebar
 
 ### Hak Akses
@@ -565,7 +501,6 @@ try {
 3. Periksa tampilan frontend dan backend
 4. Uji validasi input
 5. Pastikan slug di-generate dengan benar
-6. Cek akses sesuai role
 
 ### Debugging
 Gunakan logging untuk melacak error:
@@ -574,19 +509,17 @@ Log::info('Debug message', ['data' => $variable]);
 Log::error('Error message', ['error' => $exception]);
 ```
 
-## Deployment
+## Deployment dan Instalasi
 
 ### Instalasi Plugin
-1. Salin folder plugin ke `app/Plugins/`
-2. Buat backup database sebelum instalasi
-3. Gunakan panel administrasi untuk menginstal plugin
-4. Verifikasi bahwa plugin berfungsi dengan benar
+1. Salin folder plugin ke `app/Plugins/{NamaPlugin}/`
+2. Gunakan panel administrasi untuk menginstal plugin
+3. Verifikasi bahwa plugin berfungsi dengan benar
 
 ### Update Plugin
 1. Backup data dan file sebelum update
 2. Ganti file plugin dengan versi baru
 3. Jalankan migrasi jika ada perubahan database
-4. Clear cache jika diperlukan
 
 ## Troubleshooting
 
@@ -601,16 +534,12 @@ Log::error('Error message', ['error' => $exception]);
 
 ### View Tidak Ditemukan
 - Pastikan namespace view benar
-- Periksa apakah PluginServiceProvider aktif
-- Pastikan plugin dianggap aktif dalam database
-
-### Tabel Tidak Dibuat
-- Pastikan sistem pembuatan tabel berjalan saat instalasi
-- Periksa log error untuk informasi lebih lanjut
+- Pastikan PluginServiceProvider aktif
+- Clear view cache: `php artisan view:clear`
 
 ## Kesimpulan
 
-Dengan mengikuti pedoman ini, Anda dapat membuat plugin yang:
+Dengan mengikuti panduan ini, Anda dapat membuat plugin yang:
 - Konsisten dengan arsitektur stelloCMS
 - Mudah dipelihara dan dikembangkan
 - Mengikuti praktik terbaik Laravel

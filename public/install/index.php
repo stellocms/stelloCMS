@@ -153,8 +153,8 @@ ensure_env_file();
             margin-bottom: 30px;
         }
         .step-dot {
-            width: 30px;
-            height: 30px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
             background-color: #e9ecef;
             display: flex;
@@ -163,6 +163,7 @@ ensure_env_file();
             margin: 0 10px;
             font-weight: bold;
             color: #6c757d;
+            font-size: 30px;
         }
         .step-dot.active {
             background-color: #007bff;
@@ -488,16 +489,16 @@ ensure_env_file();
                             $db_username = $_POST['db_username'] ?? 'root';
                             $db_password = $_POST['db_password'] ?? '';
                             
-                            // Update .env file
+                            // Update .env file DULU sebelum membuat koneksi
                             $env_path = __DIR__ . '/../../.env';
                             $env_content = file_get_contents($env_path);
                             
-                            $env_content = preg_replace("/DB_CONNECTION=.*/", "DB_CONNECTION=$db_connection", $env_content);
-                            $env_content = preg_replace("/DB_HOST=.*/", "DB_HOST=$db_host", $env_content);
-                            $env_content = preg_replace("/DB_PORT=.*/", "DB_PORT=$db_port", $env_content);
-                            $env_content = preg_replace("/DB_DATABASE=.*/", "DB_DATABASE=$db_database", $env_content);
-                            $env_content = preg_replace("/DB_USERNAME=.*/", "DB_USERNAME=$db_username", $env_content);
-                            $env_content = preg_replace("/DB_PASSWORD=.*/", "DB_PASSWORD=$db_password", $env_content);
+                            $env_content = preg_replace("/^DB_CONNECTION=.*/m", "DB_CONNECTION=$db_connection", $env_content);
+                            $env_content = preg_replace("/^DB_HOST=.*/m", "DB_HOST=$db_host", $env_content);
+                            $env_content = preg_replace("/^DB_PORT=.*/m", "DB_PORT=$db_port", $env_content);
+                            $env_content = preg_replace("/^DB_DATABASE=.*/m", "DB_DATABASE=$db_database", $env_content);
+                            $env_content = preg_replace("/^DB_USERNAME=.*/m", "DB_USERNAME=$db_username", $env_content);
+                            $env_content = preg_replace("/^DB_PASSWORD=.*/m", "DB_PASSWORD=$db_password", $env_content);
                             
                             file_put_contents($env_path, $env_content);
                             
@@ -511,32 +512,68 @@ ensure_env_file();
                                 'password' => $db_password
                             ];
                             
-                            $action = $_POST['action'] ?? 'install';
+                            // LANGKAH PERTAMA: Lakukan pengecekan koneksi terlebih dahulu
+                            $connection_test = new mysqli($db_host, $db_username, $db_password, '', (int)$db_port);
                             
-                            // Coba koneksi ke database
-                            $mysqli = new mysqli($db_host, $db_username, $db_password, '', (int)$db_port);
-                            
-                            if ($mysqli->connect_error) {
-                                $connection_error = $mysqli->connect_error;
+                            if ($connection_test->connect_error) {
+                                // Jika koneksi gagal, simpan error dan redirect ke step 2
+                                $_SESSION['connection_error'] = $connection_test->connect_error;
+                                header('Location: ?step=2');
+                                exit();
                             } else {
-                                if ($action === 'install') {
-                                    // Buat database jika belum ada
-                                    $create_db_sql = "CREATE DATABASE IF NOT EXISTS `$db_database` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;";
+                                // Jika koneksi berhasil, lanjutkan ke proses database
+                                $connection_test->close();
+                                
+                                // Buat koneksi baru untuk operasi instalasi
+                                $mysqli = new mysqli($db_host, $db_username, $db_password, '', (int)$db_port);
+                                
+                                // Cek apakah database sudah ada
+                                $db_check_result = $mysqli->query("SHOW DATABASES LIKE '$db_database'");
+                                $db_exists = $db_check_result && $db_check_result->num_rows > 0;
+                                
+                                if ($db_exists) {
+                                    // Jika database sudah ada, pilih database dan instal query
+                                    $mysqli->select_db($db_database);
+                                    
+                                    // Eksekusi queries dari file PHP untuk instalasi database
+                                    $queries_file = __DIR__ . '/queries.php';
+                                    if (file_exists($queries_file)) {
+                                        require_once $queries_file;
+                                        
+                                        $errors = [];
+                                        foreach ($sql_queries as $query) {
+                                            if (!$mysqli->query($query)) {
+                                                $errors[] = $mysqli->error . " [Query: " . substr($query, 0, 100) . "...]";
+                                            }
+                                        }
+                                        
+                                        if (empty($errors)) {
+                                            $_SESSION['installation_status'] = 'success';
+                                            $_SESSION['action_performed'] = 'install';
+                                        } else {
+                                            $_SESSION['installation_status'] = 'error';
+                                            $_SESSION['errors'] = $errors;
+                                        }
+                                    } else {
+                                        $_SESSION['installation_status'] = 'error';
+                                        $_SESSION['errors'] = ['File queries.php tidak ditemukan'];
+                                    }
+                                } else {
+                                    // Jika database belum ada, buat database terlebih dahulu
+                                    $create_db_sql = "CREATE DATABASE `$db_database` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;";
                                     if ($mysqli->query($create_db_sql)) {
+                                        // Pilih database yang baru dibuat
                                         $mysqli->select_db($db_database);
                                         
-                                        // Baca file SQL dan eksekusi
-                                        $sql_file = __DIR__ . '/../../material/stellocms.sql';
-                                        if (file_exists($sql_file)) {
-                                            $sql_content = file_get_contents($sql_file);
-                                            $queries = array_filter(array_map('trim', explode(";\n", $sql_content)));
+                                        // Eksekusi queries dari file PHP untuk instalasi database
+                                        $queries_file = __DIR__ . '/queries.php';
+                                        if (file_exists($queries_file)) {
+                                            require_once $queries_file;
                                             
                                             $errors = [];
-                                            foreach ($queries as $query) {
-                                                if (!empty($query)) {
-                                                    if (!$mysqli->query($query)) {
-                                                        $errors[] = $mysqli->error;
-                                                    }
+                                            foreach ($sql_queries as $query) {
+                                                if (!$mysqli->query($query)) {
+                                                    $errors[] = $mysqli->error . " [Query: " . substr($query, 0, 100) . "...]";
                                                 }
                                             }
                                             
@@ -549,43 +586,59 @@ ensure_env_file();
                                             }
                                         } else {
                                             $_SESSION['installation_status'] = 'error';
-                                            $_SESSION['errors'] = ['File stellocms.sql tidak ditemukan'];
+                                            $_SESSION['errors'] = ['File queries.php tidak ditemukan'];
                                         }
                                     } else {
                                         $_SESSION['installation_status'] = 'error';
-                                        $_SESSION['errors'] = [$mysqli->error];
-                                    }
-                                } elseif ($action === 'update') {
-                                    $mysqli->select_db($db_database);
-                                    
-                                    // Baca file SQL dan eksekusi
-                                    $sql_file = __DIR__ . '/../../material/stellocms.sql';
-                                    if (file_exists($sql_file)) {
-                                        $sql_content = file_get_contents($sql_file);
-                                        $queries = array_filter(array_map('trim', explode(";\n", $sql_content)));
-                                        
-                                        $errors = [];
-                                        foreach ($queries as $query) {
-                                            if (!empty($query)) {
-                                                if (!$mysqli->query($query)) {
-                                                    $errors[] = $mysqli->error;
-                                                }
-                                            }
-                                        }
-                                        
-                                        if (empty($errors)) {
-                                            $_SESSION['installation_status'] = 'success';
-                                            $_SESSION['action_performed'] = 'update';
-                                        } else {
-                                            $_SESSION['installation_status'] = 'error';
-                                            $_SESSION['errors'] = $errors;
-                                        }
-                                    } else {
-                                        $_SESSION['installation_status'] = 'error';
-                                        $_SESSION['errors'] = ['File stellocms.sql tidak ditemukan'];
+                                        $_SESSION['errors'] = ['Gagal membuat database: ' . $mysqli->error];
                                     }
                                 }
+                                $mysqli->close();
                             }
+                        }
+                        
+                        // Tampilkan modal error jika ada error koneksi dari session
+                        if (isset($_SESSION['connection_error'])) {
+                            $connection_error = $_SESSION['connection_error'];
+                            unset($_SESSION['connection_error']);
+                            ?>
+                            <!-- Modal Error Koneksi -->
+                            <div class="modal fade" id="connectionErrorModal" tabindex="-1" role="dialog" aria-labelledby="connectionErrorModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-danger text-white">
+                                            <h5 class="modal-title" id="connectionErrorModalLabel"><i class="fas fa-exclamation-triangle"></i> Koneksi Gagal</h5>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Terjadi kesalahan saat mencoba terhubung ke server database:</p>
+                                            <div class="alert alert-danger">
+                                                <strong><?php echo htmlspecialchars($connection_error); ?></strong>
+                                            </div>
+                                            <p>Harap periksa kembali konfigurasi database Anda:</p>
+                                            <ul>
+                                                <li>Host database benar dan server database aktif</li>
+                                                <li>Port database benar (default: 3306)</li>
+                                                <li>Username dan password database benar</li>
+                                                <li>Database dapat diakses dengan kredensial yang diberikan</li>
+                                            </ul>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <a href="?step=2" class="btn btn-primary">Perbaiki Konfigurasi <i class="fas fa-cog"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <script>
+                            $(document).ready(function(){
+                                $('#connectionErrorModal').modal({
+                                    backdrop: 'static',
+                                    keyboard: false
+                                });
+                                $('#connectionErrorModal').modal('show');
+                            });
+                            </script>
+                            <?php
                         }
                         
                         if (isset($_SESSION['installation_status'])) {
@@ -668,26 +721,52 @@ ensure_env_file();
                         
                         <?php elseif ($step == 4): ?>
                         <div class="step-content">
-                            <h3>Tahap 4: Akun Administrator</h3>
-                            <p>Buat akun administrator pertama untuk mengakses panel administrasi.</p>
+                            <h3>Tahap 4: Konfigurasi Pengaturan Web</h3>
+                            <p>Masukkan konfigurasi dasar website Anda:</p>
                             
-                            <form id="adminForm" method="post" action="?step=5">
+                            <form id="settingsForm" method="post" action="?step=5">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="admin_name">Nama Lengkap:</label>
-                                            <input type="text" class="form-control" id="admin_name" name="admin_name" required>
+                                            <label for="web_name">Nama Website:</label>
+                                            <input type="text" class="form-control" id="web_name" name="web_name" placeholder="Contoh: Website Resmi PT. Suka Sejahtera" required>
                                         </div>
                                         
                                         <div class="form-group">
-                                            <label for="admin_email">Alamat Email:</label>
-                                            <input type="email" class="form-control" id="admin_email" name="admin_email" required>
+                                            <label for="web_description">Deskripsi Website:</label>
+                                            <textarea class="form-control" id="web_description" name="web_description" rows="3" placeholder="Deskripsi singkat tentang website Anda..."></textarea>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label for="web_keywords">Keywords Website:</label>
+                                            <input type="text" class="form-control" id="web_keywords" name="web_keywords" placeholder="keyword1, keyword2, keyword3...">
+                                            <small class="form-text text-muted">Pisahkan dengan koma (,)</small>
                                         </div>
                                     </div>
                                     
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="admin_password">Password:</label>
+                                            <label for="web_address">Alamat Website:</label>
+                                            <input type="text" class="form-control" id="web_address" name="web_address" placeholder="Contoh: Jl. Raya No. 1 Desa Makmur, Kec. Maju Jaya">
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label for="web_phone">Nomor Telepon:</label>
+                                            <input type="text" class="form-control" id="web_phone" name="web_phone" placeholder="Contoh: +62 123 4567 890">
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label for="admin_name">Nama Lengkap Administrator:</label>
+                                            <input type="text" class="form-control" id="admin_name" name="admin_name" required>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label for="admin_email">Email Administrator:</label>
+                                            <input type="email" class="form-control" id="admin_email" name="admin_email" required>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label for="admin_password">Password Administrator:</label>
                                             <div class="input-group">
                                                 <input type="password" class="form-control" id="admin_password" name="admin_password" required>
                                                 <div class="input-group-append">
@@ -715,7 +794,7 @@ ensure_env_file();
                                 <div class="row mt-4">
                                     <div class="col-12">
                                         <button type="submit" class="btn btn-success float-right">
-                                            Buat Akun Administrator <i class="fas fa-user-plus"></i>
+                                            Simpan Pengaturan & Buat Akun <i class="fas fa-save"></i>
                                         </button>
                                         <a href="?step=3" class="btn btn-secondary float-left">
                                             <i class="fas fa-arrow-left"></i> Kembali
@@ -723,6 +802,56 @@ ensure_env_file();
                                     </div>
                                 </div>
                             </form>
+                            
+                            <script>
+                            document.getElementById('togglePassword').addEventListener('click', function() {
+                                const passwordField = document.getElementById('admin_password');
+                                const icon = this.querySelector('i');
+                                
+                                if (passwordField.type === 'password') {
+                                    passwordField.type = 'text';
+                                    icon.classList.remove('fa-eye');
+                                    icon.classList.add('fa-eye-slash');
+                                } else {
+                                    passwordField.type = 'password';
+                                    icon.classList.remove('fa-eye-slash');
+                                    icon.classList.add('fa-eye');
+                                }
+                            });
+                            
+                            document.getElementById('togglePasswordConfirm').addEventListener('click', function() {
+                                const passwordField = document.getElementById('admin_password_confirm');
+                                const icon = this.querySelector('i');
+                                
+                                if (passwordField.type === 'password') {
+                                    passwordField.type = 'text';
+                                    icon.classList.remove('fa-eye');
+                                    icon.classList.add('fa-eye-slash');
+                                } else {
+                                    passwordField.type = 'password';
+                                    icon.classList.remove('fa-eye-slash');
+                                    icon.classList.add('fa-eye');
+                                }
+                            });
+                            
+                            document.getElementById('settingsForm').addEventListener('submit', function(e) {
+                                const password = document.getElementById('admin_password');
+                                const confirmPassword = document.getElementById('admin_password_confirm');
+                                
+                                if (password.value !== confirmPassword.value) {
+                                    e.preventDefault();
+                                    alert('Password dan Konfirmasi Password tidak cocok!');
+                                    return false;
+                                }
+                                
+                                if (password.value.length < 6) {
+                                    e.preventDefault();
+                                    alert('Password minimal 6 karakter!');
+                                    return false;
+                                }
+                            });
+                            </script>
+                        </div>
                             
                             <script>
                             document.getElementById('togglePassword').addEventListener('click', function() {
@@ -777,6 +906,14 @@ ensure_env_file();
                         <?php elseif ($step == 5): ?>
                         <?php
                         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                            // Ambil data dari form pengaturan
+                            $web_name = $_POST['web_name'] ?? '';
+                            $web_description = $_POST['web_description'] ?? '';
+                            $web_keywords = $_POST['web_keywords'] ?? '';
+                            $web_address = $_POST['web_address'] ?? '';
+                            $web_phone = $_POST['web_phone'] ?? '';
+                            
+                            // Ambil data admin
                             $admin_name = $_POST['admin_name'] ?? '';
                             $admin_email = $_POST['admin_email'] ?? '';
                             $admin_password = $_POST['admin_password'] ?? '';
@@ -798,6 +935,25 @@ ensure_env_file();
                                 );
                                 
                                 if (!$mysqli->connect_error) {
+                                    // Masukkan pengaturan ke tabel settings
+                                    $settings_data = [
+                                        ['pengaturan' => 'nama-web', 'nilai' => $web_name, 'status' => 'aktif'],
+                                        ['pengaturan' => 'deskripsi-web', 'nilai' => $web_description, 'status' => 'aktif'],
+                                        ['pengaturan' => 'keywords-web', 'nilai' => $web_keywords, 'status' => 'aktif'],
+                                        ['pengaturan' => 'alamat-web', 'nilai' => $web_address, 'status' => 'aktif'],
+                                        ['pengaturan' => 'no-telephone', 'nilai' => $web_phone, 'status' => 'aktif']
+                                    ];
+                                    
+                                    foreach ($settings_data as $setting) {
+                                        $insert_setting_sql = "INSERT INTO settings (pengaturan, nilai, status) VALUES (?, ?, ?)";
+                                        $stmt = $mysqli->prepare($insert_setting_sql);
+                                        if ($stmt) {
+                                            $stmt->bind_param("sss", $setting['pengaturan'], $setting['nilai'], $setting['status']);
+                                            $stmt->execute();
+                                            $stmt->close();
+                                        }
+                                    }
+                                    
                                     // Cek apakah tabel users ada dan masukkan data admin
                                     $check_table_sql = "SHOW TABLES LIKE 'users'";
                                     $result = $mysqli->query($check_table_sql);

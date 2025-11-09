@@ -13,7 +13,19 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'stelloCMS'),
+    
+    /*
+    |--------------------------------------------------------------------------
+    | Application Version
+    |--------------------------------------------------------------------------
+    |
+    | This value determines the version of your application. This will be 
+    | used in various places such as the footer, update checks, etc.
+    |
+    */
+
+    'version' => '1.0.0',
 
     /*
     |--------------------------------------------------------------------------
