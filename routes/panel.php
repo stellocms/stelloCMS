@@ -335,6 +335,7 @@ Route::get('/panel/check-testimonial-status', function() {
     }
 });
 
+
 // Test route to check if SimplePage controller works
 
 
@@ -369,3 +370,4 @@ Route::get('/panel/simplepage-direct', function() {
 
 
 // Route to manually load ContohPlugin routes for debugging
+

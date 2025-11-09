@@ -117,7 +117,7 @@ ensure_env_file();
     <title>Instalasi stelloCMS - Tahap <?php echo $step; ?></title>
     
     <!-- Favicon -->
-    <link rel="shortcut icon" href="../img/icon/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="../public/img/icon/favicon.ico" type="image/x-icon">
     
     <!-- AdminLTE CSS -->
     <link rel="stylesheet" href="../themes/adminlte/css/adminlte.min.css">
