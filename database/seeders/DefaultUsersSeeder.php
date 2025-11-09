@@ -15,8 +15,7 @@ class DefaultUsersSeeder extends Seeder
     public function run(): void
     {
         $roles = [
-            'admin', 'kepala-desa', 'sekdes', 'kaur',
-            'kadus', 'rw', 'rt', 'warga'
+            'admin', 'operator', 
         ];
 
         foreach ($roles as $roleName) {

@@ -94,10 +94,15 @@ Route::middleware(['auth', 'role:admin,kepala-desa,sekdes,kaur,kadus,rw,rt'])->g
     Route::get('/panel/setting/{id}/edit', [\App\Http\Controllers\SettingController::class, 'edit'])->name('setting.edit');
     Route::put('/panel/setting/{id}', [\App\Http\Controllers\SettingController::class, 'update'])->name('setting.update');
     Route::delete('/panel/setting/{id}', [\App\Http\Controllers\SettingController::class, 'destroy'])->name('setting.destroy');
+    
+    // Update management routes - following the same pattern as other panel routes
+    Route::get('/panel/update', [\App\Http\Controllers\UpdateController::class, 'index'])->name('update.index');
+    Route::get('/panel/update/create', [\App\Http\Controllers\UpdateController::class, 'create'])->name('update.create');
+    Route::post('/panel/update', [\App\Http\Controllers\UpdateController::class, 'store'])->name('update.store');
+    Route::get('/panel/update/{id}/edit', [\App\Http\Controllers\UpdateController::class, 'edit'])->name('update.edit');
+    Route::put('/panel/update/{id}', [\App\Http\Controllers\UpdateController::class, 'update'])->name('update.update');
+    Route::delete('/panel/update/{id}', [\App\Http\Controllers\UpdateController::class, 'destroy'])->name('update.destroy');
 });
-
-// Dynamic plugin routes - automatically handle routes for installed and active plugins
-// This catches routes that are registered by plugin's routes.php but not explicitly defined above
 
 // Dynamic plugin routes - automatically handle routes for installed and active plugins
 // This catches routes that are registered by plugin's routes.php but not explicitly defined above
@@ -333,46 +338,241 @@ Route::get('/panel/check-testimonial-status', function() {
     } catch (\Exception $e) {
         return "Error checking plugin status: " . $e->getMessage();
     }
-
-    // Update management routes - placed within the main panel middleware group
-    Route::get('/panel/update', [\App\Http\Controllers\UpdateController::class, 'index'])->name('update.index');
-    Route::get('/panel/api/check-version', [\App\Http\Controllers\UpdateController::class, 'checkLatestVersion'])->name('api.check_version');
-    Route::get('/panel/api/changelog', [\App\Http\Controllers\UpdateController::class, 'getChangelog'])->name('api.changelog');
-    Route::post('/panel/api/update', [\App\Http\Controllers\UpdateController::class, 'performUpdate'])->name('api.update');
+});
 
 
-// Test route to check if SimplePage controller works
 
+// Dynamic plugin routes - automatically handle routes for installed and active plugins
+// This catches routes that are registered by plugin's routes.php but not explicitly defined above
 
-// Test route to check if SimplePage view renders
+// Handle direct access to logout URL by redirecting to login
+Route::get('/panel/logout', function () {
+    return redirect()->route('panel.login');
+})->name('logout.get');
 
+Route::post('/panel/logout', [LoginController::class, 'logout'])->name('logout');
 
-// Route to test SimplePage controller without plugin middleware
-Route::get('/panel/simplepage-direct', function() {
-    try {
-        $controller = app(\App\Plugins\SimplePage\Controllers\SimplePageController::class);
-        return $controller->index();
-    } catch (\Exception $e) {
-        return 'Error: ' . $e->getMessage() . '<br>File: ' . $e->getFile() . '<br>Line: ' . $e->getLine();
+// Temporary route to add SimplePage menu entry
+Route::get('/panel/add-simplepage-menu', function() {
+    $existingMenu = DB::table('menus')->where('name', 'simplepage')->first();
+    
+    if (!$existingMenu) {
+        DB::table('menus')->insert([
+            'name' => 'simplepage',
+            'title' => 'Simple Page',
+            'route' => 'simplepage.index',
+            'icon' => 'fas fa-file-alt',
+            'parent_id' => null,
+            'order' => 100,
+            'is_active' => true,
+            'plugin_name' => 'SimplePage',
+            'roles' => json_encode(['admin', 'kepala-desa', 'sekdes', 'kaur', 'kadus', 'rw', 'rt']),
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+        
+        return 'Menu entry for SimplePage created successfully!';
+    } else {
+        return 'Menu entry for SimplePage already exists!';
     }
 });
 
-// Route to create example plugin entry in database
+// Route to check current user role
 
 
+// Route to check all available roles
 
 
-// Debug route to trace why example plugin redirects
+// Debugging route for SimplePage access
 
 
-// Route to check example plugin status
+// Route to force activate SimplePage plugin
+Route::get('/panel/activate-simplepage', function() {
+    try {
+        $pluginManager = app(\App\Services\PluginManager::class);
+        
+        // Check if plugin exists in filesystem
+        $pluginPath = app_path('Plugins/SimplePage');
+        if (!file_exists($pluginPath)) {
+            return 'Plugin SimplePage not found in filesystem at: ' . $pluginPath;
+        }
+        
+        // Try to activate the plugin
+        $result = $pluginManager->activatePlugin('SimplePage');
+        
+        if ($result) {
+            // Also ensure menu entry exists for the plugin
+            $existingMenu = \App\Models\Menu::where('name', 'simplepage')->first();
+            
+            if (!$existingMenu) {
+                \App\Models\Menu::create([
+                    'name' => 'simplepage',
+                    'title' => 'Simple Page',
+                    'route' => 'simplepage.index',
+                    'icon' => 'fas fa-file-alt',
+                    'parent_id' => null,
+                    'order' => 100,
+                    'is_active' => true,
+                    'plugin_name' => 'SimplePage',
+                    'roles' => json_encode(['admin', 'kepala-desa', 'sekdes', 'kaur', 'kadus', 'rw', 'rt']),
+                ]);
+                
+                return 'SimplePage plugin activated successfully and menu entry created!';
+            }
+            
+            return 'SimplePage plugin activated successfully!';
+        } else {
+            return 'Failed to activate SimplePage plugin';
+        }
+    } catch (\Exception $e) {
+        return 'Error activating plugin: ' . $e->getMessage();
+    }
+});
+
+// Diagnostic route for plugin system
+Route::get('/panel/plugin-diagnostic', function() {
+    $output = '<h3>Plugin Diagnostic Information</h3>';
+    
+    // Check if user is authenticated
+    if (!auth()->check()) {
+        return 'No user is logged in';
+    }
+    
+    $user = auth()->user();
+    $output .= '<h4>Current User:</h4>';
+    $output .= "<p>User: {$user->name} (ID: {$user->id})</p>";
+    $output .= "<p>Role: {$user->role->name} (ID: {$user->role->id})</p>";
+    
+    // Check plugin manager
+    try {
+        $pluginManager = app(\App\Services\PluginManager::class);
+        
+        $output .= '<h4>Plugin Manager:</h4>';
+        $output .= '<p>Plugin manager instantiated successfully</p>';
+        
+        // List all plugins in filesystem
+        $pluginDir = app_path('Plugins');
+        $output .= '<h5>Plugins in filesystem:</h5>';
+        $output .= '<ul>';
+        foreach (scandir($pluginDir) as $dir) {
+            if ($dir !== '.' && $dir !== '..') {
+                $pluginPath = $pluginDir . '/' . $dir;
+                if (is_dir($pluginPath)) {
+                    $output .= '<li>' . $dir . '</li>';
+                }
+            }
+        }
+        $output .= '</ul>';
+        
+        // Check if SimplePage plugin is installed/active
+        $simplePageInstalled = file_exists(app_path('Plugins/SimplePage/plugin.json'));
+        $output .= '<h5>SimplePage Plugin Status:</h5>';
+        $output .= '<p>Plugin file exists: ' . ($simplePageInstalled ? 'YES' : 'NO') . '</p>';
+        
+        try {
+            $isSimplePageActive = $pluginManager->isPluginActive('SimplePage');
+            $output .= '<p>Plugin is active: ' . ($isSimplePageActive ? 'YES' : 'NO') . '</p>';
+        } catch (\Exception $e) {
+            $output .= '<p>Plugin active check failed: ' . $e->getMessage() . '</p>';
+        }
+        
+        // List all registered routes
+        $output .= '<h4>Current Route Status:</h4>';
+        $output .= '<p>Current route: ' . request()->route()->getName() . '</p>';
+        
+        // Check if simplepage routes exist
+        $routeExists = \Illuminate\Support\Facades\Route::has('simplepage.index');
+        $output .= '<p>Route simplepage.index exists: ' . ($routeExists ? 'YES' : 'NO') . '</p>';
+    } catch (\Exception $e) {
+        $output .= '<h4>Error accessing PluginManager:</h4>';
+        $output .= '<p>' . $e->getMessage() . '</p>';
+    }
+    
+    return $output;
+});
+
+// Route to manually register SimplePage plugin in database
+Route::get('/panel/register-simplepage-plugin', function() {
+    $plugin = \App\Models\Plugin::firstOrCreate(
+        ['name' => 'SimplePage'],
+        [
+            'title' => 'Simple Page Plugin',
+            'version' => '1.0.0',
+            'description' => 'A simple plugin for creating pages',
+            'author' => 'StelloCMS Developer',
+            'author_url' => 'https://stellocms.com',
+            'category' => 'utility',
+            'screenshot' => '',
+            'tags' => json_encode(['pages', 'simple', 'utility']),
+            'installed' => true,
+            'active' => true,
+        ]
+    );
+    
+    if ($plugin->wasRecentlyCreated) {
+        return 'SimplePage plugin registered successfully in database';
+    } else {
+        $plugin->update([
+            'installed' => true,
+            'active' => true,
+        ]);
+        return 'SimplePage plugin already existed, updated status to active';
+    }
+});
+
+// Route to properly install SimplePage plugin through PluginManager
 
 
-// Route to test controller method directly
-
-
-// Route to create menu entry for ContohPlugin in database
-
-
-// Route to manually load ContohPlugin routes for debugging
+// Route to check plugin installation status
+Route::get('/panel/check-testimonial-status', function() {
+    // Check if plugin exists in filesystem
+    $pluginPath = app_path('Plugins/Testimonial');
+    $filesystemExists = file_exists($pluginPath);
+    
+    // Check if plugin is recorded in database
+    $pluginRecord = \App\Models\Plugin::where('name', 'Testimonial')->first();
+    $databaseExists = !!$pluginRecord;
+    
+    // Try to access PluginManager
+    try {
+        $pluginManager = app(\App\Services\PluginManager::class);
+        
+        $pluginManagerExists = true;
+        
+        // Get all plugins from manager
+        $allPlugins = $pluginManager->getPlugins();
+        $testimonialInManager = null;
+        foreach ($allPlugins as $plugin) {
+            if ($plugin['name'] === 'Testimonial') {
+                $testimonialInManager = $plugin;
+                break;
+            }
+        }
+        
+        // Check if routes.php exists
+        $routesFileExists = file_exists($pluginPath . '/routes.php');
+        
+        $result = "<h3>Testimonial Plugin Status Check</h3>";
+        $result .= "<p>Plugin directory exists: " . ($filesystemExists ? 'YES' : 'NO') . "</p>";
+        $result .= "<p>Plugin record in database: " . ($databaseExists ? 'YES' : 'NO') . "</p>";
+        $result .= "<p>Plugin manager accessible: " . ($pluginManagerExists ? 'YES' : 'NO') . "</p>";
+        
+        if ($testimonialInManager) {
+            $result .= "<p>Plugin found in plugin manager:</p>";
+            $result .= "<ul>";
+            $result .= "<li>Name: " . $testimonialInManager['name'] . "</li>";
+            $result .= "<li>Active: " . ($testimonialInManager['active'] ? 'YES' : 'NO') . "</li>";
+            $result .= "<li>Installed: " . ($testimonialInManager['installed'] ? 'YES' : 'NO') . "</li>";
+            $result .= "</ul>";
+        } else {
+            $result .= "<p>Plugin NOT found in plugin manager</p>";
+        }
+        
+        $result .= "<p>Routes file exists: " . ($routesFileExists ? 'YES' : 'NO') . "</p>";
+        
+        return $result;
+    } catch (\Exception $e) {
+        return "Error checking plugin status: " . $e->getMessage();
+    }
+});
 

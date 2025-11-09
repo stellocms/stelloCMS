@@ -26,38 +26,49 @@ if (!function_exists('view_theme')) {
      */
     function view_theme($type, $view, $data = [])
     {
-        // Get theme from database first, fallback to config if not found
         try {
-            $themeService = app(\App\Services\ThemeService::class);
-            $dbTheme = $themeService->getDefaultTheme($type);
-            
-            if ($dbTheme) {
-                $theme = $dbTheme->name;
-            } else {
-                // Fallback to config if no theme found in database
-                $theme = config("themes.{$type}", $type === 'admin' ? 'adminlte' : 'stocker');
-            }
-        } catch (\Exception $e) {
-            // If there's an issue with the service, fallback to config
+            // Get theme from database first, fallback to config if not found
             $theme = config("themes.{$type}", $type === 'admin' ? 'adminlte' : 'stocker');
-        }
-        
-        $namespace = "theme.{$type}.{$theme}";
-        $viewName = "{$namespace}::{$view}";
+            
+            // If ThemeService exists and can be accessed, try to get theme from database
+            if (class_exists('\App\Services\ThemeService')) {
+                try {
+                    $themeService = app(\App\Services\ThemeService::class);
+                    $dbTheme = $themeService->getDefaultTheme($type);
+                    
+                    if ($dbTheme) {
+                        $theme = $dbTheme->name;
+                    }
+                } catch (\Exception $e) {
+                    // If ThemeService fails, use config fallback
+                    $theme = config("themes.{$type}", $type === 'admin' ? 'adminlte' : 'stocker');
+                }
+            }
+            
+            $namespace = "theme.{$type}.{$theme}";
+            $viewName = "{$namespace}::{$view}";
 
-        // Check if view exists with namespace
-        if (view()->exists($viewName)) {
-            return view($viewName, $data);
-        }
-        
-        // Try without namespace as fallback
-        $path = "Themes/{$type}/{$theme}/{$view}";
-        if (view()->exists($path)) {
-            return view($path, $data);
-        }
+            // Check if view exists with namespace
+            if (view()->exists($viewName)) {
+                return view($viewName, $data);
+            }
+            
+            // Try without namespace as fallback
+            $path = "Themes/{$type}/{$theme}/{$view}";
+            if (view()->exists($path)) {
+                return view($path, $data);
+            }
 
-        // Final fallback to default view
-        return view($view, $data);
+            // Final fallback to default view
+            return view($view, $data);
+        } catch (\Exception $e) {
+            // If anything goes wrong, return a simple welcome message
+            if ($type === 'frontend' && $view === 'home.index') {
+                return '<div class="container"><h1>stelloCMS</h1><p>Selamat datang di sistem stelloCMS.</p></div>';
+            }
+            
+            return view($view, $data);
+        }
     }
 }
 
