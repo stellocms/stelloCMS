@@ -1,51 +1,49 @@
-# Changelog stelloCMS
+# Changelog
 
-Semua perubahan penting pada proyek ini akan didokumentasikan dalam file ini.
+## [v1.0.0] - 2025-11-09
 
-Format berdasarkan [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-dan proyek ini mengikuti [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+### Rilis Versi 1.0.0
 
-## [Unreleased]
+Versi pertama dari stelloCMS - Content Management System berbasis Laravel dengan pendekatan modular terhadap tema dan plugin.
 
-### Added
-- Plugin Contoh untuk demonstrasi struktur dan praktik terbaik
-- Fungsi helper `generate_slug()` untuk membuat slug URL-friendly
-- Sistem manajemen plugin yang otomatis
-- Sistem tema dinamis dengan dukungan admin dan frontend
-- Menu management system dengan hak akses role-based
-- Dokumentasi lengkap untuk pengembangan plugin
-- Halaman instalasi menggunakan PHP native dengan tema AdminLTE
+### Fitur Utama
 
-### Changed
-- Mengganti nama domain dari `stello-cms.com` menjadi `stellocms.com`
-- Menambahkan fitur slug otomatis di plugin Contoh
-- Memperbarui sistem instalasi database untuk plugin
-- Menambahkan versi aplikasi ke konfigurasi `config/app.php`
-- Menampilkan versi aplikasi secara dinamis di footer
-- Mengganti tema admin default dari CoreUI ke AdminLTE
-- Memindahkan menu "Tema", "Plugin", "Menu" ke dalam submenu "Pengaturan"
-- Mengganti nama menu dari "Manajemen Plugin Contoh" menjadi "Setting"
-- Memperbarui dokumentasi plugin Contoh
+- **Sistem Tema Dinamis**
+  - Deteksi tema otomatis dari folder
+  - Dukungan tema terpisah untuk admin dan frontend
+  - Menggunakan AdminLTE sebagai tema admin default
+  - Kemampuan mengganti tema secara dinamis tanpa mengubah kode
 
-## [1.0.0] - 2025-11-09
+- **Sistem Plugin Modular**
+  - Plugin dapat diinstal, diaktifkan, dan dihapus secara dinamis
+  - Setiap plugin memiliki struktur yang mandiri dengan database, migrasi, dan routing sendiri
+  - Plugin "Berita" sebagai plugin default untuk manajemen konten umum
+  - Integrasi otomatis dengan sistem menu
 
-### Added
+- **Manajemen Pengguna dan Hak Akses**
+  - Berbagai level pengguna (admin, kepala desa, sekretaris desa, dll)
+  - Sistem role-based access control (RBAC) yang fleksibel
+  - Manajemen hak akses berdasarkan menu dan role
+
+- **Antarmuka Administrasi**
+  - Dashboard informatif dengan statistik sistem
+  - Manajemen tema dan plugin yang intuitif
+  - Sistem menu dinamis yang dapat dikustomisasi
+
+### Perubahan Penting
+
+- Mengganti tema admin default dari CoreUI ke AdminLTE untuk stabilitas yang lebih baik
+- Menghapus tema CoreUI yang tidak digunakan untuk mengurangi ukuran sistem
+- Menyederhanakan struktur tema untuk kemudahan pemeliharaan
+- Mengganti plugin "Berita Desa" yang spesifik dengan plugin "Berita" yang umum
+- Plugin "Berita" sekarang dapat digunakan untuk berbagai jenis organisasi, bukan hanya desa
+- Menghapus kode yang tidak digunakan untuk plugin yang sudah dihapus
+
+### Teknologi yang Digunakan
+
+- Laravel 12.x
+- PHP 8.2+
+- MySQL 5.7+ atau MariaDB 10.2+
+- AdminLTE sebagai tema admin
 - Sistem plugin modular
 - Sistem tema dinamis
-- Sistem role-based access control
-- Panel administrasi berbasis AdminLTE
-- Plugin Berita sebagai contoh plugin utama
-- Sistem menu dinamis
-- Fitur upload plugin
-- Sistem manajemen pengguna dan hak akses
-- Fitur CRUD untuk plugin
-
-### Changed
-- Menyesuaikan struktur database untuk plugin
-- Mengganti struktur folder plugin
-- Memperbarui sistem routing
-- Mengganti sistem authentikasi
-- Memperbarui tema admin ke AdminLTE
-
-[Unreleased]: https://github.com/stellocms/stelloCMS/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/stellocms/stelloCMS/releases/tag/v1.0.0
