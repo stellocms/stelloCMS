@@ -2,32 +2,46 @@
 
 // Array berisi query-query untuk instalasi stelloCMS
 $sql_queries = [
+    "CREATE TABLE IF NOT EXISTS `berita` (
+      `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+      `judul` varchar(255) NOT NULL,
+      `isi` text NOT NULL,
+      `gambar` varchar(255) DEFAULT NULL,
+      `tanggal_publikasi` timestamp NOT NULL DEFAULT current_timestamp(),
+      `aktif` tinyint(1) DEFAULT 1,
+      `user_id` bigint(20) UNSIGNED DEFAULT NULL,
+      `created_at` timestamp NULL DEFAULT NULL,
+      `updated_at` timestamp NULL DEFAULT NULL,
+      PRIMARY KEY (`id`),
+      KEY `user_id` (`user_id`),
+      CONSTRAINT `berita_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+
     "CREATE TABLE IF NOT EXISTS `cache` (
-        `key` varchar(255) NOT NULL,
-        `value` mediumtext NOT NULL,
-        `expiration` int(11) NOT NULL,
-        PRIMARY KEY (`key`)
+      `key` varchar(255) NOT NULL,
+      `value` mediumtext NOT NULL,
+      `expiration` int(11) NOT NULL,
+      PRIMARY KEY (`key`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
     "CREATE TABLE IF NOT EXISTS `cache_locks` (
-        `key` varchar(255) NOT NULL,
-        `owner` varchar(255) NOT NULL,
-        `expiration` int(11) NOT NULL,
-        PRIMARY KEY (`key`)
+      `key` varchar(255) NOT NULL,
+      `owner` varchar(255) NOT NULL,
+      `expiration` int(11) NOT NULL,
+      PRIMARY KEY (`key`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
     "CREATE TABLE IF NOT EXISTS `contoh_plugins` (
-        `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-        `judul` varchar(255) NOT NULL,
-        `deskripsi` text NOT NULL,
-        `gambar` varchar(255) DEFAULT NULL,
-        `tanggal_dibuat` timestamp NULL DEFAULT NULL,
-        `aktif` tinyint(1) NOT NULL DEFAULT '1',
-        `slug` varchar(255) NOT NULL,
-        `created_at` timestamp NULL DEFAULT NULL,
-        `updated_at` timestamp NULL DEFAULT NULL,
-        PRIMARY KEY (`id`),
-        UNIQUE KEY `contoh_plugins_slug_unique` (`slug`)
+      `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+      `judul` varchar(255) NOT NULL,
+      `deskripsi` text NOT NULL,
+      `gambar` varchar(255) DEFAULT NULL,
+      `tanggal_dibuat` timestamp NULL DEFAULT NULL,
+      `aktif` tinyint(1) DEFAULT 1,
+      `slug` varchar(255) NOT NULL,
+      `created_at` timestamp NULL DEFAULT NULL,
+      `updated_at` timestamp NULL DEFAULT NULL,
+      PRIMARY KEY (`id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
     "CREATE TABLE IF NOT EXISTS `failed_jobs` (
@@ -55,28 +69,29 @@ $sql_queries = [
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
     "CREATE TABLE IF NOT EXISTS `menus` (
-        `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-        `name` varchar(255) NOT NULL,
-        `title` varchar(255) NOT NULL,
-        `route` varchar(255) NOT NULL,
-        `icon` varchar(255) DEFAULT NULL,
-        `parent_id` bigint unsigned DEFAULT NULL,
-        `order` int DEFAULT '0',
-        `is_active` tinyint(1) NOT NULL DEFAULT '1',
-        `plugin_name` varchar(255) DEFAULT NULL,
-        `roles` json DEFAULT NULL,
-        `created_at` timestamp NULL DEFAULT NULL,
-        `updated_at` timestamp NULL DEFAULT NULL,
-        PRIMARY KEY (`id`),
-        KEY `menus_parent_id_foreign` (`parent_id`),
-        CONSTRAINT `menus_parent_id_foreign` FOREIGN KEY (`parent_id`) REFERENCES `menus` (`id`) ON DELETE CASCADE
+      `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+      `name` varchar(255) NOT NULL,
+      `title` varchar(255) NOT NULL,
+      `route` varchar(255) DEFAULT NULL,
+      `url` varchar(255) DEFAULT NULL,
+      `icon` varchar(255) NOT NULL DEFAULT 'fas fa-cube',
+      `parent_id` int(11) DEFAULT NULL,
+      `order` int(11) NOT NULL DEFAULT 0,
+      `is_active` tinyint(1) NOT NULL DEFAULT 1,
+      `plugin_name` varchar(255) DEFAULT NULL,
+      `roles` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`roles`)),
+      `created_at` timestamp NULL DEFAULT NULL,
+      `updated_at` timestamp NULL DEFAULT NULL,
+      `type` varchar(255) DEFAULT 'admin',
+      `position` enum('header','sidebar-left','sidebar-right','footer') DEFAULT 'header',
+      PRIMARY KEY (`id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
     "CREATE TABLE IF NOT EXISTS `migrations` (
-        `id` int unsigned NOT NULL AUTO_INCREMENT,
-        `migration` varchar(255) NOT NULL,
-        `batch` int NOT NULL,
-        PRIMARY KEY (`id`)
+      `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+      `migration` varchar(255) NOT NULL,
+      `batch` int(11) NOT NULL,
+      PRIMARY KEY (`id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
     "CREATE TABLE IF NOT EXISTS `password_reset_tokens` (
@@ -103,111 +118,92 @@ $sql_queries = [
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
     "CREATE TABLE IF NOT EXISTS `plugins` (
-        `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-        `name` varchar(255) NOT NULL,
-        `title` varchar(255) DEFAULT NULL,
-        `version` varchar(255) DEFAULT NULL,
-        `description` text,
-        `author` varchar(255) DEFAULT NULL,
-        `author_url` varchar(255) DEFAULT NULL,
-        `category` varchar(255) DEFAULT NULL,
-        `screenshot` varchar(255) DEFAULT NULL,
-        `tags` json DEFAULT NULL,
-        `installed` tinyint(1) NOT NULL DEFAULT '0',
-        `active` tinyint(1) NOT NULL DEFAULT '0',
-        `created_at` timestamp NULL DEFAULT NULL,
-        `updated_at` timestamp NULL DEFAULT NULL,
-        PRIMARY KEY (`id`),
-        UNIQUE KEY `plugins_name_unique` (`name`)
+      `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+      `name` varchar(255) NOT NULL,
+      `active` tinyint(1) NOT NULL DEFAULT 0,
+      `installed` tinyint(1) NOT NULL DEFAULT 0,
+      `metadata` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`metadata`)),
+      `created_at` timestamp NULL DEFAULT NULL,
+      `updated_at` timestamp NULL DEFAULT NULL,
+      PRIMARY KEY (`id`),
+      UNIQUE KEY `plugins_name_unique` (`name`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
     "CREATE TABLE IF NOT EXISTS `sessions` (
-        `id` varchar(255) NOT NULL,
-        `user_id` bigint unsigned DEFAULT NULL,
-        `ip_address` varchar(45) DEFAULT NULL,
-        `user_agent` text,
-        `payload` longtext NOT NULL,
-        `last_activity` int NOT NULL,
-        PRIMARY KEY (`id`),
-        KEY `sessions_user_id_index` (`user_id`),
-        KEY `sessions_last_activity_index` (`last_activity`)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
-
-    "CREATE TABLE IF NOT EXISTS `themes` (
-        `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-        `name` varchar(255) NOT NULL,
-        `type` enum('admin','frontend') NOT NULL,
-        `version` varchar(255) NOT NULL,
-        `description` text,
-        `author` varchar(255) DEFAULT NULL,
-        `author_url` varchar(255) DEFAULT NULL,
-        `screenshot` varchar(255) DEFAULT NULL,
-        `tags` json DEFAULT NULL,
-        `is_active` tinyint(1) NOT NULL DEFAULT '0',
-        `is_installed` tinyint(1) NOT NULL DEFAULT '0',
-        `is_default` tinyint(1) NOT NULL DEFAULT '0',
-        `created_at` timestamp NULL DEFAULT NULL,
-        `updated_at` timestamp NULL DEFAULT NULL,
-        PRIMARY KEY (`id`),
-        UNIQUE KEY `themes_name_type_unique` (`name`,`type`)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
-
-    "CREATE TABLE IF NOT EXISTS `roles` (
-        `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-        `name` varchar(255) NOT NULL,
-        `description` text,
-        `created_at` timestamp NULL DEFAULT NULL,
-        `updated_at` timestamp NULL DEFAULT NULL,
-        PRIMARY KEY (`id`),
-        UNIQUE KEY `roles_name_unique` (`name`)
+      `id` varchar(255) NOT NULL,
+      `user_id` bigint(20) UNSIGNED DEFAULT NULL,
+      `ip_address` varchar(45) DEFAULT NULL,
+      `user_agent` text DEFAULT NULL,
+      `payload` longtext NOT NULL,
+      `last_activity` int(11) NOT NULL,
+      PRIMARY KEY (`id`),
+      KEY `sessions_user_id_index` (`user_id`),
+      KEY `sessions_last_activity_index` (`last_activity`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
     "CREATE TABLE IF NOT EXISTS `settings` (
-        `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-        `pengaturan` varchar(255) NOT NULL,
-        `nilai` text,
-        `status` enum('aktif','nonaktif') DEFAULT 'aktif',
-        `created_at` timestamp NULL DEFAULT NULL,
-        `updated_at` timestamp NULL DEFAULT NULL,
-        PRIMARY KEY (`id`)
+      `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+      `pengaturan` varchar(255) NOT NULL,
+      `nilai` text DEFAULT NULL,
+      `status` enum('aktif','nonaktif') DEFAULT 'aktif',
+      `created_at` timestamp NULL DEFAULT NULL,
+      `updated_at` timestamp NULL DEFAULT NULL,
+      PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+
+    "CREATE TABLE IF NOT EXISTS `themes` (
+      `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+      `name` varchar(255) NOT NULL,
+      `type` varchar(255) NOT NULL,
+      `version` varchar(255) DEFAULT NULL,
+      `description` text DEFAULT NULL,
+      `author` varchar(255) DEFAULT NULL,
+      `author_url` varchar(255) DEFAULT NULL,
+      `screenshot` varchar(255) DEFAULT NULL,
+      `tags` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`tags`)),
+      `is_active` tinyint(1) NOT NULL DEFAULT 0,
+      `is_installed` tinyint(1) NOT NULL DEFAULT 0,
+      `is_default` tinyint(1) NOT NULL DEFAULT 0,
+      `created_at` timestamp NULL DEFAULT NULL,
+      `updated_at` timestamp NULL DEFAULT NULL,
+      PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+
+    "CREATE TABLE IF NOT EXISTS `roles` (
+      `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+      `name` varchar(255) NOT NULL,
+      `created_at` timestamp NULL DEFAULT NULL,
+      `updated_at` timestamp NULL DEFAULT NULL,
+      PRIMARY KEY (`id`),
+      UNIQUE KEY `roles_name_unique` (`name`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
     "CREATE TABLE IF NOT EXISTS `users` (
-        `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-        `name` varchar(255) NOT NULL,
-        `email` varchar(255) NOT NULL,
-        `email_verified_at` timestamp NULL DEFAULT NULL,
-        `password` varchar(255) NOT NULL,
-        `remember_token` varchar(100) DEFAULT NULL,
-        `role_id` bigint unsigned NOT NULL,
-        `created_at` timestamp NULL DEFAULT NULL,
-        `updated_at` timestamp NULL DEFAULT NULL,
-        PRIMARY KEY (`id`),
-        UNIQUE KEY `users_email_unique` (`email`),
-        KEY `users_role_id_foreign` (`role_id`),
-        CONSTRAINT `users_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE RESTRICT
+      `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+      `name` varchar(255) NOT NULL,
+      `email` varchar(255) NOT NULL,
+      `email_verified_at` timestamp NULL DEFAULT NULL,
+      `password` varchar(255) NOT NULL,
+      `remember_token` varchar(100) DEFAULT NULL,
+      `created_at` timestamp NULL DEFAULT NULL,
+      `updated_at` timestamp NULL DEFAULT NULL,
+      `role_id` bigint(20) UNSIGNED DEFAULT NULL,
+      PRIMARY KEY (`id`),
+      UNIQUE KEY `users_email_unique` (`email`),
+      KEY `users_role_id_foreign` (`role_id`),
+      CONSTRAINT `users_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
 
-    "INSERT INTO `roles` (`id`, `name`, `description`, `created_at`, `updated_at`) VALUES 
-    (1, 'admin', 'Administrator system with full access', NOW(), NOW()),
-    (2, 'kepala-desa', 'Kepala Desa', NOW(), NOW()),
-    (3, 'sekdes', 'Sekretaris Desa', NOW(), NOW()),
-    (4, 'kaur', 'Kepala Urusan', NOW(), NOW()),
-    (5, 'kadus', 'Kepala Dusun', NOW(), NOW()),
-    (6, 'rw', 'Ketua RW', NOW(), NOW()),
-    (7, 'rt', 'Ketua RT', NOW(), NOW()),
-    (8, 'warga', 'Anggota masyarakat', NOW(), NOW());",
+    "INSERT INTO `roles` (`id`, `name`, `created_at`, `updated_at`) VALUES
+    (1, 'admin', NOW(), NOW()),
+    (2, 'Operator', NOW(), NOW());",
 
-    "INSERT INTO `themes` (`id`, `name`, `type`, `version`, `description`, `author`, `author_url`, `screenshot`, `tags`, `is_active`, `is_installed`, `is_default`, `created_at`, `updated_at`) VALUES 
-    (1, 'adminlte', 'admin', '3.2.0', 'AdminLTE - Free Admin Dashboard Template', 'ColorlibHQ', 'https://adminlte.io', 'img/adminlte-screenshot.png', '[\"admin\", \"dashboard\", \"responsive\"]', 1, 1, 1, NOW(), NOW()),
-    (2, 'kind_heart', 'frontend', '1.0.0', 'Kind Heart Charity - Charity Website Template', 'Colorlib', 'https://colorlib.com', 'img/kind-heart-screenshot.png', '[\"charity\", \"non-profit\", \"donation\"]', 1, 1, 1, NOW(), NOW());",
+    "INSERT INTO `themes` (`id`, `name`, `type`, `version`, `description`, `author`, `author_url`, `screenshot`, `tags`, `is_active`, `is_installed`, `is_default`, `created_at`, `updated_at`) VALUES
+    (1, 'stocker', 'frontend', '1.0.0', 'Stocker - Stock Market Website Template', 'HTML Codex', 'https://htmlcodex.com', 'img/carousel-1.jpg', '[\"stock-market\",\"finance\",\"investment\",\"business\",\"responsive\"]', 1, 1, 1, NOW(), NOW()),
+    (7, 'adminlte', 'admin', '3.2.0', 'AdminLTE Free Bootstrap Admin Template', 'AdminLTE.io', 'https://adminlte.io', 'screenshot.png', '[\"admin\",\"bootstrap\",\"responsive\"]', 1, 1, 1, NOW(), NOW()),
+    (10, 'therapy', 'frontend', '1.0.0', 'Terapia - Physical Therapy Website Template', 'HTML Codex', 'https://htmlcodex.com', 'img/carousel-1.jpg', '[\"therapy\",\"healthcare\",\"medical\",\"physiotherapy\",\"responsive\"]', 1, 1, 0, NOW(), NOW());",
 
-    "INSERT INTO `menus` (`id`, `name`, `title`, `route`, `icon`, `parent_id`, `order`, `is_active`, `plugin_name`, `created_at`, `updated_at`) VALUES 
-    (1, 'dashboard', 'Dashboard', 'panel.dashboard', 'fas fa-tachometer-alt', NULL, 1, 1, NULL, NOW(), NOW()),
-    (2, 'themes', 'Manajemen Tema', 'themes.index', 'fas fa-paint-brush', NULL, 2, 1, NULL, NOW(), NOW()),
-    (3, 'plugins', 'Manajemen Plugin', 'plugins.index', 'fas fa-plug', NULL, 3, 1, NULL, NOW(), NOW()),
-    (4, 'users', 'Manajemen Pengguna', '#', 'fas fa-users', NULL, 4, 1, NULL, NOW(), NOW()),
-    (5, 'user-management', 'Manajemen Pengguna', 'users.index', 'fas fa-user-cog', 4, 1, 1, NULL, NOW(), NOW()),
-    (6, 'role-management', 'Manajemen Peran', 'roles.index', 'fas fa-user-tag', 4, 2, 1, NULL, NOW(), NOW()),
-    (7, 'menu-management', 'Manajemen Menu', 'menus.index', 'fas fa-list', NULL, 5, 1, NULL, NOW(), NOW());"
+    "INSERT INTO `menus` (`id`, `name`, `title`, `route`, `url`, `icon`, `parent_id`, `order`, `is_active`, `plugin_name`, `roles`, `created_at`, `updated_at`, `type`, `position`) VALUES
+    (75, 'berita', 'Berita', 'panel.berita.index', NULL, 'fas fa-newspaper', NULL, 0, 1, 'Berita', '[\"admin\",\"operator\"]', NOW(), NOW(), 'admin', 'sidebar-left'),
+    (76, 'berita_frontend', 'Berita', 'berita.index', NULL, 'fas fa-newspaper', NULL, 0, 1, 'Berita', '[]', NOW(), NOW(), 'frontend', 'header');"
 ];

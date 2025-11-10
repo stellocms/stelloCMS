@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 09 Nov 2025 pada 02.45
+-- Waktu pembuatan: 10 Nov 2025 pada 09.51
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.2.12
 
@@ -63,8 +63,8 @@ CREATE TABLE `cache` (
 --
 
 INSERT INTO `cache` (`key`, `value`, `expiration`) VALUES
-('stellocms_cache_active_themes_admin', 'O:39:\"Illuminate\\Database\\Eloquent\\Collection\":2:{s:8:\"\0*\0items\";a:1:{i:0;O:16:\"App\\Models\\Theme\":33:{s:13:\"\0*\0connection\";s:5:\"mysql\";s:8:\"\0*\0table\";s:6:\"themes\";s:13:\"\0*\0primaryKey\";s:2:\"id\";s:10:\"\0*\0keyType\";s:3:\"int\";s:12:\"incrementing\";b:1;s:7:\"\0*\0with\";a:0:{}s:12:\"\0*\0withCount\";a:0:{}s:19:\"preventsLazyLoading\";b:0;s:10:\"\0*\0perPage\";i:15;s:6:\"exists\";b:1;s:18:\"wasRecentlyCreated\";b:0;s:28:\"\0*\0escapeWhenCastingToString\";b:0;s:13:\"\0*\0attributes\";a:14:{s:2:\"id\";i:7;s:4:\"name\";s:8:\"adminlte\";s:4:\"type\";s:5:\"admin\";s:7:\"version\";s:5:\"3.2.0\";s:11:\"description\";s:38:\"AdminLTE Free Bootstrap Admin Template\";s:6:\"author\";s:11:\"AdminLTE.io\";s:10:\"author_url\";s:19:\"https://adminlte.io\";s:10:\"screenshot\";s:14:\"screenshot.png\";s:4:\"tags\";s:34:\"[\"admin\",\"bootstrap\",\"responsive\"]\";s:9:\"is_active\";i:1;s:12:\"is_installed\";i:1;s:10:\"is_default\";i:1;s:10:\"created_at\";s:19:\"2025-11-02 07:15:32\";s:10:\"updated_at\";s:19:\"2025-11-06 04:10:23\";}s:11:\"\0*\0original\";a:14:{s:2:\"id\";i:7;s:4:\"name\";s:8:\"adminlte\";s:4:\"type\";s:5:\"admin\";s:7:\"version\";s:5:\"3.2.0\";s:11:\"description\";s:38:\"AdminLTE Free Bootstrap Admin Template\";s:6:\"author\";s:11:\"AdminLTE.io\";s:10:\"author_url\";s:19:\"https://adminlte.io\";s:10:\"screenshot\";s:14:\"screenshot.png\";s:4:\"tags\";s:34:\"[\"admin\",\"bootstrap\",\"responsive\"]\";s:9:\"is_active\";i:1;s:12:\"is_installed\";i:1;s:10:\"is_default\";i:1;s:10:\"created_at\";s:19:\"2025-11-02 07:15:32\";s:10:\"updated_at\";s:19:\"2025-11-06 04:10:23\";}s:10:\"\0*\0changes\";a:0:{}s:11:\"\0*\0previous\";a:0:{}s:8:\"\0*\0casts\";a:4:{s:4:\"tags\";s:5:\"array\";s:9:\"is_active\";s:7:\"boolean\";s:12:\"is_installed\";s:7:\"boolean\";s:10:\"is_default\";s:7:\"boolean\";}s:17:\"\0*\0classCastCache\";a:0:{}s:21:\"\0*\0attributeCastCache\";a:0:{}s:13:\"\0*\0dateFormat\";N;s:10:\"\0*\0appends\";a:0:{}s:19:\"\0*\0dispatchesEvents\";a:0:{}s:14:\"\0*\0observables\";a:0:{}s:12:\"\0*\0relations\";a:0:{}s:10:\"\0*\0touches\";a:0:{}s:27:\"\0*\0relationAutoloadCallback\";N;s:26:\"\0*\0relationAutoloadContext\";N;s:10:\"timestamps\";b:1;s:13:\"usesUniqueIds\";b:0;s:9:\"\0*\0hidden\";a:0:{}s:10:\"\0*\0visible\";a:0:{}s:11:\"\0*\0fillable\";a:11:{i:0;s:4:\"name\";i:1;s:4:\"type\";i:2;s:7:\"version\";i:3;s:11:\"description\";i:4;s:6:\"author\";i:5;s:10:\"author_url\";i:6;s:10:\"screenshot\";i:7;s:4:\"tags\";i:8;s:9:\"is_active\";i:9;s:12:\"is_installed\";i:10;s:10:\"is_default\";}s:10:\"\0*\0guarded\";a:1:{i:0;s:1:\"*\";}}}s:28:\"\0*\0escapeWhenCastingToString\";b:0;}', 1762653494),
-('stellocms_cache_active_themes_frontend', 'O:39:\"Illuminate\\Database\\Eloquent\\Collection\":2:{s:8:\"\0*\0items\";a:4:{i:0;O:16:\"App\\Models\\Theme\":33:{s:13:\"\0*\0connection\";s:5:\"mysql\";s:8:\"\0*\0table\";s:6:\"themes\";s:13:\"\0*\0primaryKey\";s:2:\"id\";s:10:\"\0*\0keyType\";s:3:\"int\";s:12:\"incrementing\";b:1;s:7:\"\0*\0with\";a:0:{}s:12:\"\0*\0withCount\";a:0:{}s:19:\"preventsLazyLoading\";b:0;s:10:\"\0*\0perPage\";i:15;s:6:\"exists\";b:1;s:18:\"wasRecentlyCreated\";b:0;s:28:\"\0*\0escapeWhenCastingToString\";b:0;s:13:\"\0*\0attributes\";a:14:{s:2:\"id\";i:1;s:4:\"name\";s:7:\"stocker\";s:4:\"type\";s:8:\"frontend\";s:7:\"version\";s:5:\"1.0.0\";s:11:\"description\";s:39:\"Stocker - Stock Market Website Template\";s:6:\"author\";s:10:\"HTML Codex\";s:10:\"author_url\";s:21:\"https://htmlcodex.com\";s:10:\"screenshot\";s:18:\"img/carousel-1.jpg\";s:4:\"tags\";s:63:\"[\"stock-market\",\"finance\",\"investment\",\"business\",\"responsive\"]\";s:9:\"is_active\";i:1;s:12:\"is_installed\";i:1;s:10:\"is_default\";i:1;s:10:\"created_at\";s:19:\"2025-11-02 06:18:08\";s:10:\"updated_at\";s:19:\"2025-11-06 04:10:07\";}s:11:\"\0*\0original\";a:14:{s:2:\"id\";i:1;s:4:\"name\";s:7:\"stocker\";s:4:\"type\";s:8:\"frontend\";s:7:\"version\";s:5:\"1.0.0\";s:11:\"description\";s:39:\"Stocker - Stock Market Website Template\";s:6:\"author\";s:10:\"HTML Codex\";s:10:\"author_url\";s:21:\"https://htmlcodex.com\";s:10:\"screenshot\";s:18:\"img/carousel-1.jpg\";s:4:\"tags\";s:63:\"[\"stock-market\",\"finance\",\"investment\",\"business\",\"responsive\"]\";s:9:\"is_active\";i:1;s:12:\"is_installed\";i:1;s:10:\"is_default\";i:1;s:10:\"created_at\";s:19:\"2025-11-02 06:18:08\";s:10:\"updated_at\";s:19:\"2025-11-06 04:10:07\";}s:10:\"\0*\0changes\";a:0:{}s:11:\"\0*\0previous\";a:0:{}s:8:\"\0*\0casts\";a:4:{s:4:\"tags\";s:5:\"array\";s:9:\"is_active\";s:7:\"boolean\";s:12:\"is_installed\";s:7:\"boolean\";s:10:\"is_default\";s:7:\"boolean\";}s:17:\"\0*\0classCastCache\";a:0:{}s:21:\"\0*\0attributeCastCache\";a:0:{}s:13:\"\0*\0dateFormat\";N;s:10:\"\0*\0appends\";a:0:{}s:19:\"\0*\0dispatchesEvents\";a:0:{}s:14:\"\0*\0observables\";a:0:{}s:12:\"\0*\0relations\";a:0:{}s:10:\"\0*\0touches\";a:0:{}s:27:\"\0*\0relationAutoloadCallback\";N;s:26:\"\0*\0relationAutoloadContext\";N;s:10:\"timestamps\";b:1;s:13:\"usesUniqueIds\";b:0;s:9:\"\0*\0hidden\";a:0:{}s:10:\"\0*\0visible\";a:0:{}s:11:\"\0*\0fillable\";a:11:{i:0;s:4:\"name\";i:1;s:4:\"type\";i:2;s:7:\"version\";i:3;s:11:\"description\";i:4;s:6:\"author\";i:5;s:10:\"author_url\";i:6;s:10:\"screenshot\";i:7;s:4:\"tags\";i:8;s:9:\"is_active\";i:9;s:12:\"is_installed\";i:10;s:10:\"is_default\";}s:10:\"\0*\0guarded\";a:1:{i:0;s:1:\"*\";}}i:1;O:16:\"App\\Models\\Theme\":33:{s:13:\"\0*\0connection\";s:5:\"mysql\";s:8:\"\0*\0table\";s:6:\"themes\";s:13:\"\0*\0primaryKey\";s:2:\"id\";s:10:\"\0*\0keyType\";s:3:\"int\";s:12:\"incrementing\";b:1;s:7:\"\0*\0with\";a:0:{}s:12:\"\0*\0withCount\";a:0:{}s:19:\"preventsLazyLoading\";b:0;s:10:\"\0*\0perPage\";i:15;s:6:\"exists\";b:1;s:18:\"wasRecentlyCreated\";b:0;s:28:\"\0*\0escapeWhenCastingToString\";b:0;s:13:\"\0*\0attributes\";a:14:{s:2:\"id\";i:8;s:4:\"name\";s:5:\"dummy\";s:4:\"type\";s:8:\"frontend\";s:7:\"version\";s:5:\"1.0.0\";s:11:\"description\";s:32:\"Dummy theme for testing purposes\";s:6:\"author\";s:26:\"stelloCMS Development Team\";s:10:\"author_url\";s:22:\"https://stellocms.com\";s:10:\"screenshot\";s:0:\"\";s:4:\"tags\";s:19:\"[\"dummy\",\"testing\"]\";s:9:\"is_active\";i:1;s:12:\"is_installed\";i:1;s:10:\"is_default\";i:0;s:10:\"created_at\";s:19:\"2025-11-06 03:58:15\";s:10:\"updated_at\";s:19:\"2025-11-06 03:58:15\";}s:11:\"\0*\0original\";a:14:{s:2:\"id\";i:8;s:4:\"name\";s:5:\"dummy\";s:4:\"type\";s:8:\"frontend\";s:7:\"version\";s:5:\"1.0.0\";s:11:\"description\";s:32:\"Dummy theme for testing purposes\";s:6:\"author\";s:26:\"stelloCMS Development Team\";s:10:\"author_url\";s:22:\"https://stellocms.com\";s:10:\"screenshot\";s:0:\"\";s:4:\"tags\";s:19:\"[\"dummy\",\"testing\"]\";s:9:\"is_active\";i:1;s:12:\"is_installed\";i:1;s:10:\"is_default\";i:0;s:10:\"created_at\";s:19:\"2025-11-06 03:58:15\";s:10:\"updated_at\";s:19:\"2025-11-06 03:58:15\";}s:10:\"\0*\0changes\";a:0:{}s:11:\"\0*\0previous\";a:0:{}s:8:\"\0*\0casts\";a:4:{s:4:\"tags\";s:5:\"array\";s:9:\"is_active\";s:7:\"boolean\";s:12:\"is_installed\";s:7:\"boolean\";s:10:\"is_default\";s:7:\"boolean\";}s:17:\"\0*\0classCastCache\";a:0:{}s:21:\"\0*\0attributeCastCache\";a:0:{}s:13:\"\0*\0dateFormat\";N;s:10:\"\0*\0appends\";a:0:{}s:19:\"\0*\0dispatchesEvents\";a:0:{}s:14:\"\0*\0observables\";a:0:{}s:12:\"\0*\0relations\";a:0:{}s:10:\"\0*\0touches\";a:0:{}s:27:\"\0*\0relationAutoloadCallback\";N;s:26:\"\0*\0relationAutoloadContext\";N;s:10:\"timestamps\";b:1;s:13:\"usesUniqueIds\";b:0;s:9:\"\0*\0hidden\";a:0:{}s:10:\"\0*\0visible\";a:0:{}s:11:\"\0*\0fillable\";a:11:{i:0;s:4:\"name\";i:1;s:4:\"type\";i:2;s:7:\"version\";i:3;s:11:\"description\";i:4;s:6:\"author\";i:5;s:10:\"author_url\";i:6;s:10:\"screenshot\";i:7;s:4:\"tags\";i:8;s:9:\"is_active\";i:9;s:12:\"is_installed\";i:10;s:10:\"is_default\";}s:10:\"\0*\0guarded\";a:1:{i:0;s:1:\"*\";}}i:2;O:16:\"App\\Models\\Theme\":33:{s:13:\"\0*\0connection\";s:5:\"mysql\";s:8:\"\0*\0table\";s:6:\"themes\";s:13:\"\0*\0primaryKey\";s:2:\"id\";s:10:\"\0*\0keyType\";s:3:\"int\";s:12:\"incrementing\";b:1;s:7:\"\0*\0with\";a:0:{}s:12:\"\0*\0withCount\";a:0:{}s:19:\"preventsLazyLoading\";b:0;s:10:\"\0*\0perPage\";i:15;s:6:\"exists\";b:1;s:18:\"wasRecentlyCreated\";b:0;s:28:\"\0*\0escapeWhenCastingToString\";b:0;s:13:\"\0*\0attributes\";a:14:{s:2:\"id\";i:9;s:4:\"name\";s:8:\"therapyx\";s:4:\"type\";s:8:\"frontend\";s:7:\"version\";s:5:\"1.0.0\";s:11:\"description\";s:43:\"Terapia - Physical Therapy Website Template\";s:6:\"author\";s:10:\"HTML Codex\";s:10:\"author_url\";s:21:\"https://htmlcodex.com\";s:10:\"screenshot\";s:18:\"img/carousel-1.jpg\";s:4:\"tags\";s:63:\"[\"therapy\",\"healthcare\",\"medical\",\"physiotherapy\",\"responsive\"]\";s:9:\"is_active\";i:0;s:12:\"is_installed\";i:0;s:10:\"is_default\";i:0;s:10:\"created_at\";s:19:\"2025-11-06 03:58:15\";s:10:\"updated_at\";s:19:\"2025-11-06 04:08:57\";}s:11:\"\0*\0original\";a:14:{s:2:\"id\";i:9;s:4:\"name\";s:8:\"therapyx\";s:4:\"type\";s:8:\"frontend\";s:7:\"version\";s:5:\"1.0.0\";s:11:\"description\";s:43:\"Terapia - Physical Therapy Website Template\";s:6:\"author\";s:10:\"HTML Codex\";s:10:\"author_url\";s:21:\"https://htmlcodex.com\";s:10:\"screenshot\";s:18:\"img/carousel-1.jpg\";s:4:\"tags\";s:63:\"[\"therapy\",\"healthcare\",\"medical\",\"physiotherapy\",\"responsive\"]\";s:9:\"is_active\";i:0;s:12:\"is_installed\";i:0;s:10:\"is_default\";i:0;s:10:\"created_at\";s:19:\"2025-11-06 03:58:15\";s:10:\"updated_at\";s:19:\"2025-11-06 04:08:57\";}s:10:\"\0*\0changes\";a:0:{}s:11:\"\0*\0previous\";a:0:{}s:8:\"\0*\0casts\";a:4:{s:4:\"tags\";s:5:\"array\";s:9:\"is_active\";s:7:\"boolean\";s:12:\"is_installed\";s:7:\"boolean\";s:10:\"is_default\";s:7:\"boolean\";}s:17:\"\0*\0classCastCache\";a:0:{}s:21:\"\0*\0attributeCastCache\";a:0:{}s:13:\"\0*\0dateFormat\";N;s:10:\"\0*\0appends\";a:0:{}s:19:\"\0*\0dispatchesEvents\";a:0:{}s:14:\"\0*\0observables\";a:0:{}s:12:\"\0*\0relations\";a:0:{}s:10:\"\0*\0touches\";a:0:{}s:27:\"\0*\0relationAutoloadCallback\";N;s:26:\"\0*\0relationAutoloadContext\";N;s:10:\"timestamps\";b:1;s:13:\"usesUniqueIds\";b:0;s:9:\"\0*\0hidden\";a:0:{}s:10:\"\0*\0visible\";a:0:{}s:11:\"\0*\0fillable\";a:11:{i:0;s:4:\"name\";i:1;s:4:\"type\";i:2;s:7:\"version\";i:3;s:11:\"description\";i:4;s:6:\"author\";i:5;s:10:\"author_url\";i:6;s:10:\"screenshot\";i:7;s:4:\"tags\";i:8;s:9:\"is_active\";i:9;s:12:\"is_installed\";i:10;s:10:\"is_default\";}s:10:\"\0*\0guarded\";a:1:{i:0;s:1:\"*\";}}i:3;O:16:\"App\\Models\\Theme\":33:{s:13:\"\0*\0connection\";s:5:\"mysql\";s:8:\"\0*\0table\";s:6:\"themes\";s:13:\"\0*\0primaryKey\";s:2:\"id\";s:10:\"\0*\0keyType\";s:3:\"int\";s:12:\"incrementing\";b:1;s:7:\"\0*\0with\";a:0:{}s:12:\"\0*\0withCount\";a:0:{}s:19:\"preventsLazyLoading\";b:0;s:10:\"\0*\0perPage\";i:15;s:6:\"exists\";b:1;s:18:\"wasRecentlyCreated\";b:0;s:28:\"\0*\0escapeWhenCastingToString\";b:0;s:13:\"\0*\0attributes\";a:14:{s:2:\"id\";i:10;s:4:\"name\";s:7:\"therapy\";s:4:\"type\";s:8:\"frontend\";s:7:\"version\";s:5:\"1.0.0\";s:11:\"description\";s:43:\"Terapia - Physical Therapy Website Template\";s:6:\"author\";s:10:\"HTML Codex\";s:10:\"author_url\";s:21:\"https://htmlcodex.com\";s:10:\"screenshot\";s:18:\"img/carousel-1.jpg\";s:4:\"tags\";s:63:\"[\"therapy\",\"healthcare\",\"medical\",\"physiotherapy\",\"responsive\"]\";s:9:\"is_active\";i:1;s:12:\"is_installed\";i:1;s:10:\"is_default\";i:0;s:10:\"created_at\";s:19:\"2025-11-06 03:58:59\";s:10:\"updated_at\";s:19:\"2025-11-06 04:10:07\";}s:11:\"\0*\0original\";a:14:{s:2:\"id\";i:10;s:4:\"name\";s:7:\"therapy\";s:4:\"type\";s:8:\"frontend\";s:7:\"version\";s:5:\"1.0.0\";s:11:\"description\";s:43:\"Terapia - Physical Therapy Website Template\";s:6:\"author\";s:10:\"HTML Codex\";s:10:\"author_url\";s:21:\"https://htmlcodex.com\";s:10:\"screenshot\";s:18:\"img/carousel-1.jpg\";s:4:\"tags\";s:63:\"[\"therapy\",\"healthcare\",\"medical\",\"physiotherapy\",\"responsive\"]\";s:9:\"is_active\";i:1;s:12:\"is_installed\";i:1;s:10:\"is_default\";i:0;s:10:\"created_at\";s:19:\"2025-11-06 03:58:59\";s:10:\"updated_at\";s:19:\"2025-11-06 04:10:07\";}s:10:\"\0*\0changes\";a:0:{}s:11:\"\0*\0previous\";a:0:{}s:8:\"\0*\0casts\";a:4:{s:4:\"tags\";s:5:\"array\";s:9:\"is_active\";s:7:\"boolean\";s:12:\"is_installed\";s:7:\"boolean\";s:10:\"is_default\";s:7:\"boolean\";}s:17:\"\0*\0classCastCache\";a:0:{}s:21:\"\0*\0attributeCastCache\";a:0:{}s:13:\"\0*\0dateFormat\";N;s:10:\"\0*\0appends\";a:0:{}s:19:\"\0*\0dispatchesEvents\";a:0:{}s:14:\"\0*\0observables\";a:0:{}s:12:\"\0*\0relations\";a:0:{}s:10:\"\0*\0touches\";a:0:{}s:27:\"\0*\0relationAutoloadCallback\";N;s:26:\"\0*\0relationAutoloadContext\";N;s:10:\"timestamps\";b:1;s:13:\"usesUniqueIds\";b:0;s:9:\"\0*\0hidden\";a:0:{}s:10:\"\0*\0visible\";a:0:{}s:11:\"\0*\0fillable\";a:11:{i:0;s:4:\"name\";i:1;s:4:\"type\";i:2;s:7:\"version\";i:3;s:11:\"description\";i:4;s:6:\"author\";i:5;s:10:\"author_url\";i:6;s:10:\"screenshot\";i:7;s:4:\"tags\";i:8;s:9:\"is_active\";i:9;s:12:\"is_installed\";i:10;s:10:\"is_default\";}s:10:\"\0*\0guarded\";a:1:{i:0;s:1:\"*\";}}}s:28:\"\0*\0escapeWhenCastingToString\";b:0;}', 1762653494);
+('stellocms_cache_active_themes_admin', 'O:39:\"Illuminate\\Database\\Eloquent\\Collection\":2:{s:8:\"\0*\0items\";a:1:{i:0;O:16:\"App\\Models\\Theme\":33:{s:13:\"\0*\0connection\";s:5:\"mysql\";s:8:\"\0*\0table\";s:6:\"themes\";s:13:\"\0*\0primaryKey\";s:2:\"id\";s:10:\"\0*\0keyType\";s:3:\"int\";s:12:\"incrementing\";b:1;s:7:\"\0*\0with\";a:0:{}s:12:\"\0*\0withCount\";a:0:{}s:19:\"preventsLazyLoading\";b:0;s:10:\"\0*\0perPage\";i:15;s:6:\"exists\";b:1;s:18:\"wasRecentlyCreated\";b:0;s:28:\"\0*\0escapeWhenCastingToString\";b:0;s:13:\"\0*\0attributes\";a:14:{s:2:\"id\";i:7;s:4:\"name\";s:8:\"adminlte\";s:4:\"type\";s:5:\"admin\";s:7:\"version\";s:5:\"3.2.0\";s:11:\"description\";s:38:\"AdminLTE Free Bootstrap Admin Template\";s:6:\"author\";s:11:\"AdminLTE.io\";s:10:\"author_url\";s:19:\"https://adminlte.io\";s:10:\"screenshot\";s:14:\"screenshot.png\";s:4:\"tags\";s:34:\"[\"admin\",\"bootstrap\",\"responsive\"]\";s:9:\"is_active\";i:1;s:12:\"is_installed\";i:1;s:10:\"is_default\";i:1;s:10:\"created_at\";s:19:\"2025-11-02 07:15:32\";s:10:\"updated_at\";s:19:\"2025-11-06 04:10:23\";}s:11:\"\0*\0original\";a:14:{s:2:\"id\";i:7;s:4:\"name\";s:8:\"adminlte\";s:4:\"type\";s:5:\"admin\";s:7:\"version\";s:5:\"3.2.0\";s:11:\"description\";s:38:\"AdminLTE Free Bootstrap Admin Template\";s:6:\"author\";s:11:\"AdminLTE.io\";s:10:\"author_url\";s:19:\"https://adminlte.io\";s:10:\"screenshot\";s:14:\"screenshot.png\";s:4:\"tags\";s:34:\"[\"admin\",\"bootstrap\",\"responsive\"]\";s:9:\"is_active\";i:1;s:12:\"is_installed\";i:1;s:10:\"is_default\";i:1;s:10:\"created_at\";s:19:\"2025-11-02 07:15:32\";s:10:\"updated_at\";s:19:\"2025-11-06 04:10:23\";}s:10:\"\0*\0changes\";a:0:{}s:11:\"\0*\0previous\";a:0:{}s:8:\"\0*\0casts\";a:4:{s:4:\"tags\";s:5:\"array\";s:9:\"is_active\";s:7:\"boolean\";s:12:\"is_installed\";s:7:\"boolean\";s:10:\"is_default\";s:7:\"boolean\";}s:17:\"\0*\0classCastCache\";a:0:{}s:21:\"\0*\0attributeCastCache\";a:0:{}s:13:\"\0*\0dateFormat\";N;s:10:\"\0*\0appends\";a:0:{}s:19:\"\0*\0dispatchesEvents\";a:0:{}s:14:\"\0*\0observables\";a:0:{}s:12:\"\0*\0relations\";a:0:{}s:10:\"\0*\0touches\";a:0:{}s:27:\"\0*\0relationAutoloadCallback\";N;s:26:\"\0*\0relationAutoloadContext\";N;s:10:\"timestamps\";b:1;s:13:\"usesUniqueIds\";b:0;s:9:\"\0*\0hidden\";a:0:{}s:10:\"\0*\0visible\";a:0:{}s:11:\"\0*\0fillable\";a:11:{i:0;s:4:\"name\";i:1;s:4:\"type\";i:2;s:7:\"version\";i:3;s:11:\"description\";i:4;s:6:\"author\";i:5;s:10:\"author_url\";i:6;s:10:\"screenshot\";i:7;s:4:\"tags\";i:8;s:9:\"is_active\";i:9;s:12:\"is_installed\";i:10;s:10:\"is_default\";}s:10:\"\0*\0guarded\";a:1:{i:0;s:1:\"*\";}}}s:28:\"\0*\0escapeWhenCastingToString\";b:0;}', 1762763937),
+('stellocms_cache_active_themes_frontend', 'O:39:\"Illuminate\\Database\\Eloquent\\Collection\":2:{s:8:\"\0*\0items\";a:2:{i:0;O:16:\"App\\Models\\Theme\":33:{s:13:\"\0*\0connection\";s:5:\"mysql\";s:8:\"\0*\0table\";s:6:\"themes\";s:13:\"\0*\0primaryKey\";s:2:\"id\";s:10:\"\0*\0keyType\";s:3:\"int\";s:12:\"incrementing\";b:1;s:7:\"\0*\0with\";a:0:{}s:12:\"\0*\0withCount\";a:0:{}s:19:\"preventsLazyLoading\";b:0;s:10:\"\0*\0perPage\";i:15;s:6:\"exists\";b:1;s:18:\"wasRecentlyCreated\";b:0;s:28:\"\0*\0escapeWhenCastingToString\";b:0;s:13:\"\0*\0attributes\";a:14:{s:2:\"id\";i:1;s:4:\"name\";s:7:\"stocker\";s:4:\"type\";s:8:\"frontend\";s:7:\"version\";s:5:\"1.0.0\";s:11:\"description\";s:39:\"Stocker - Stock Market Website Template\";s:6:\"author\";s:10:\"HTML Codex\";s:10:\"author_url\";s:21:\"https://htmlcodex.com\";s:10:\"screenshot\";s:18:\"img/carousel-1.jpg\";s:4:\"tags\";s:63:\"[\"stock-market\",\"finance\",\"investment\",\"business\",\"responsive\"]\";s:9:\"is_active\";i:1;s:12:\"is_installed\";i:1;s:10:\"is_default\";i:1;s:10:\"created_at\";s:19:\"2025-11-02 06:18:08\";s:10:\"updated_at\";s:19:\"2025-11-06 04:10:07\";}s:11:\"\0*\0original\";a:14:{s:2:\"id\";i:1;s:4:\"name\";s:7:\"stocker\";s:4:\"type\";s:8:\"frontend\";s:7:\"version\";s:5:\"1.0.0\";s:11:\"description\";s:39:\"Stocker - Stock Market Website Template\";s:6:\"author\";s:10:\"HTML Codex\";s:10:\"author_url\";s:21:\"https://htmlcodex.com\";s:10:\"screenshot\";s:18:\"img/carousel-1.jpg\";s:4:\"tags\";s:63:\"[\"stock-market\",\"finance\",\"investment\",\"business\",\"responsive\"]\";s:9:\"is_active\";i:1;s:12:\"is_installed\";i:1;s:10:\"is_default\";i:1;s:10:\"created_at\";s:19:\"2025-11-02 06:18:08\";s:10:\"updated_at\";s:19:\"2025-11-06 04:10:07\";}s:10:\"\0*\0changes\";a:0:{}s:11:\"\0*\0previous\";a:0:{}s:8:\"\0*\0casts\";a:4:{s:4:\"tags\";s:5:\"array\";s:9:\"is_active\";s:7:\"boolean\";s:12:\"is_installed\";s:7:\"boolean\";s:10:\"is_default\";s:7:\"boolean\";}s:17:\"\0*\0classCastCache\";a:0:{}s:21:\"\0*\0attributeCastCache\";a:0:{}s:13:\"\0*\0dateFormat\";N;s:10:\"\0*\0appends\";a:0:{}s:19:\"\0*\0dispatchesEvents\";a:0:{}s:14:\"\0*\0observables\";a:0:{}s:12:\"\0*\0relations\";a:0:{}s:10:\"\0*\0touches\";a:0:{}s:27:\"\0*\0relationAutoloadCallback\";N;s:26:\"\0*\0relationAutoloadContext\";N;s:10:\"timestamps\";b:1;s:13:\"usesUniqueIds\";b:0;s:9:\"\0*\0hidden\";a:0:{}s:10:\"\0*\0visible\";a:0:{}s:11:\"\0*\0fillable\";a:11:{i:0;s:4:\"name\";i:1;s:4:\"type\";i:2;s:7:\"version\";i:3;s:11:\"description\";i:4;s:6:\"author\";i:5;s:10:\"author_url\";i:6;s:10:\"screenshot\";i:7;s:4:\"tags\";i:8;s:9:\"is_active\";i:9;s:12:\"is_installed\";i:10;s:10:\"is_default\";}s:10:\"\0*\0guarded\";a:1:{i:0;s:1:\"*\";}}i:1;O:16:\"App\\Models\\Theme\":33:{s:13:\"\0*\0connection\";s:5:\"mysql\";s:8:\"\0*\0table\";s:6:\"themes\";s:13:\"\0*\0primaryKey\";s:2:\"id\";s:10:\"\0*\0keyType\";s:3:\"int\";s:12:\"incrementing\";b:1;s:7:\"\0*\0with\";a:0:{}s:12:\"\0*\0withCount\";a:0:{}s:19:\"preventsLazyLoading\";b:0;s:10:\"\0*\0perPage\";i:15;s:6:\"exists\";b:1;s:18:\"wasRecentlyCreated\";b:0;s:28:\"\0*\0escapeWhenCastingToString\";b:0;s:13:\"\0*\0attributes\";a:14:{s:2:\"id\";i:10;s:4:\"name\";s:7:\"therapy\";s:4:\"type\";s:8:\"frontend\";s:7:\"version\";s:5:\"1.0.0\";s:11:\"description\";s:43:\"Terapia - Physical Therapy Website Template\";s:6:\"author\";s:10:\"HTML Codex\";s:10:\"author_url\";s:21:\"https://htmlcodex.com\";s:10:\"screenshot\";s:18:\"img/carousel-1.jpg\";s:4:\"tags\";s:63:\"[\"therapy\",\"healthcare\",\"medical\",\"physiotherapy\",\"responsive\"]\";s:9:\"is_active\";i:1;s:12:\"is_installed\";i:1;s:10:\"is_default\";i:0;s:10:\"created_at\";s:19:\"2025-11-06 03:58:59\";s:10:\"updated_at\";s:19:\"2025-11-06 04:10:07\";}s:11:\"\0*\0original\";a:14:{s:2:\"id\";i:10;s:4:\"name\";s:7:\"therapy\";s:4:\"type\";s:8:\"frontend\";s:7:\"version\";s:5:\"1.0.0\";s:11:\"description\";s:43:\"Terapia - Physical Therapy Website Template\";s:6:\"author\";s:10:\"HTML Codex\";s:10:\"author_url\";s:21:\"https://htmlcodex.com\";s:10:\"screenshot\";s:18:\"img/carousel-1.jpg\";s:4:\"tags\";s:63:\"[\"therapy\",\"healthcare\",\"medical\",\"physiotherapy\",\"responsive\"]\";s:9:\"is_active\";i:1;s:12:\"is_installed\";i:1;s:10:\"is_default\";i:0;s:10:\"created_at\";s:19:\"2025-11-06 03:58:59\";s:10:\"updated_at\";s:19:\"2025-11-06 04:10:07\";}s:10:\"\0*\0changes\";a:0:{}s:11:\"\0*\0previous\";a:0:{}s:8:\"\0*\0casts\";a:4:{s:4:\"tags\";s:5:\"array\";s:9:\"is_active\";s:7:\"boolean\";s:12:\"is_installed\";s:7:\"boolean\";s:10:\"is_default\";s:7:\"boolean\";}s:17:\"\0*\0classCastCache\";a:0:{}s:21:\"\0*\0attributeCastCache\";a:0:{}s:13:\"\0*\0dateFormat\";N;s:10:\"\0*\0appends\";a:0:{}s:19:\"\0*\0dispatchesEvents\";a:0:{}s:14:\"\0*\0observables\";a:0:{}s:12:\"\0*\0relations\";a:0:{}s:10:\"\0*\0touches\";a:0:{}s:27:\"\0*\0relationAutoloadCallback\";N;s:26:\"\0*\0relationAutoloadContext\";N;s:10:\"timestamps\";b:1;s:13:\"usesUniqueIds\";b:0;s:9:\"\0*\0hidden\";a:0:{}s:10:\"\0*\0visible\";a:0:{}s:11:\"\0*\0fillable\";a:11:{i:0;s:4:\"name\";i:1;s:4:\"type\";i:2;s:7:\"version\";i:3;s:11:\"description\";i:4;s:6:\"author\";i:5;s:10:\"author_url\";i:6;s:10:\"screenshot\";i:7;s:4:\"tags\";i:8;s:9:\"is_active\";i:9;s:12:\"is_installed\";i:10;s:10:\"is_default\";}s:10:\"\0*\0guarded\";a:1:{i:0;s:1:\"*\";}}}s:28:\"\0*\0escapeWhenCastingToString\";b:0;}', 1762763937);
 
 -- --------------------------------------------------------
 
@@ -96,6 +96,13 @@ CREATE TABLE `contoh_plugins` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data untuk tabel `contoh_plugins`
+--
+
+INSERT INTO `contoh_plugins` (`id`, `judul`, `deskripsi`, `gambar`, `tanggal_dibuat`, `aktif`, `slug`, `created_at`, `updated_at`) VALUES
+(1, 'Test', 'ini Test', 'contoh_plugins/oKEqprBFseZ0JCooLJZjEANcUYzDNGXx9ZKo1gRt.png', NULL, 1, 'test', '2025-11-10 00:40:29', '2025-11-10 00:40:29');
+
 -- --------------------------------------------------------
 
 --
@@ -115,16 +122,18 @@ CREATE TABLE `menus` (
   `plugin_name` varchar(255) DEFAULT NULL,
   `roles` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`roles`)),
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `type` varchar(255) DEFAULT 'admin',
+  `position` enum('header','sidebar-left','sidebar-right','footer') DEFAULT 'header'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data untuk tabel `menus`
 --
 
-INSERT INTO `menus` (`id`, `name`, `title`, `route`, `url`, `icon`, `parent_id`, `order`, `is_active`, `plugin_name`, `roles`, `created_at`, `updated_at`) VALUES
-(29, 'berita', 'Berita', 'berita.index', NULL, 'fas fa-newspaper', NULL, 0, 1, 'Berita', '[\"admin\",\"kepala-desa\",\"sekdes\"]', '2025-11-07 19:54:33', '2025-11-07 19:54:33'),
-(45, 'contohplugin', 'ContohPlugin', 'contohplugin.index', NULL, 'fas fa-cube', NULL, 0, 1, 'ContohPlugin', '[\"admin\",\"kepala-desa\",\"sekdes\"]', '2025-11-08 18:18:22', '2025-11-08 18:18:22');
+INSERT INTO `menus` (`id`, `name`, `title`, `route`, `url`, `icon`, `parent_id`, `order`, `is_active`, `plugin_name`, `roles`, `created_at`, `updated_at`, `type`, `position`) VALUES
+(75, 'berita', 'Berita', 'panel.berita.index', NULL, 'fas fa-newspaper', NULL, 0, 1, 'Berita', '[\"admin\",\"operator\"]', '2025-11-09 19:56:56', '2025-11-09 19:56:56', 'admin', 'sidebar-left'),
+(76, 'berita_frontend', 'Berita', 'berita.index', NULL, 'fas fa-newspaper', NULL, 0, 1, 'Berita', '[]', '2025-11-09 19:56:56', '2025-11-09 19:56:56', 'frontend', 'header');
 
 -- --------------------------------------------------------
 
@@ -173,8 +182,7 @@ CREATE TABLE `plugins` (
 INSERT INTO `plugins` (`id`, `name`, `active`, `installed`, `metadata`, `created_at`, `updated_at`) VALUES
 (25, 'SimplePage', 1, 1, NULL, '2025-11-07 15:25:02', '2025-11-07 15:25:02'),
 (27, 'Testimonial', 1, 1, NULL, '2025-11-07 18:46:19', '2025-11-07 18:46:19'),
-(28, 'Berita', 1, 1, NULL, '2025-11-07 19:54:33', '2025-11-07 19:54:33'),
-(42, 'ContohPlugin', 1, 1, NULL, '2025-11-08 18:18:22', '2025-11-08 18:18:22');
+(53, 'Berita', 1, 1, NULL, '2025-11-09 19:56:56', '2025-11-09 19:56:56');
 
 -- --------------------------------------------------------
 
@@ -217,7 +225,34 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('6zutoM7BZy82gissIrned95tQe0I2MzcBOLzzs5I', 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoieXNvNWx5RkNSdkk4OFBPTFp0VFFlS1RFNGdnZktYbVdIYWpycHFXUiI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6NDU6Imh0dHA6Ly9sb2NhbGhvc3Qvc3RlbGxvQ01TL3B1YmxpYy9wYW5lbC91c2VycyI7czo1OiJyb3V0ZSI7czoxMToidXNlcnMuaW5kZXgiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxO30=', 1762652689);
+('l0Yxxo03riOmI07QxnLPKSYj73XN3oi4qz1pcWjL', 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiZEJQRFdJTDdXaHBVcmNJdEZiU0dIT3FiSDBWN1pmUVRrdnFXRE5SciI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6NDc6Imh0dHA6Ly9sb2NhbGhvc3Qvc3RlbGxvQ01TL3B1YmxpYy9wYW5lbC9wbHVnaW5zIjtzOjU6InJvdXRlIjtzOjEzOiJwbHVnaW5zLmluZGV4Ijt9czoxNDoiY2FwdGNoYV9yZXN1bHQiO2k6MTU7czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTt9', 1762764347);
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `settings`
+--
+
+CREATE TABLE `settings` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `pengaturan` varchar(255) NOT NULL,
+  `nilai` text DEFAULT NULL,
+  `status` enum('aktif','nonaktif') DEFAULT 'aktif',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data untuk tabel `settings`
+--
+
+INSERT INTO `settings` (`id`, `pengaturan`, `nilai`, `status`, `created_at`, `updated_at`) VALUES
+(1, 'nama-web', 'PT. Sejahtera Bersama', 'aktif', NULL, '2025-11-09 17:40:19'),
+(2, 'deskripsi-web', 'Website milik PT Sejatera Bersama', 'aktif', NULL, '2025-11-09 17:40:42'),
+(3, 'keywords-web', 'perusahaan, sejatera bersama, pt sejahtera bersama', 'aktif', NULL, '2025-11-09 17:41:35'),
+(4, 'alamat-web', 'Jl Suka Maju 23 Bandung', 'aktif', NULL, NULL),
+(5, 'no-telephone', '08732641242', 'aktif', NULL, '2025-11-09 17:39:47'),
+(6, 'logo-web', 'img/icon/logo_96x96.png', 'aktif', '2025-11-09 17:39:27', '2025-11-09 20:01:00');
 
 -- --------------------------------------------------------
 
@@ -340,6 +375,12 @@ ALTER TABLE `sessions`
   ADD KEY `sessions_last_activity_index` (`last_activity`);
 
 --
+-- Indeks untuk tabel `settings`
+--
+ALTER TABLE `settings`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indeks untuk tabel `themes`
 --
 ALTER TABLE `themes`
@@ -367,13 +408,13 @@ ALTER TABLE `berita`
 -- AUTO_INCREMENT untuk tabel `contoh_plugins`
 --
 ALTER TABLE `contoh_plugins`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT untuk tabel `menus`
 --
 ALTER TABLE `menus`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=92;
 
 --
 -- AUTO_INCREMENT untuk tabel `migrations`
@@ -385,13 +426,19 @@ ALTER TABLE `migrations`
 -- AUTO_INCREMENT untuk tabel `plugins`
 --
 ALTER TABLE `plugins`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
 
 --
 -- AUTO_INCREMENT untuk tabel `roles`
 --
 ALTER TABLE `roles`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT untuk tabel `settings`
+--
+ALTER TABLE `settings`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT untuk tabel `themes`
