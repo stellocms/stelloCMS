@@ -82,24 +82,47 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarCollapse">
                     <div class="navbar-nav ms-auto py-0">
-                        <a href="<?php echo e(url('/')); ?>" class="nav-item nav-link active">Home</a>
-                        <a href="<?php echo e(url('/about')); ?>" class="nav-item nav-link">About</a>
-                        <a href="<?php echo e(url('/services')); ?>" class="nav-item nav-link">Services</a>
-                        <a href="<?php echo e(url('/blog')); ?>" class="nav-item nav-link">Blogs</a>
-                        <div class="nav-item dropdown">
-                            <a href="#" class="nav-link" data-bs-toggle="dropdown">
-                                <span class="dropdown-toggle">Pages</span>
-                            </a>
-                            <div class="dropdown-menu m-0">
-                                <a href="<?php echo e(url('/features')); ?>" class="dropdown-item">Our Features</a>
-                                <a href="<?php echo e(url('/team')); ?>" class="dropdown-item">Our team</a>
-                                <a href="<?php echo e(url('/testimonials')); ?>" class="dropdown-item">Testimonial</a>
-                                <a href="<?php echo e(url('/offers')); ?>" class="dropdown-item">Our offer</a>
-                                <a href="<?php echo e(url('/faq')); ?>" class="dropdown-item">FAQs</a>
-                                <a href="<?php echo e(url('/404')); ?>" class="dropdown-item">404 Page</a>
-                            </div>
-                        </div>
-                        <a href="<?php echo e(url('/contact')); ?>" class="nav-item nav-link">Contact Us</a>
+                        <?php
+                            // Get active frontend header menus without parent (main menus)
+                            $mainMenus = \App\Models\Menu::where('is_active', true)
+                                         ->whereNull('parent_id')
+                                         ->where('type', 'frontend')
+                                         ->where('position', 'header')
+                                         ->with('children')
+                                         ->orderBy('order')
+                                         ->get();
+                        ?>
+                        
+                        <a href="<?php echo e(url('/')); ?>" class="nav-item nav-link <?php echo e(request()->is('/') ? 'active' : ''); ?>">Home</a>
+                        
+                        <?php $__currentLoopData = $mainMenus; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $menu): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <?php if(empty($menu->roles) || (auth()->check() && auth()->user()->role && in_array(auth()->user()->role->name, $menu->roles))): ?>
+                                <?php if($menu->route && Route::has($menu->route)): ?>
+                                    <a href="<?php echo e(route($menu->route)); ?>" class="nav-item nav-link <?php echo e(request()->routeIs($menu->route) ? 'active' : ''); ?>"><?php echo e($menu->title); ?></a>
+                                <?php elseif($menu->url): ?>
+                                    <a href="<?php echo e($menu->url); ?>" class="nav-item nav-link"><?php echo e($menu->title); ?></a>
+                                <?php else: ?>
+                                    <?php if($menu->children->count() > 0): ?>
+                                        <div class="nav-item dropdown">
+                                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><?php echo e($menu->title); ?></a>
+                                            <div class="dropdown-menu m-0">
+                                                <?php $__currentLoopData = $menu->children; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $submenu): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                    <?php if(empty($submenu->roles) || (auth()->check() && auth()->user()->role && in_array(auth()->user()->role->name, $submenu->roles))): ?>
+                                                        <?php if($submenu->route && Route::has($submenu->route)): ?>
+                                                            <a href="<?php echo e(route($submenu->route)); ?>" class="dropdown-item <?php echo e(request()->routeIs($submenu->route) ? 'active' : ''); ?>"><?php echo e($submenu->title); ?></a>
+                                                        <?php elseif($submenu->url): ?>
+                                                            <a href="<?php echo e($submenu->url); ?>" class="dropdown-item"><?php echo e($submenu->title); ?></a>
+                                                        <?php endif; ?>
+                                                    <?php endif; ?>
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                            </div>
+                                        </div>
+                                    <?php else: ?>
+                                        <a href="<?php echo e(url('#')); ?>" class="nav-item nav-link"><?php echo e($menu->title); ?></a>
+                                    <?php endif; ?>
+                                <?php endif; ?>
+                            <?php endif; ?>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </div>
                     <a href="<?php echo e(url('/panel')); ?>" class="btn btn-primary rounded-pill py-2 px-4 my-3 my-lg-0 flex-shrink-0">Get Started</a>
                 </div>
@@ -149,12 +172,27 @@
                     <div class="col-md-6 col-lg-6 col-xl-2">
                         <div class="footer-item">
                             <h4 class="text-white mb-4">Quick Links</h4>
+                            <?php
+                                $footerMenus = \App\Models\Menu::where('is_active', true)
+                                             ->whereNull('parent_id')
+                                             ->where('type', 'frontend')
+                                             ->where('position', 'footer')
+                                             ->orderBy('order')
+                                             ->limit(6) // Limit to 6 main menu items
+                                             ->get();
+                            ?>
+                            
                             <a href="<?php echo e(url('/')); ?>"><i class="fas fa-angle-right me-2"></i> Home</a>
-                            <a href="<?php echo e(url('/about')); ?>"><i class="fas fa-angle-right me-2"></i> About Us</a>
-                            <a href="<?php echo e(url('/features')); ?>"><i class="fas fa-angle-right me-2"></i> Feature</a>
-                            <a href="<?php echo e(url('/services')); ?>"><i class="fas fa-angle-right me-2"></i> Services</a>
-                            <a href="<?php echo e(url('/blog')); ?>"><i class="fas fa-angle-right me-2"></i> Blog</a>
-                            <a href="<?php echo e(url('/contact')); ?>"><i class="fas fa-angle-right me-2"></i> Contact us</a>
+                            
+                            <?php $__currentLoopData = $footerMenus; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $menu): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <?php if(empty($menu->roles) || (auth()->check() && auth()->user()->role && in_array(auth()->user()->role->name, $menu->roles))): ?>
+                                    <?php if($menu->route && Route::has($menu->route)): ?>
+                                        <a href="<?php echo e(route($menu->route)); ?>"><i class="fas fa-angle-right me-2"></i> <?php echo e($menu->title); ?></a>
+                                    <?php elseif($menu->url): ?>
+                                        <a href="<?php echo e($menu->url); ?>"><i class="fas fa-angle-right me-2"></i> <?php echo e($menu->title); ?></a>
+                                    <?php endif; ?>
+                                <?php endif; ?>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </div>
                     </div>
                     <div class="col-md-6 col-lg-6 col-xl-3">

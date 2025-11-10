@@ -12,13 +12,13 @@ Route::prefix('panel/berita')->middleware(['auth'])->group(function () {
     Route::get('/{id}/edit', [BeritaController::class, 'edit'])->name('berita.edit');
     Route::put('/{id}', [BeritaController::class, 'update'])->name('berita.update');
     Route::delete('/{id}', [BeritaController::class, 'destroy'])->name('berita.destroy');
-    
+
     // Route untuk menampilkan berita di admin (opsional)
     Route::get('/{id}', [BeritaController::class, 'show'])->name('berita.show');
 });
 
-// Jika perlu rute frontend untuk menampilkan berita publik (opsional)
-// Route::prefix('berita')->group(function () {
-//     Route::get('/', [BeritaController::class, 'index'])->name('berita.public.index');
-//     Route::get('/{id}', [BeritaController::class, 'show'])->name('berita.public.show');
-// });
+// Rute frontend untuk menampilkan berita publik
+Route::prefix('berita')->group(function () {
+    Route::get('/', [BeritaController::class, 'index'])->name('berita.public.index');
+    Route::get('/{id}', [BeritaController::class, 'show'])->name('berita.public.show');
+});

@@ -3,8 +3,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?php echo $__env->yieldContent('title', cms_name() . ' - ' . cms_description()); ?></title>
-    
+    <title>@yield('title', cms_name() . ' - ' . cms_description())</title>
+
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome -->
@@ -26,14 +29,14 @@
     <!-- summernote -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-bs4.min.css">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="<?php echo e(asset('themes/adminlte/css/custom.css')); ?>">
+    <link rel="stylesheet" href="{{ asset('themes/adminlte/css/custom.css') }}">
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
 
   <!-- Preloader -->
   <div class="preloader flex-column justify-content-center align-items-center">
-    <img class="animation__shake" src="<?php echo e(asset('img/icon/logo_96x96.png')); ?>" alt="AdminLTELogo" height="60" width="60">
+    <img class="animation__shake" src="{{ asset('img/icon/logo_96x96.png') }}" alt="AdminLTELogo" height="60" width="60">
   </div>
 
   <!-- Navbar -->
@@ -44,7 +47,7 @@
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="<?php echo e(url('/')); ?>" class="nav-link">Beranda</a>
+        <a href="{{ url('/') }}" class="nav-link">Beranda</a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
         <a href="#" class="nav-link">Kontak</a>
@@ -85,7 +88,7 @@
           <a href="#" class="dropdown-item">
             <!-- Message Start -->
             <div class="media">
-              <img src="<?php echo e(asset('img/icon/logo_96x96.png')); ?>" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+              <img src="{{ asset('img/icon/logo_96x96.png') }}" alt="User Avatar" class="img-size-50 mr-3 img-circle">
               <div class="media-body">
                 <h3 class="dropdown-item-title">
                   Brad Diesel
@@ -101,7 +104,7 @@
           <a href="#" class="dropdown-item">
             <!-- Message Start -->
             <div class="media">
-              <img src="<?php echo e(asset('img/icon/logo_96x96.png')); ?>" alt="User Avatar" class="img-size-50 img-circle mr-3">
+              <img src="{{ asset('img/icon/logo_96x96.png') }}" alt="User Avatar" class="img-size-50 img-circle mr-3">
               <div class="media-body">
                 <h3 class="dropdown-item-title">
                   John Pierce
@@ -117,7 +120,7 @@
           <a href="#" class="dropdown-item">
             <!-- Message Start -->
             <div class="media">
-              <img src="<?php echo e(asset('img/icon/logo_96x96.png')); ?>" alt="User Avatar" class="img-size-50 img-circle mr-3">
+              <img src="{{ asset('img/icon/logo_96x96.png') }}" alt="User Avatar" class="img-size-50 img-circle mr-3">
               <div class="media-body">
                 <h3 class="dropdown-item-title">
                   Nora Silvester
@@ -169,8 +172,8 @@
         <a class="nav-link" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" role="button">
           <i class="fas fa-sign-out-alt"></i>
         </a>
-        <form id="logout-form" action="<?php echo e(route('logout')); ?>" method="POST" style="display: none;">
-            <?php echo csrf_field(); ?>
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+            @csrf
         </form>
       </li>
     </ul>
@@ -180,9 +183,9 @@
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="<?php echo e(url('/panel/dashboard')); ?>" class="brand-link">
-      <img src="<?php echo e(asset('img/icon/logo_96x96.png')); ?>" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-      <span class="brand-text font-weight-light"><?php echo e(cms_name()); ?></span>
+    <a href="{{ url('/panel/dashboard') }}" class="brand-link">
+      <img src="{{ asset('img/icon/logo_96x96.png') }}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+      <span class="brand-text font-weight-light">{{ cms_name() }}</span>
     </a>
 
     <!-- Sidebar -->
@@ -190,10 +193,10 @@
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
-          <img src="<?php echo e(asset('img/icon/logo_96x96.png')); ?>" class="img-circle elevation-2" alt="User Image">
+          <img src="{{ asset('img/icon/logo_96x96.png') }}" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="#" class="d-block"><?php echo e(auth()->user()->name ?? 'Admin'); ?></a>
+          <a href="#" class="d-block">{{ auth()->user()->name ?? 'Admin' }}</a>
         </div>
       </div>
 
@@ -214,34 +217,33 @@
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-          <?php
-              $isDashboardActive = request()->routeIs('panel.dashboard');
-          ?>
+          @php
+              $dashboardActive = request()->routeIs('panel.dashboard');
+          @endphp
           <li class="nav-item">
-            <a href="<?php echo e(url('/panel/dashboard')); ?>" class="nav-link <?php echo e($isDashboardActive ? 'active' : ''); ?>">
+            <a href="{{ url('/panel/dashboard') }}" class="nav-link {{ $dashboardActive ? 'active' : '' }}">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
                 Dashboard
               </p>
             </a>
           </li>
-          
+
           <!-- Dynamic plugin menu items from database -->
-          <?php
+          @php
               $menus = \App\Models\Menu::where('is_active', true)
                       ->whereNull('parent_id')
                       ->where('type', 'admin')
-                      ->with('children')
                       ->orderBy('order')
                       ->get();
-          ?>
-          
-          <?php $__currentLoopData = $menus; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $menu): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-              <?php if(empty($menu->roles) || (auth()->user() && auth()->user()->role && in_array(auth()->user()->role->name, $menu->roles))): ?>
-                  <?php if(!$menu->route || (Route::has($menu->route) && (!$menu->plugin_name || (app(App\Services\PluginManager::class)->isPluginActive($menu->plugin_name))))): ?>
-                      <?php if($menu->children->count() > 0): ?>
+          @endphp
+
+          @foreach($menus as $menu)
+              @if(empty($menu->roles) || (auth()->user() && auth()->user()->role && in_array(auth()->user()->role->name, $menu->roles)))
+                  @if(!$menu->route || (Route::has($menu->route) && (!$menu->plugin_name || (app(App\Services\PluginManager::class)->isPluginActive($menu->plugin_name)))))
+                      @if($menu->children->count() > 0)
                           <!-- Menu with submenu -->
-                          <?php
+                          @php
                               $isAnyChildActive = false;
                               foreach($menu->children as $submenu) {
                                   if(request()->routeIs($submenu->route)) {
@@ -250,36 +252,35 @@
                                   }
                               }
                               $menuIsActive = request()->routeIs($menu->route) || $isAnyChildActive;
-                          ?>
-                          <li class="nav-item has-treeview <?php echo e($menuIsActive ? 'menu-open' : ''); ?>">
-                              <a href="#" class="nav-link <?php echo e($menuIsActive ? 'active' : ''); ?>">
-                                  <i class="nav-icon <?php echo e($menu->icon); ?>"></i>
+                          @endphp
+                          <li class="nav-item has-treeview {{ $menuIsActive ? 'menu-open' : '' }}">
+                              <a href="#" class="nav-link {{ $menuIsActive ? 'active' : '' }}">
+                                  <i class="nav-icon {{ $menu->icon }}"></i>
                                   <p>
-                                      <?php echo e($menu->title); ?>
-
+                                      {{ $menu->title }}
                                       <i class="right fas fa-angle-left"></i>
                                   </p>
                               </a>
                               <ul class="nav nav-treeview">
-                                  <?php $__currentLoopData = $menu->children->sortBy('order'); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $submenu): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?> <!-- Menambahkan sortBy('order') -->
-                                      <?php if(empty($submenu->roles) || (auth()->user() && auth()->user()->role && in_array(auth()->user()->role->name, $submenu->roles))): ?>
-                                          <?php if(Route::has($submenu->route) && (!$submenu->plugin_name || (app(App\Services\PluginManager::class)->isPluginActive($submenu->plugin_name)))): ?>
+                                  @foreach($menu->children as $submenu)
+                                      @if(empty($submenu->roles) || (auth()->user() && auth()->user()->role && in_array(auth()->user()->role->name, $submenu->roles)))
+                                          @if(Route::has($submenu->route) && (!$submenu->plugin_name || (app(App\Services\PluginManager::class)->isPluginActive($submenu->plugin_name))))
                                               <li class="nav-item">
-                                                  <a href="<?php echo e(route($submenu->route)); ?>" class="nav-link <?php echo e(request()->routeIs($submenu->route) ? 'active' : ''); ?>">
+                                                  <a href="{{ route($submenu->route) }}" class="nav-link {{ request()->routeIs($submenu->route) ? 'active' : '' }}">
                                                       <i class="far fa-circle nav-icon"></i>
-                                                      <p><?php echo e($submenu->title); ?></p>
+                                                      <p>{{ $submenu->title }}</p>
                                                   </a>
                                               </li>
-                                          <?php endif; ?>
-                                      <?php endif; ?>
-                                  <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                          @endif
+                                      @endif
+                                  @endforeach
                               </ul>
                           </li>
-                      <?php else: ?>
+                      @else
                           <!-- Menu without submenu -->
                           <li class="nav-item">
-                              <?php if($menu->route): ?>
-                                  <?php
+                              @if($menu->route)
+                                  @php
                                       $isActive = request()->routeIs($menu->route);
                                       $isParentActive = false;
                                       
@@ -294,27 +295,27 @@
                                       }
                                       
                                       $activeClass = ($isActive || $isParentActive) ? 'active' : '';
-                                  ?>
-                                  <a href="<?php echo e(route($menu->route)); ?>" class="nav-link <?php echo e($activeClass); ?>">
-                              <?php else: ?>
-                                  <a href="<?php echo e($menu->url); ?>" class="nav-link">
-                              <?php endif; ?>
-                                  <i class="nav-icon <?php echo e($menu->icon); ?>"></i>
-                                  <p><?php echo e($menu->title); ?></p>
+                                  @endphp
+                                  <a href="{{ route($menu->route) }}" class="nav-link {{ $activeClass }}">
+                              @else
+                                  <a href="{{ $menu->url }}" class="nav-link">
+                              @endif
+                                  <i class="nav-icon {{ $menu->icon }}"></i>
+                                  <p>{{ $menu->title }}</p>
                               </a>
                           </li>
-                      <?php endif; ?>
-                  <?php endif; ?>
-              <?php endif; ?>
-          <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-          
-          <?php
+                      @endif
+                  @endif
+              @endif
+          @endforeach
+
+          @php
               $isUsersActive = request()->routeIs('users.*');
               $isRolesActive = request()->routeIs('roles.*');
               $isUserMenuActive = $isUsersActive || $isRolesActive;
-          ?>
-          <li class="nav-item has-treeview <?php echo e($isUserMenuActive ? 'menu-open' : ''); ?>">
-            <a href="#" class="nav-link <?php echo e($isUserMenuActive ? 'active' : ''); ?>">
+          @endphp
+          <li class="nav-item has-treeview {{ $isUserMenuActive ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link {{ $isUserMenuActive ? 'active' : '' }}">
               <i class="nav-icon fas fa-users"></i>
               <p>
                 Pengguna
@@ -323,31 +324,31 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="<?php echo e(route('users.index')); ?>" class="nav-link <?php echo e($isUsersActive ? 'active' : ''); ?>">
+                <a href="{{ route('users.index') }}" class="nav-link {{ $isUsersActive ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Manajemen Pengguna</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="<?php echo e(route('roles.index')); ?>" class="nav-link <?php echo e($isRolesActive ? 'active' : ''); ?>">
+                <a href="{{ route('roles.index') }}" class="nav-link {{ $isRolesActive ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Manajemen Peran</p>
                 </a>
               </li>
             </ul>
           </li>
-          
-          <?php
+
+          @php
               $isThemesActive = request()->routeIs('themes.*');
               $isPluginsActive = request()->routeIs('plugins.*');
               $isMenusActive = request()->routeIs('menus.*');
               $isSettingsActive = request()->routeIs('setting.*');
               $isUpdateActive = request()->is('panel/update');
               $isSettingsMenuActive = $isThemesActive || $isPluginsActive || $isMenusActive || $isSettingsActive || $isUpdateActive;
-          ?>
+          @endphp
           <!-- Pengaturan menu with submenu -->
-          <li class="nav-item has-treeview <?php echo e($isSettingsMenuActive ? 'menu-open' : ''); ?>">
-            <a href="#" class="nav-link <?php echo e($isSettingsMenuActive ? 'active' : ''); ?>">
+          <li class="nav-item has-treeview {{ $isSettingsMenuActive ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link {{ $isSettingsMenuActive ? 'active' : '' }}">
               <i class="nav-icon fas fa-cog"></i>
               <p>
                 Pengaturan
@@ -356,38 +357,38 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="<?php echo e(route('themes.index')); ?>" class="nav-link <?php echo e($isThemesActive ? 'active' : ''); ?>">
+                <a href="{{ route('themes.index') }}" class="nav-link {{ $isThemesActive ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Tema</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="<?php echo e(route('plugins.index')); ?>" class="nav-link <?php echo e($isPluginsActive ? 'active' : ''); ?>">
+                <a href="{{ route('plugins.index') }}" class="nav-link {{ $isPluginsActive ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Plugin</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="<?php echo e(route('menus.index')); ?>" class="nav-link <?php echo e($isMenusActive ? 'active' : ''); ?>">
+                <a href="{{ route('menus.index') }}" class="nav-link {{ $isMenusActive ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Menu</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="<?php echo e(route('setting.index')); ?>" class="nav-link <?php echo e($isSettingsActive ? 'active' : ''); ?>">
+                <a href="{{ route('setting.index') }}" class="nav-link {{ $isSettingsActive ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Setting</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="<?php echo e(url('/panel/update')); ?>" class="nav-link <?php echo e($isUpdateActive ? 'active' : ''); ?>">
+                <a href="{{ url('/panel/update') }}" class="nav-link {{ $isUpdateActive ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Update</p>
                 </a>
               </li>
             </ul>
           </li>
-          
+
           <li class="nav-item">
             <a href="#" class="nav-link" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
               <i class="nav-icon fas fa-sign-out-alt"></i>
@@ -410,12 +411,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0"><?php echo $__env->yieldContent('page_title', 'Dashboard'); ?></h1>
+            <h1 class="m-0">@yield('page_title', 'Dashboard')</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="<?php echo e(url('/panel/dashboard')); ?>">Home</a></li>
-              <li class="breadcrumb-item active"><?php echo $__env->yieldContent('page_title', 'Dashboard'); ?></li>
+              <li class="breadcrumb-item"><a href="{{ url('/panel/dashboard') }}">Home</a></li>
+              <li class="breadcrumb-item active">@yield('page_title', 'Dashboard')</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -426,17 +427,16 @@
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
-        <?php echo $__env->yieldContent('content'); ?>
+        @yield('content')
       </div><!-- /.container-fluid -->
     </section>
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
   <footer class="main-footer">
-    <strong>Copyright &copy; 2025 <a href="https://stellocms.com" target="_blank"><?php echo e(cms_name()); ?></a>.</strong> All rights reserved.
+    <strong>Copyright &copy; 2025 <a href="https://stellocms.com" target="_blank">{{ cms_name() }}</a>.</strong> All rights reserved.
     <div class="float-right d-none d-sm-inline-block">
-      <b>Version</b> <?php echo e(config('app.version')); ?>
-
+      <b>Version</b> {{ config('app.version') }}
     </div>
   </footer>
 
@@ -466,7 +466,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jqvmap/1.5.1/jquery.vmap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jqvmap/1.5.1/maps/jquery.vmap.usa.js"></script>
 <!-- jQuery Knob Chart -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-Knob/1.2.13/jquery.knob.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-knob/1.2.11/jquery.knob.min.js"></script>
 <!-- daterangepicker -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.0.5/daterangepicker.min.js"></script>
@@ -475,7 +475,7 @@
 <!-- Summernote -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-bs4.min.js"></script>
 <!-- overlayScrollbars -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/1.13.0/js/jquery.overlayScrollbars.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/overlayScrollbars/1.13.0/js/jquery.overlayScrollbars.min.js"></script>
 <!-- AdminLTE App -->
 <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2.0/dist/js/adminlte.js"></script>
 <!-- AdminLTE for demo purposes -->
@@ -483,6 +483,6 @@
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <!-- <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2.0/dist/js/pages/dashboard.js"></script> -->
 
-<?php echo $__env->yieldContent('scripts'); ?>
+@yield('scripts')
 </body>
-</html><?php /**PATH D:\htdocs\stelloCMS\app\Themes/admin/adminlte/layouts/app.blade.php ENDPATH**/ ?>
+</html>

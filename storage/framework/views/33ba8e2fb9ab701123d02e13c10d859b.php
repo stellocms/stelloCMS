@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Login - {{ cms_name() }}</title>
+    <title>Login - <?php echo e(cms_name()); ?></title>
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -14,14 +14,14 @@
     <!-- Theme style -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2.0/dist/css/adminlte.min.css">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ asset('themes/adminlte/css/custom.css') }}">
+    <link rel="stylesheet" href="<?php echo e(asset('themes/adminlte/css/custom.css')); ?>">
 </head>
 <body class="hold-transition login-page">
 <div class="login-box">
     <div class="login-logo">
         <a href="#">
-            <img src="{{ asset('img/icon/logo_96x96.png') }}" alt="{{ cms_name() }} Logo" style="height: 50px; margin-right: 10px; vertical-align: middle;">
-            <b>{{ cms_name() }}</b>
+            <img src="<?php echo e(asset('img/icon/logo_96x96.png')); ?>" alt="<?php echo e(cms_name()); ?> Logo" style="height: 50px; margin-right: 10px; vertical-align: middle;">
+            <b><?php echo e(cms_name()); ?></b>
         </a>
     </div>
     <!-- /.login-logo -->
@@ -29,30 +29,53 @@
         <div class="card-body login-card-body">
             <p class="login-box-msg">Silakan login untuk melanjutkan</p>
 
-            @if(session('error'))
+            <?php if(session('error')): ?>
                 <div class="alert alert-danger">
-                    {{ session('error') }}
-                </div>
-            @endif
+                    <?php echo e(session('error')); ?>
 
-            <form method="POST" action="{{ route('panel.login') }}" id="loginForm">
-                @csrf
-                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                </div>
+            <?php endif; ?>
+
+            <form method="POST" action="<?php echo e(route('panel.login')); ?>" id="loginForm">
+                <?php echo csrf_field(); ?>
+                <input type="hidden" name="_token" value="<?php echo e(csrf_token()); ?>">
                 <div class="input-group mb-3">
-                    <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email') }}" placeholder="Email" required autocomplete="email" autofocus>
+                    <input type="email" class="form-control <?php $__errorArgs = ['email'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" id="email" name="email" value="<?php echo e(old('email')); ?>" placeholder="Email" required autocomplete="email" autofocus>
                     <div class="input-group-append">
                         <div class="input-group-text">
                             <span class="fas fa-envelope"></span>
                         </div>
                     </div>
-                    @error('email')
+                    <?php $__errorArgs = ['email'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
                         <div class="invalid-feedback">
-                            {{ $message }}
+                            <?php echo e($message); ?>
+
                         </div>
-                    @enderror
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                 </div>
                 <div class="input-group mb-3">
-                    <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" placeholder="Password" required autocomplete="current-password">
+                    <input type="password" class="form-control <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" id="password" name="password" placeholder="Password" required autocomplete="current-password">
                     <div class="input-group-append">
                         <div class="input-group-text">
                             <span class="fas fa-lock"></span>
@@ -61,17 +84,25 @@
                             <span id="togglePassword" class="fas fa-eye"></span>
                         </div>
                     </div>
-                    @error('password')
+                    <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
                         <div class="invalid-feedback">
-                            {{ $message }}
+                            <?php echo e($message); ?>
+
                         </div>
-                    @enderror
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                 </div>
                 <!-- Captcha Matematika -->
                 <div class="input-group mb-3">
                     <div class="form-control text-center" style="background-color: #f8f9fa; display: flex; align-items: center; justify-content: space-between; padding-left: 10px; padding-right: 10px;">
                         <span id="captcha-equation">
-                        @php
+                        <?php
                             $num1 = rand(1, 20);
                             $num2 = rand(1, 20);
                             $operation = ['+', '-', '*'][array_rand(['+', '-', '*'])];
@@ -96,19 +127,35 @@
                             
                             $captcha_equation = "$num1 $operation $num2 = ?";
                             session(['captcha_result' => $result]);
-                        @endphp
-                            {{ $captcha_equation }}
+                        ?>
+                            <?php echo e($captcha_equation); ?>
+
                         </span>
                         <span style="cursor: pointer; margin-left: 10px;" onclick="refreshCaptcha()" title="Refresh Captcha">
                             <i class="fas fa-sync-alt"></i>
                         </span>
                     </div>
-                    <input type="number" class="form-control @error('captcha_input') is-invalid @enderror" id="captcha_input" name="captcha_input" placeholder="Jawaban" required>
-                    @error('captcha_input')
+                    <input type="number" class="form-control <?php $__errorArgs = ['captcha_input'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" id="captcha_input" name="captcha_input" placeholder="Jawaban" required>
+                    <?php $__errorArgs = ['captcha_input'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
                         <div class="invalid-feedback">
-                            {{ $message }}
+                            <?php echo e($message); ?>
+
                         </div>
-                    @enderror
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                 </div>
                 
                 <!-- Anti-automation measures -->
@@ -119,7 +166,7 @@
                 <div class="row">
                     <div class="col-8">
                         <div class="icheck-primary">
-                            <input type="checkbox" id="remember" name="remember" {{ old('remember') ? 'checked' : '' }}>
+                            <input type="checkbox" id="remember" name="remember" <?php echo e(old('remember') ? 'checked' : ''); ?>>
                             <label for="remember">
                                 Ingat Saya
                             </label>
@@ -180,7 +227,7 @@ function togglePassword() {
 }
 
 function refreshCaptcha() {
-    fetch('{{ route('captcha.refresh') }}')
+    fetch('<?php echo e(route('captcha.refresh')); ?>')
         .then(response => response.json())
         .then(data => {
             if (data.success) {
@@ -194,4 +241,4 @@ function refreshCaptcha() {
 }
 </script>
 </body>
-</html>
+</html><?php /**PATH D:\htdocs\stelloCMS\app\Themes/admin/adminlte/auth/login.blade.php ENDPATH**/ ?>

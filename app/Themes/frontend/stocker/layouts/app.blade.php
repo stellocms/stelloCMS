@@ -82,24 +82,47 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarCollapse">
                     <div class="navbar-nav ms-auto py-0">
-                        <a href="{{ url('/') }}" class="nav-item nav-link active">Home</a>
-                        <a href="{{ url('/about') }}" class="nav-item nav-link">About</a>
-                        <a href="{{ url('/services') }}" class="nav-item nav-link">Services</a>
-                        <a href="{{ url('/blog') }}" class="nav-item nav-link">Blogs</a>
-                        <div class="nav-item dropdown">
-                            <a href="#" class="nav-link" data-bs-toggle="dropdown">
-                                <span class="dropdown-toggle">Pages</span>
-                            </a>
-                            <div class="dropdown-menu m-0">
-                                <a href="{{ url('/features') }}" class="dropdown-item">Our Features</a>
-                                <a href="{{ url('/team') }}" class="dropdown-item">Our team</a>
-                                <a href="{{ url('/testimonials') }}" class="dropdown-item">Testimonial</a>
-                                <a href="{{ url('/offers') }}" class="dropdown-item">Our offer</a>
-                                <a href="{{ url('/faq') }}" class="dropdown-item">FAQs</a>
-                                <a href="{{ url('/404') }}" class="dropdown-item">404 Page</a>
-                            </div>
-                        </div>
-                        <a href="{{ url('/contact') }}" class="nav-item nav-link">Contact Us</a>
+                        @php
+                            // Get active frontend header menus without parent (main menus)
+                            $mainMenus = \App\Models\Menu::where('is_active', true)
+                                         ->whereNull('parent_id')
+                                         ->where('type', 'frontend')
+                                         ->where('position', 'header')
+                                         ->with('children')
+                                         ->orderBy('order')
+                                         ->get();
+                        @endphp
+                        
+                        <a href="{{ url('/') }}" class="nav-item nav-link {{ request()->is('/') ? 'active' : '' }}">Home</a>
+                        
+                        @foreach($mainMenus as $menu)
+                            @if(empty($menu->roles) || (auth()->check() && auth()->user()->role && in_array(auth()->user()->role->name, $menu->roles)))
+                                @if($menu->route && Route::has($menu->route))
+                                    <a href="{{ route($menu->route) }}" class="nav-item nav-link {{ request()->routeIs($menu->route) ? 'active' : '' }}">{{ $menu->title }}</a>
+                                @elseif($menu->url)
+                                    <a href="{{ $menu->url }}" class="nav-item nav-link">{{ $menu->title }}</a>
+                                @else
+                                    @if($menu->children->count() > 0)
+                                        <div class="nav-item dropdown">
+                                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">{{ $menu->title }}</a>
+                                            <div class="dropdown-menu m-0">
+                                                @foreach($menu->children as $submenu)
+                                                    @if(empty($submenu->roles) || (auth()->check() && auth()->user()->role && in_array(auth()->user()->role->name, $submenu->roles)))
+                                                        @if($submenu->route && Route::has($submenu->route))
+                                                            <a href="{{ route($submenu->route) }}" class="dropdown-item {{ request()->routeIs($submenu->route) ? 'active' : '' }}">{{ $submenu->title }}</a>
+                                                        @elseif($submenu->url)
+                                                            <a href="{{ $submenu->url }}" class="dropdown-item">{{ $submenu->title }}</a>
+                                                        @endif
+                                                    @endif
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    @else
+                                        <a href="{{ url('#') }}" class="nav-item nav-link">{{ $menu->title }}</a>
+                                    @endif
+                                @endif
+                            @endif
+                        @endforeach
                     </div>
                     <a href="{{ url('/panel') }}" class="btn btn-primary rounded-pill py-2 px-4 my-3 my-lg-0 flex-shrink-0">Get Started</a>
                 </div>
@@ -149,12 +172,27 @@
                     <div class="col-md-6 col-lg-6 col-xl-2">
                         <div class="footer-item">
                             <h4 class="text-white mb-4">Quick Links</h4>
+                            @php
+                                $footerMenus = \App\Models\Menu::where('is_active', true)
+                                             ->whereNull('parent_id')
+                                             ->where('type', 'frontend')
+                                             ->where('position', 'footer')
+                                             ->orderBy('order')
+                                             ->limit(6) // Limit to 6 main menu items
+                                             ->get();
+                            @endphp
+                            
                             <a href="{{ url('/') }}"><i class="fas fa-angle-right me-2"></i> Home</a>
-                            <a href="{{ url('/about') }}"><i class="fas fa-angle-right me-2"></i> About Us</a>
-                            <a href="{{ url('/features') }}"><i class="fas fa-angle-right me-2"></i> Feature</a>
-                            <a href="{{ url('/services') }}"><i class="fas fa-angle-right me-2"></i> Services</a>
-                            <a href="{{ url('/blog') }}"><i class="fas fa-angle-right me-2"></i> Blog</a>
-                            <a href="{{ url('/contact') }}"><i class="fas fa-angle-right me-2"></i> Contact us</a>
+                            
+                            @foreach($footerMenus as $menu)
+                                @if(empty($menu->roles) || (auth()->check() && auth()->user()->role && in_array(auth()->user()->role->name, $menu->roles)))
+                                    @if($menu->route && Route::has($menu->route))
+                                        <a href="{{ route($menu->route) }}"><i class="fas fa-angle-right me-2"></i> {{ $menu->title }}</a>
+                                    @elseif($menu->url)
+                                        <a href="{{ $menu->url }}"><i class="fas fa-angle-right me-2"></i> {{ $menu->title }}</a>
+                                    @endif
+                                @endif
+                            @endforeach
                         </div>
                     </div>
                     <div class="col-md-6 col-lg-6 col-xl-3">

@@ -1,9 +1,7 @@
-@extends('theme.admin.adminlte::layouts.app')
+<?php $__env->startSection('title', 'Manajemen Menu - ' . cms_name()); ?>
+<?php $__env->startSection('page_title', 'Manajemen Menu'); ?>
 
-@section('title', 'Manajemen Menu - ' . cms_name())
-@section('page_title', 'Manajemen Menu')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
@@ -19,7 +17,7 @@
                             <a class="nav-link" id="frontend-menu-tab" data-toggle="pill" href="#frontend-menu" role="tab" aria-controls="frontend-menu" aria-selected="false">Menu Frontend</a>
                         </li>
                         <li class="ml-auto pr-3">
-                            <a href="{{ route('menus.create') }}" class="btn btn-sm btn-primary">
+                            <a href="<?php echo e(route('menus.create')); ?>" class="btn btn-sm btn-primary">
                                 Tambah Menu
                             </a>
                         </li>
@@ -29,19 +27,21 @@
                     <div class="tab-content" id="custom-tabs-two-tabContent">
                         <!-- Tab Menu Admin -->
                         <div class="tab-pane fade active show" id="admin-menu" role="tabpanel" aria-labelledby="admin-menu-tab">
-                            @if(session('success') && session('menu_type') == 'admin')
+                            <?php if(session('success') && session('menu_type') == 'admin'): ?>
                                 <div class="alert alert-success alert-dismissible">
-                                    {{ session('success') }}
-                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                                </div>
-                            @endif
+                                    <?php echo e(session('success')); ?>
 
-                            @if(session('error') && session('menu_type') == 'admin')
-                                <div class="alert alert-danger alert-dismissible">
-                                    {{ session('error') }}
                                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                                 </div>
-                            @endif
+                            <?php endif; ?>
+
+                            <?php if(session('error') && session('menu_type') == 'admin'): ?>
+                                <div class="alert alert-danger alert-dismissible">
+                                    <?php echo e(session('error')); ?>
+
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                </div>
+                            <?php endif; ?>
 
                             <div class="table-responsive">
                                 <table class="table table-hover text-nowrap" id="admin-menu-table">
@@ -59,46 +59,47 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @forelse($adminMenus ?? [] as $menu)
-                                        <tr data-id="{{ $menu->id }}">
+                                        <?php $__empty_1 = true; $__currentLoopData = $adminMenus ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $menu): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                                        <tr data-id="<?php echo e($menu->id); ?>">
                                             <td><i class="fas fa-sort"></i></td>
-                                            <td>{{ $menu->id }}</td>
-                                            <td>{{ $menu->name }}</td>
-                                            <td>{{ $menu->title }}</td>
+                                            <td><?php echo e($menu->id); ?></td>
+                                            <td><?php echo e($menu->name); ?></td>
+                                            <td><?php echo e($menu->title); ?></td>
                                             <td>
-                                                @if($menu->route)
-                                                    <span class="badge badge-info">Route: {{ $menu->route }}</span>
-                                                @endif
-                                                @if($menu->url)
-                                                    <span class="badge badge-warning">URL: {{ $menu->url }}</span>
-                                                @endif
+                                                <?php if($menu->route): ?>
+                                                    <span class="badge badge-info">Route: <?php echo e($menu->route); ?></span>
+                                                <?php endif; ?>
+                                                <?php if($menu->url): ?>
+                                                    <span class="badge badge-warning">URL: <?php echo e($menu->url); ?></span>
+                                                <?php endif; ?>
                                             </td>
                                             <td>
-                                                {{ $menu->parent ? $menu->parent->title : '-' }}
+                                                <?php echo e($menu->parent ? $menu->parent->title : '-'); ?>
+
                                             </td>
-                                            <td>{{ ucfirst(str_replace('-', ' ', $menu->position)) }}</td>
+                                            <td><?php echo e(ucfirst(str_replace('-', ' ', $menu->position))); ?></td>
                                             <td>
-                                                @if($menu->is_active)
+                                                <?php if($menu->is_active): ?>
                                                     <span class="badge badge-success">Aktif</span>
-                                                @else
+                                                <?php else: ?>
                                                     <span class="badge badge-secondary">Tidak Aktif</span>
-                                                @endif
+                                                <?php endif; ?>
                                             </td>
                                             <td>
-                                                <a href="{{ route('menus.edit', $menu->id) }}" class="btn btn-sm btn-primary">Edit</a>
-                                                <form action="{{ route('menus.destroy', $menu->id) }}" method="POST" class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
+                                                <a href="<?php echo e(route('menus.edit', $menu->id)); ?>" class="btn btn-sm btn-primary">Edit</a>
+                                                <form action="<?php echo e(route('menus.destroy', $menu->id)); ?>" method="POST" class="d-inline">
+                                                    <?php echo csrf_field(); ?>
+                                                    <?php echo method_field('DELETE'); ?>
                                                     <button type="submit" class="btn btn-sm btn-danger"
                                                             onclick="return confirm('Yakin ingin menghapus menu ini?')">Hapus</button>
                                                 </form>
                                             </td>
                                         </tr>
-                                        @empty
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                         <tr>
                                             <td colspan="9" class="text-center">Belum ada menu admin.</td>
                                         </tr>
-                                        @endforelse
+                                        <?php endif; ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -106,19 +107,21 @@
                         
                         <!-- Tab Menu Frontend -->
                         <div class="tab-pane fade" id="frontend-menu" role="tabpanel" aria-labelledby="frontend-menu-tab">
-                            @if(session('success') && session('menu_type') == 'frontend')
+                            <?php if(session('success') && session('menu_type') == 'frontend'): ?>
                                 <div class="alert alert-success alert-dismissible">
-                                    {{ session('success') }}
-                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                                </div>
-                            @endif
+                                    <?php echo e(session('success')); ?>
 
-                            @if(session('error') && session('menu_type') == 'frontend')
-                                <div class="alert alert-danger alert-dismissible">
-                                    {{ session('error') }}
                                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                                 </div>
-                            @endif
+                            <?php endif; ?>
+
+                            <?php if(session('error') && session('menu_type') == 'frontend'): ?>
+                                <div class="alert alert-danger alert-dismissible">
+                                    <?php echo e(session('error')); ?>
+
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                </div>
+                            <?php endif; ?>
 
                             <div class="table-responsive">
                                 <table class="table table-hover text-nowrap" id="frontend-menu-table">
@@ -136,46 +139,47 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @forelse($frontendMenus ?? [] as $menu)
-                                        <tr data-id="{{ $menu->id }}">
+                                        <?php $__empty_1 = true; $__currentLoopData = $frontendMenus ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $menu): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                                        <tr data-id="<?php echo e($menu->id); ?>">
                                             <td><i class="fas fa-sort"></i></td>
-                                            <td>{{ $menu->id }}</td>
-                                            <td>{{ $menu->name }}</td>
-                                            <td>{{ $menu->title }}</td>
+                                            <td><?php echo e($menu->id); ?></td>
+                                            <td><?php echo e($menu->name); ?></td>
+                                            <td><?php echo e($menu->title); ?></td>
                                             <td>
-                                                @if($menu->route)
-                                                    <span class="badge badge-info">Route: {{ $menu->route }}</span>
-                                                @endif
-                                                @if($menu->url)
-                                                    <span class="badge badge-warning">URL: {{ $menu->url }}</span>
-                                                @endif
+                                                <?php if($menu->route): ?>
+                                                    <span class="badge badge-info">Route: <?php echo e($menu->route); ?></span>
+                                                <?php endif; ?>
+                                                <?php if($menu->url): ?>
+                                                    <span class="badge badge-warning">URL: <?php echo e($menu->url); ?></span>
+                                                <?php endif; ?>
                                             </td>
                                             <td>
-                                                {{ $menu->parent ? $menu->parent->title : '-' }}
+                                                <?php echo e($menu->parent ? $menu->parent->title : '-'); ?>
+
                                             </td>
-                                            <td>{{ ucfirst(str_replace('-', ' ', $menu->position)) }}</td>
+                                            <td><?php echo e(ucfirst(str_replace('-', ' ', $menu->position))); ?></td>
                                             <td>
-                                                @if($menu->is_active)
+                                                <?php if($menu->is_active): ?>
                                                     <span class="badge badge-success">Aktif</span>
-                                                @else
+                                                <?php else: ?>
                                                     <span class="badge badge-secondary">Tidak Aktif</span>
-                                                @endif
+                                                <?php endif; ?>
                                             </td>
                                             <td>
-                                                <a href="{{ route('menus.edit', $menu->id) }}" class="btn btn-sm btn-primary">Edit</a>
-                                                <form action="{{ route('menus.destroy', $menu->id) }}" method="POST" class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
+                                                <a href="<?php echo e(route('menus.edit', $menu->id)); ?>" class="btn btn-sm btn-primary">Edit</a>
+                                                <form action="<?php echo e(route('menus.destroy', $menu->id)); ?>" method="POST" class="d-inline">
+                                                    <?php echo csrf_field(); ?>
+                                                    <?php echo method_field('DELETE'); ?>
                                                     <button type="submit" class="btn btn-sm btn-danger"
                                                             onclick="return confirm('Yakin ingin menghapus menu ini?')">Hapus</button>
                                                 </form>
                                             </td>
                                         </tr>
-                                        @empty
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                         <tr>
                                             <td colspan="9" class="text-center">Belum ada menu frontend.</td>
                                         </tr>
-                                        @endforelse
+                                        <?php endif; ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -188,9 +192,9 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('scripts')
+<?php $__env->startSection('scripts'); ?>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
 $(document).ready(function() {
@@ -253,12 +257,12 @@ function updateMenuOrder(menuIds, type) {
     });
     
     $.ajax({
-        url: '{{ route('menus.update-order') }}',
+        url: '<?php echo e(route('menus.update-order')); ?>',
         type: 'POST',
         data: {
             menu_ids: menuIds,
             type: type,
-            _token: '{{ csrf_token() }}' // Menambahkan token CSRF secara eksplisit
+            _token: '<?php echo e(csrf_token()); ?>' // Menambahkan token CSRF secara eksplisit
         },
         success: function(response) {
             if(response.success) {
@@ -275,4 +279,5 @@ function updateMenuOrder(menuIds, type) {
     });
 }
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('theme.admin.adminlte::layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\htdocs\stelloCMS\app\Themes/admin/adminlte/menus/index.blade.php ENDPATH**/ ?>

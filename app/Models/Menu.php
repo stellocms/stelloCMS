@@ -11,7 +11,7 @@ class Menu extends Model
 
     protected $fillable = [
         'name',
-        'title', 
+        'title',
         'route',
         'url',
         'icon',
@@ -19,7 +19,9 @@ class Menu extends Model
         'order',
         'is_active',
         'plugin_name',
-        'roles'
+        'roles',
+        'type',
+        'position'
     ];
 
     protected $casts = [
@@ -56,5 +58,29 @@ class Menu extends Model
     public function scopeMain($query)
     {
         return $query->whereNull('parent_id');
+    }
+    
+    /**
+     * Scope to get frontend menus
+     */
+    public function scopeFrontend($query)
+    {
+        return $query->where('type', 'frontend');
+    }
+    
+    /**
+     * Scope to get admin menus
+     */
+    public function scopeAdmin($query)
+    {
+        return $query->where('type', 'admin');
+    }
+    
+    /**
+     * Scope to get menus by position
+     */
+    public function scopeByPosition($query, $position)
+    {
+        return $query->where('position', $position);
     }
 }

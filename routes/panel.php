@@ -45,6 +45,7 @@ Route::middleware(['auth', 'role:admin,kepala-desa,sekdes,kaur,kadus,rw,rt'])->g
     Route::get('/panel/menus/{id}/edit', [\App\Http\Controllers\MenuManagementController::class, 'edit'])->name('menus.edit');
     Route::put('/panel/menus/{id}', [\App\Http\Controllers\MenuManagementController::class, 'update'])->name('menus.update');
     Route::delete('/panel/menus/{id}', [\App\Http\Controllers\MenuManagementController::class, 'destroy'])->name('menus.destroy');
+    Route::post('/panel/menus/update-order', [\App\Http\Controllers\MenuManagementController::class, 'updateOrder'])->name('menus.update-order');
     
     // User management routes
     Route::get('/panel/users', [\App\Http\Controllers\UserManagementController::class, 'index'])->name('users.index');

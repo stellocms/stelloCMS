@@ -9,8 +9,33 @@ class MenuManagementController extends Controller
 {
     public function index()
     {
-        $menus = Menu::with('parent')->orderBy('order')->get();
-        return view_theme('admin', 'menus.index', compact('menus'));
+        $adminMenus = Menu::where('type', 'admin')->with('parent')->orderBy('order')->get();
+        $frontendMenus = Menu::where('type', 'frontend')->with('parent')->orderBy('order')->get();
+        
+        return view_theme('admin', 'menus.index', compact('adminMenus', 'frontendMenus'));
+    }
+
+    /**
+     * Update menu order via drag and drop
+     */
+    public function updateOrder(\Illuminate\Http\Request $request)
+    {
+        $request->validate([
+            'menu_ids' => 'required|array',
+            'menu_ids.*' => 'exists:menus,id',
+            'type' => 'required|string|in:admin,frontend'
+        ]);
+
+        $menuIds = $request->menu_ids;
+        $type = $request->type;
+
+        foreach ($menuIds as $index => $menuId) {
+            \App\Models\Menu::where('id', $menuId)
+                           ->where('type', $type)
+                           ->update(['order' => $index]);
+        }
+
+        return response()->json(['success' => true, 'message' => 'Urutan menu berhasil diperbarui']);
     }
 
     public function create()
@@ -29,6 +54,8 @@ class MenuManagementController extends Controller
             'icon' => 'nullable|string|max:255',
             'parent_id' => 'nullable|exists:menus,id',
             'order' => 'nullable|integer',
+            'type' => 'required|in:admin,frontend',
+            'position' => 'required|in:header,sidebar-left,sidebar-right,footer',
             'is_active' => 'boolean',
             'roles' => 'nullable|array',
             'plugin_name' => 'nullable|string|max:255',
@@ -42,6 +69,8 @@ class MenuManagementController extends Controller
             'icon' => $request->icon,
             'parent_id' => $request->parent_id,
             'order' => $request->order ?? 0,
+            'type' => $request->type,
+            'position' => $request->position,
             'is_active' => $request->is_active ?? false,
             'roles' => $request->roles ?? [],
             'plugin_name' => $request->plugin_name,
@@ -67,6 +96,8 @@ class MenuManagementController extends Controller
             'icon' => 'nullable|string|max:255',
             'parent_id' => 'nullable|exists:menus,id',
             'order' => 'nullable|integer',
+            'type' => 'required|in:admin,frontend',
+            'position' => 'required|in:header,sidebar-left,sidebar-right,footer',
             'is_active' => 'boolean',
             'roles' => 'nullable|array',
             'plugin_name' => 'nullable|string|max:255',
@@ -81,6 +112,8 @@ class MenuManagementController extends Controller
             'icon' => $request->icon,
             'parent_id' => $request->parent_id,
             'order' => $request->order ?? 0,
+            'type' => $request->type,
+            'position' => $request->position,
             'is_active' => $request->is_active ?? false,
             'roles' => $request->roles ?? [],
             'plugin_name' => $request->plugin_name,
