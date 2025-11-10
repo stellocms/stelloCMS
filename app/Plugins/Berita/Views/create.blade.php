@@ -12,7 +12,7 @@
                     <h3 class="card-title">Tambah Berita Baru</h3>
                 </div>
                 <!-- /.card-header -->
-                <form action="{{ route('berita.store') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ in_array('panel.berita.store', array_keys(app('router')->getRoutes()->getRoutesByName())) ? route('panel.berita.store') : url('/panel/berita') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="card-body">
                         <div class="form-group">
@@ -51,7 +51,7 @@
                     <!-- /.card-body -->
                     <div class="card-footer">
                         <button type="submit" class="btn btn-primary">Simpan</button>
-                        <a href="{{ route('berita.index') }}" class="btn btn-default">Batal</a>
+                        <a href="{{ in_array('panel.berita.index', array_keys(app('router')->getRoutes()->getRoutesByName())) ? route('panel.berita.index') : url('/panel/berita') }}" class="btn btn-default">Batal</a>
                     </div>
                 </form>
             </div>

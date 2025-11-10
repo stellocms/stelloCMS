@@ -13,7 +13,7 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <form action="{{ route('contohplugin.update', $contohPlugin->id) }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ in_array('panel.contohplugin.update', array_keys(app('router')->getRoutes()->getRoutesByName())) ? route('panel.contohplugin.update', $contohPlugin->id) : url('/panel/contohplugin/' . $contohPlugin->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                         <div class="row">
@@ -75,7 +75,7 @@
                         
                         <div class="card-footer">
                             <button type="submit" class="btn btn-primary">Update Contoh Plugin</button>
-                            <a href="{{ route('contohplugin.index') }}" class="btn btn-secondary">Batal</a>
+                            <a href="{{ in_array('panel.contohplugin.index', array_keys(app('router')->getRoutes()->getRoutesByName())) ? route('panel.contohplugin.index') : url('/panel/contohplugin') }}" class="btn btn-secondary">Batal</a>
                         </div>
                     </form>
                 </div>

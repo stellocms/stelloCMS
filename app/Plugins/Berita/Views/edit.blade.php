@@ -12,7 +12,7 @@
                     <h3 class="card-title">Edit Berita</h3>
                 </div>
                 <!-- /.card-header -->
-                <form action="{{ route('berita.update', $berita->id) }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ in_array('panel.berita.update', array_keys(app('router')->getRoutes()->getRoutesByName())) ? route('panel.berita.update', $berita->id) : url('/panel/berita/' . $berita->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     <div class="card-body">
@@ -57,7 +57,7 @@
                     <!-- /.card-body -->
                     <div class="card-footer">
                         <button type="submit" class="btn btn-primary">Update</button>
-                        <a href="{{ route('berita.index') }}" class="btn btn-default">Batal</a>
+                        <a href="{{ in_array('panel.berita.index', array_keys(app('router')->getRoutes()->getRoutesByName())) ? route('panel.berita.index') : url('/panel/berita') }}" class="btn btn-default">Batal</a>
                     </div>
                 </form>
             </div>

@@ -11,7 +11,7 @@
                 <div class="card-header">
                     <h3 class="card-title">Daftar Berita</h3>
                     <div class="card-tools">
-                        <a href="{{ route('berita.create') }}" class="btn btn-primary">Tambah Berita</a>
+                        <a href="{{ in_array('panel.berita.create', array_keys(app('router')->getRoutes()->getRoutesByName())) ? route('panel.berita.create') : url('/panel/berita/create') }}" class="btn btn-primary">Tambah Berita</a>
                     </div>
                 </div>
                 <!-- /.card-header -->
@@ -40,9 +40,9 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <a href="{{ route('berita.show', $item->id) }}" class="btn btn-sm btn-info">Lihat</a>
-                                    <a href="{{ route('berita.edit', $item->id) }}" class="btn btn-sm btn-primary">Edit</a>
-                                    <form action="{{ route('berita.destroy', $item->id) }}" method="POST" class="d-inline">
+                                    <a href="{{ in_array('panel.berita.show', array_keys(app('router')->getRoutes()->getRoutesByName())) ? route('panel.berita.show', $item->id) : url('/panel/berita/' . $item->id) }}" class="btn btn-sm btn-info">Lihat</a>
+                                    <a href="{{ in_array('panel.berita.edit', array_keys(app('router')->getRoutes()->getRoutesByName())) ? route('panel.berita.edit', $item->id) : url('/panel/berita/' . $item->id . '/edit') }}" class="btn btn-sm btn-primary">Edit</a>
+                                    <form action="{{ in_array('panel.berita.destroy', array_keys(app('router')->getRoutes()->getRoutesByName())) ? route('panel.berita.destroy', $item->id) : url('/panel/berita/' . $item->id) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus berita ini?')">Hapus</button>

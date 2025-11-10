@@ -49,7 +49,9 @@ class ContohPluginController extends Controller
             
             ContohPlugin::create($data);
             
-            return redirect()->route('contohplugin.index')->with('success', 'Contoh Plugin berhasil ditambahkan.');
+            $redirectUrl = in_array('panel.contohplugin.index', array_keys(app('router')->getRoutes()->getRoutesByName())) ? 
+                route('panel.contohplugin.index') : url('/panel/contohplugin');
+            return redirect($redirectUrl)->with('success', 'Contoh Plugin berhasil ditambahkan.');
         } catch (\Exception $e) {
             Log::error('Error in ContohPluginController@store: ' . $e->getMessage());
             throw $e;
@@ -104,7 +106,9 @@ class ContohPluginController extends Controller
             
             $contohPlugin->update($data);
             
-            return redirect()->route('contohplugin.index')->with('success', 'Contoh Plugin berhasil diperbarui.');
+            $redirectUrl = in_array('panel.contohplugin.index', array_keys(app('router')->getRoutes()->getRoutesByName())) ? 
+                route('panel.contohplugin.index') : url('/panel/contohplugin');
+            return redirect($redirectUrl)->with('success', 'Contoh Plugin berhasil diperbarui.');
         } catch (\Exception $e) {
             Log::error('Error in ContohPluginController@update: ' . $e->getMessage());
             throw $e;
@@ -123,7 +127,9 @@ class ContohPluginController extends Controller
             
             $contohPlugin->delete();
             
-            return redirect()->route('contohplugin.index')->with('success', 'Contoh Plugin berhasil dihapus.');
+            $redirectUrl = in_array('panel.contohplugin.index', array_keys(app('router')->getRoutes()->getRoutesByName())) ? 
+                route('panel.contohplugin.index') : url('/panel/contohplugin');
+            return redirect($redirectUrl)->with('success', 'Contoh Plugin berhasil dihapus.');
         } catch (\Exception $e) {
             Log::error('Error in ContohPluginController@destroy: ' . $e->getMessage());
             throw $e;

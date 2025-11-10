@@ -11,7 +11,7 @@
                 <div class="card-header">
                     <h3 class="card-title">Daftar Contoh Plugin</h3>
                     <div class="card-tools">
-                        <a href="{{ route('contohplugin.create') }}" class="btn btn-primary">Tambah Contoh Plugin</a>
+                        <a href="{{ in_array('panel.contohplugin.create', array_keys(app('router')->getRoutes()->getRoutesByName())) ? route('panel.contohplugin.create') : url('/panel/contohplugin/create') }}" class="btn btn-primary">Tambah Contoh Plugin</a>
                     </div>
                 </div>
                 <!-- /.card-header -->
@@ -47,9 +47,9 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <a href="{{ route('contohplugin.show', $item->id) }}" class="btn btn-sm btn-info">Lihat</a>
-                                    <a href="{{ route('contohplugin.edit', $item->id) }}" class="btn btn-sm btn-primary">Edit</a>
-                                    <form action="{{ route('contohplugin.destroy', $item->id) }}" method="POST" class="d-inline">
+                                    <a href="{{ in_array('panel.contohplugin.show', array_keys(app('router')->getRoutes()->getRoutesByName())) ? route('panel.contohplugin.show', $item->id) : url('/panel/contohplugin/' . $item->id) }}" class="btn btn-sm btn-info">Lihat</a>
+                                    <a href="{{ in_array('panel.contohplugin.edit', array_keys(app('router')->getRoutes()->getRoutesByName())) ? route('panel.contohplugin.edit', $item->id) : url('/panel/contohplugin/' . $item->id . '/edit') }}" class="btn btn-sm btn-primary">Edit</a>
+                                    <form action="{{ in_array('panel.contohplugin.destroy', array_keys(app('router')->getRoutes()->getRoutesByName())) ? route('panel.contohplugin.destroy', $item->id) : url('/panel/contohplugin/' . $item->id) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus contoh plugin ini?')">Hapus</button>

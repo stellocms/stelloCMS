@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Plugin;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class PluginManager
 {
@@ -30,11 +31,11 @@ class PluginManager
             $pluginName = basename($pluginPath);
 
             // Check if plugin has metadata
-            $pluginJsonPath = $pluginPath . '/plugin.json';
+            $pluginMetadataPath = $pluginPath . '/plugin.json';
             $metadata = [];
 
-            if (File::exists($pluginJsonPath)) {
-                $metadata = json_decode(File::get($pluginJsonPath), true);
+            if (File::exists($pluginMetadataPath)) {
+                $metadata = json_decode(File::get($pluginMetadataPath), true);
             }
 
             // Check if plugin is installed and active from database
@@ -117,6 +118,8 @@ class PluginManager
         // Handle database tables for specific plugins
         if ($pluginName === 'Berita') {
             $this->createOrUpdateBeritaTable();
+        } else if ($pluginName === 'ContohPlugin') {
+            $this->createOrUpdateContohPluginTable();
         } else {
             // For other plugins, run migrations from plugin's Database/Migrations directory
             $this->runPluginMigrations($pluginName);
@@ -125,7 +128,7 @@ class PluginManager
         // Create menu for the plugin
         $this->createPluginMenu($pluginName);
 
-        // Immediately load the plugin's routes and views after installation
+        // Load the plugin's routes and views after installation
         $this->loadPlugin($pluginName);
 
         return true;
@@ -189,33 +192,15 @@ class PluginManager
     }
 
     /**
-     * Run plugin migrations
-     */
-    protected function runPluginMigrations($pluginName)
-    {
-        // Handle database tables for specific plugins
-        switch ($pluginName) {
-            case 'ContohPlugin':
-                $this->createOrUpdateContohPluginTable();
-                break;
-            // Tambahkan case lain jika diperlukan
-            default:
-                // For other plugins, run migrations from plugin's Database/Migrations directory
-                $this->runStandardPluginMigrations($pluginName);
-                break;
-        }
-    }
-
-    /**
-     * Create or update contoh_plugins table
+     * Create or update contoh_plugin table
      */
     protected function createOrUpdateContohPluginTable()
     {
-        // Check if contoh_plugins table exists
+        // Check if contoh_plugin table exists
         $tableExists = \DB::select("SHOW TABLES LIKE 'contoh_plugins'");
 
         if (empty($tableExists)) {
-            // Create contoh_plugins table
+            // Create contoh_plugin table
             \DB::statement("
                 CREATE TABLE `contoh_plugins` (
                     `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -289,9 +274,9 @@ class PluginManager
     }
 
     /**
-     * Run standard plugin migrations from file
+     * Run plugin migrations
      */
-    protected function runStandardPluginMigrations($pluginName)
+    protected function runPluginMigrations($pluginName)
     {
         $pluginPath = $this->pluginsPath . '/' . $pluginName;
         $migrationsPath = $pluginPath . '/Database/Migrations';
@@ -303,17 +288,13 @@ class PluginManager
         $migrationFiles = File::glob($migrationsPath . '/*.php');
 
         foreach ($migrationFiles as $migrationFile) {
-            if (preg_match('/[0-9]{4}_[0-9]{2}_[0-9]{2}_[0-9]{6}_.*\.php$/', basename($migrationFile))) {
+            if (preg_match('/\d{4}_\d{2}_\d{2}_\d{6}_.*\.php$/', basename($migrationFile))) {
                 require_once $migrationFile;
 
-                // Extract migration class name from file
                 $fileName = pathinfo($migrationFile, PATHINFO_FILENAME);
                 $className = str_replace('_', '', ucwords($fileName, '_'));
+                $className = preg_replace('/\d+/', '', $className);
 
-                // Handle Laravel-style migration class names
-                $className = preg_replace('/[0-9_]+/', '', $className);
-
-                // Run the migration class's up method if it exists
                 if (class_exists($className)) {
                     $migration = new $className();
                     if (method_exists($migration, 'up')) {
@@ -360,12 +341,13 @@ class PluginManager
         $adminMenu = new \App\Models\Menu([
             'name' => strtolower($pluginName),
             'title' => $this->getPluginTitle($pluginName),
-            'route' => $this->getPluginRoute($pluginName),
+            'route' => $this->getPluginRoute($pluginName),  // Use the proper method
             'icon' => $this->getPluginIcon($pluginName),
             'plugin_name' => $pluginName,
             'type' => 'admin',
             'position' => 'sidebar-left', // Valid enum value for sidebar menu
             'is_active' => true,
+            'order' => 0, // Default order
             'roles' => ['admin', 'operator'] // Updated roles for plugin management
         ]);
 
@@ -376,12 +358,13 @@ class PluginManager
             $frontendMenu = new \App\Models\Menu([
                 'name' => strtolower($pluginName) . '_frontend',
                 'title' => $this->getPluginTitle($pluginName),
-                'route' => $this->getPluginRoute($pluginName),
+                'route' => $this->getPluginFrontendRoute($pluginName),  // Use the proper frontend method
                 'icon' => $this->getPluginIcon($pluginName),
                 'plugin_name' => $pluginName,
                 'type' => 'frontend',
                 'position' => 'header',
                 'is_active' => true,
+                'order' => 0, // Default order
                 'roles' => [] // No role restrictions for frontend
             ]);
 
@@ -395,17 +378,6 @@ class PluginManager
     protected function removePluginMenu($pluginName)
     {
         \App\Models\Menu::where('plugin_name', $pluginName)->delete();
-    }
-
-    /**
-     * Determine if a plugin should have a frontend menu
-     */
-    protected function shouldCreateFrontendMenu($pluginName)
-    {
-        // Define which plugins should have frontend menu
-        $frontendPlugins = ['Berita', 'ContohPlugin'];
-        
-        return in_array($pluginName, $frontendPlugins);
     }
 
     /**
@@ -433,15 +405,33 @@ class PluginManager
      */
     protected function getPluginRoute($pluginName)
     {
-        // Default plugin route based on plugin name
+        // Default plugin route based on plugin name with panel prefix for admin
         $lowerPluginName = strtolower($pluginName);
 
         // Special cases for specific plugins
         switch ($pluginName) {
             case 'Berita':
-                return 'berita.index';
+                return 'panel.berita.index'; // Admin route for Berita
             default:
-                // For other plugins, use a generic pattern
+                // For other plugins, use panel prefixed pattern for admin
+                return 'panel.' . $lowerPluginName . '.index';
+        }
+    }
+
+    /**
+     * Get frontend plugin route
+     */
+    protected function getPluginFrontendRoute($pluginName)
+    {
+        // Default plugin route for frontend based on plugin name
+        $lowerPluginName = strtolower($pluginName);
+
+        // Special cases for specific plugins
+        switch ($pluginName) {
+            case 'Berita':
+                return 'berita.index'; // Public route for Berita
+            default:
+                // For other plugins, use a generic pattern for frontend
                 return $lowerPluginName . '.index';
         }
     }
@@ -454,12 +444,24 @@ class PluginManager
         // Default icons for specific plugins
         $iconMap = [
             'Berita' => 'fas fa-newspaper',
+            'ContohPlugin' => 'fas fa-cube',
             'Pengumuman' => 'fas fa-bullhorn',
             'Keuangan' => 'fas fa-money-bill-wave',
             'Surat' => 'fas fa-envelope',
         ];
 
-        return $iconMap[$pluginName] ?? 'fas fa-cube';
+        return $iconMap[$pluginName] ?? 'fas fa-puzzle-piece';
+    }
+
+    /**
+     * Determine if a plugin should have a frontend menu
+     */
+    protected function shouldCreateFrontendMenu($pluginName)
+    {
+        // Define which plugins should have frontend menu
+        $frontendPlugins = ['Berita', 'ContohPlugin'];
+
+        return in_array($pluginName, $frontendPlugins);
     }
 
     /**
@@ -510,6 +512,20 @@ class PluginManager
         $routesPath = $pluginPath . '/routes.php';
         if (File::exists($routesPath)) {
             require_once $routesPath;
+        }
+
+        return true;
+    }
+    
+    /**
+     * Update menu order via drag and drop
+     */
+    public function updateMenuOrder($menuIds, $type)
+    {
+        foreach ($menuIds as $index => $menuId) {
+            \App\Models\Menu::where('id', $menuId)
+                           ->where('type', $type)
+                           ->update(['order' => $index]);
         }
 
         return true;

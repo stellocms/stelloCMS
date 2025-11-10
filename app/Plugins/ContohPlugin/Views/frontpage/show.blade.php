@@ -4,13 +4,21 @@
 @section('description', Str::limit(strip_tags($contohPlugin->deskripsi), 160))
 
 @section('content')
+<style>
+.navbar-light .navbar-nav .nav-link, .sticky-top.navbar-light .navbar-nav .nav-link {
+        padding: 10px 0;
+        margin-left: 0;
+        color: var(--bs-dark);
+    }
+</style>
+<br>
 <div class="container mt-5">
     <div class="row">
         <div class="col-12">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('home') }}">Beranda</a></li>
-                    <li class="breadcrumb-item"><a href="{{ route('contohplugin.frontpage.index') }}">Contoh Plugin</a></li>
+                    <li class="breadcrumb-item"><a href="{{ in_array('home', array_keys(app('router')->getRoutes()->getRoutesByName())) ? route('home') : url('/') }}">Beranda</a></li>
+                    <li class="breadcrumb-item"><a href="{{ in_array('contohplugin.frontpage.index', array_keys(app('router')->getRoutes()->getRoutesByName())) ? route('contohplugin.frontpage.index') : url('/contohplugin') }}">Contoh Plugin</a></li>
                     <li class="breadcrumb-item active">{{ $contohPlugin->judul }}</li>
                 </ol>
             </nav>
@@ -42,7 +50,7 @@
             </article>
             
             <div class="mt-4">
-                <a href="{{ route('contohplugin.frontpage.index') }}" class="btn btn-secondary">
+                <a href="{{ in_array('contohplugin.frontpage.index', array_keys(app('router')->getRoutes()->getRoutesByName())) ? route('contohplugin.frontpage.index') : url('/contohplugin') }}" class="btn btn-secondary">
                     &laquo; Kembali ke Daftar
                 </a>
             </div>

@@ -57,10 +57,10 @@
                         <div class="dropdown">
                             <a href="#" class="dropdown-toggle text-dark" data-bs-toggle="dropdown"><small><i class="fa fa-home text-primary me-2"></i> My Dashboard</small></a>
                             <div class="dropdown-menu rounded">
-                                <a href="{{ url('/panel/profile') }}" class="dropdown-item"><i class="fas fa-user-alt me-2"></i> My Profile</a>
-                                <a href="{{ url('/panel/messages') }}" class="dropdown-item"><i class="fas fa-comment-alt me-2"></i> Inbox</a>
-                                <a href="{{ url('/panel/notifications') }}" class="dropdown-item"><i class="fas fa-bell me-2"></i> Notifications</a>
-                                <a href="{{ url('/panel/settings') }}" class="dropdown-item"><i class="fas fa-cog me-2"></i> Account Settings</a>
+                                <a href="{{ url('/profile') }}" class="dropdown-item"><i class="fas fa-user-alt me-2"></i> My Profile</a>
+                                <a href="{{ url('/messages') }}" class="dropdown-item"><i class="fas fa-comment-alt me-2"></i> Inbox</a>
+                                <a href="{{ url('/notifications') }}" class="dropdown-item"><i class="fas fa-bell me-2"></i> Notifications</a>
+                                <a href="{{ url('/settings') }}" class="dropdown-item"><i class="fas fa-cog me-2"></i> Account Settings</a>
                                 <a href="{{ url('/logout') }}" class="dropdown-item"><i class="fas fa-power-off me-2"></i> Log Out</a>
                             </div>
                         </div>
@@ -106,7 +106,7 @@
                                         <div class="nav-item dropdown">
                                             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">{{ $menu->title }}</a>
                                             <div class="dropdown-menu m-0">
-                                                @foreach($menu->children as $submenu)
+                                                @foreach($menu->children->sortBy('order') as $submenu)
                                                     @if(empty($submenu->roles) || (auth()->check() && auth()->user()->role && in_array(auth()->user()->role->name, $submenu->roles)))
                                                         @if($submenu->route && Route::has($submenu->route))
                                                             <a href="{{ route($submenu->route) }}" class="dropdown-item {{ request()->routeIs($submenu->route) ? 'active' : '' }}">{{ $submenu->title }}</a>
@@ -124,7 +124,7 @@
                             @endif
                         @endforeach
                     </div>
-                    <a href="{{ url('/panel') }}" class="btn btn-primary rounded-pill py-2 px-4 my-3 my-lg-0 flex-shrink-0">Get Started</a>
+                    <a href="{{ url('') }}" class="btn btn-primary rounded-pill py-2 px-4 my-3 my-lg-0 flex-shrink-0">Get Started</a>
                 </div>
             </nav>
 
@@ -184,7 +184,7 @@
                             
                             <a href="{{ url('/') }}"><i class="fas fa-angle-right me-2"></i> Home</a>
                             
-                            @foreach($footerMenus as $menu)
+                            @foreach($footerMenus->sortBy('order') as $menu)
                                 @if(empty($menu->roles) || (auth()->check() && auth()->user()->role && in_array(auth()->user()->role->name, $menu->roles)))
                                     @if($menu->route && Route::has($menu->route))
                                         <a href="{{ route($menu->route) }}"><i class="fas fa-angle-right me-2"></i> {{ $menu->title }}</a>

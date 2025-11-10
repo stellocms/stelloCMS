@@ -228,55 +228,23 @@
           
           <!-- Dynamic plugin menu items from database -->
           @php
-              // Load all plugins to ensure routes are available
-              $pluginManager = app(App\Services\PluginManager::class);
-              $allPlugins = $pluginManager->getPlugins();
-              
-              foreach($allPlugins as $plugin) {
-                  if($plugin['active']) {
-                      $pluginManager->loadPlugin($plugin['name']);
-                  }
-              }
-              
               $menus = \App\Models\Menu::where('is_active', true)
                       ->whereNull('parent_id')
-                      ->where(function($query) {
-                          $query->where('type', 'admin')
-                                ->orWhereNull('type');
-                      })
+                      ->where('type', 'admin')
                       ->with('children')
                       ->orderBy('order')
                       ->get();
-              
-              // Debug: Log jumlah menu
-              \Log::info('Menu items count: ' . $menus->count());
-              \Log::info('Menu items: ' . $menus->toJson());
-              
-              // Debug: Log user info and plugin info
-              $currentUser = auth()->user();
-              \Log::info('Current user: ' . ($currentUser ? $currentUser->name . ' (Role: ' . ($currentUser->role ? $currentUser->role->name : 'none') . ')' : 'not logged in'));
-              \Log::info('Total plugins: ' . count($allPlugins));
-              foreach($allPlugins as $plugin) {
-                  \Log::info('Plugin: ' . $plugin['name'] . ' - Active: ' . ($plugin['active'] ? 'YES' : 'NO'));
-              }
           @endphp
           
           @foreach($menus as $menu)
               @if(empty($menu->roles) || (auth()->user() && auth()->user()->role && in_array(auth()->user()->role->name, $menu->roles)))
-                  @php
-                      $routeExists = Route::has($menu->route);
-                      $pluginActive = $menu->plugin_name ? app(App\Services\PluginManager::class)->isPluginActive($menu->plugin_name) : false;
-                      $shouldDisplay = !$menu->route || ($routeExists || ($menu->plugin_name && $pluginActive));
-                      
-                      \Log::info('Menu: ' . $menu->title . ' - Route exists: ' . ($routeExists ? 'YES' : 'NO') . ' - Plugin active: ' . ($pluginActive ? 'YES' : 'NO') . ' - Should display: ' . ($shouldDisplay ? 'YES' : 'NO') . ' - Route name: ' . ($menu->route ? $menu->route : 'N/A'));
-                  @endphp
-                  @if(!$menu->route || (in_array($menu->route, array_keys(app('router')->getRoutes()->getRoutesByName())) || ($menu->plugin_name && app(App\Services\PluginManager::class)->isPluginActive($menu->plugin_name))))
+                  @if(!$menu->route || (Route::has($menu->route) && (!$menu->plugin_name || (app(App\Services\PluginManager::class)->isPluginActive($menu->plugin_name)))))
                       @if($menu->children->count() > 0)
                           <!-- Menu with submenu -->
                           @php
                               $isAnyChildActive = false;
                               foreach($menu->children as $submenu) {
-                                  if(in_array($submenu->route, array_keys(app('router')->getRoutes()->getRoutesByName())) && request()->routeIs($submenu->route)) {
+                                  if(request()->routeIs($submenu->route)) {
                                       $isAnyChildActive = true;
                                       break;
                                   }
@@ -296,27 +264,7 @@
                                       @if(empty($submenu->roles) || (auth()->user() && auth()->user()->role && in_array(auth()->user()->role->name, $submenu->roles)))
                                           @if(Route::has($submenu->route) && (!$submenu->plugin_name || (app(App\Services\PluginManager::class)->isPluginActive($submenu->plugin_name))))
                                               <li class="nav-item">
-                                                  @php
-                                                      $submenuUrl = '#';
-                                                      if($submenu->route) {
-                                                          if(in_array($submenu->route, array_keys(app('router')->getRoutes()->getRoutesByName()))) {
-                                                              $submenuUrl = route($submenu->route);
-                                                          } else if($submenu->plugin_name) {
-                                                              // Jika route tidak ditemukan tapi ini adalah menu plugin, 
-                                                              // kita buat URL berdasarkan konvensi plugin
-                                                              $routeName = $submenu->route;
-                                                              if(preg_match('/^panel\.([^.]+)\.index$/', $routeName, $matches)) {
-                                                                  $submenuUrl = url('/panel/' . $matches[1]);
-                                                              } else if(preg_match('/^panel\.([^.]+)\.(.+)$/', $routeName, $matches)) {
-                                                                  $submenuUrl = url('/panel/' . $matches[1]);
-                                                              } else {
-                                                                  $submenuUrl = '#';
-                                                              }
-                                                          }
-                                                      }
-                                                      $submenuActive = in_array($submenu->route, array_keys(app('router')->getRoutes()->getRoutesByName())) ? request()->routeIs($submenu->route) : false;
-                                                  @endphp
-                                                  <a href="{{ $submenuUrl }}" class="nav-link {{ $submenuActive ? 'active' : '' }}">
+                                                  <a href="{{ route($submenu->route) }}" class="nav-link {{ request()->routeIs($submenu->route) ? 'active' : '' }}">
                                                       <i class="far fa-circle nav-icon"></i>
                                                       <p>{{ $submenu->title }}</p>
                                                   </a>
@@ -331,13 +279,13 @@
                           <li class="nav-item">
                               @if($menu->route)
                                   @php
-                                      $isActive = in_array($menu->route, array_keys(app('router')->getRoutes()->getRoutesByName())) ? request()->routeIs($menu->route) : false;
+                                      $isActive = request()->routeIs($menu->route);
                                       $isParentActive = false;
                                       
                                       // Check if this menu has submenu and any of them is active
                                       if($menu->children->count() > 0) {
                                           foreach($menu->children as $submenu) {
-                                              if(in_array($submenu->route, array_keys(app('router')->getRoutes()->getRoutesByName())) && request()->routeIs($submenu->route)) {
+                                              if(request()->routeIs($submenu->route)) {
                                                   $isParentActive = true;
                                                   break;
                                               }
@@ -346,28 +294,7 @@
                                       
                                       $activeClass = ($isActive || $isParentActive) ? 'active' : '';
                                   @endphp
-                                  @php
-                                      $menuUrl = '#';
-                                      if($menu->route) {
-                                          if(in_array($menu->route, array_keys(app('router')->getRoutes()->getRoutesByName()))) {
-                                              $menuUrl = route($menu->route);
-                                          } else if($menu->plugin_name) {
-                                              // Jika route tidak ditemukan tapi ini adalah menu plugin, 
-                                              // kita buat URL berdasarkan konvensi plugin
-                                              $routeName = $menu->route;
-                                              // Contoh: panel.contohplugin.index -> /panel/contohplugin
-                                              if(preg_match('/^panel\.([^.]+)\.index$/', $routeName, $matches)) {
-                                                  $menuUrl = url('/panel/' . $matches[1]);
-                                              } else if(preg_match('/^panel\.([^.]+)\.(.+)$/', $routeName, $matches)) {
-                                                  $menuUrl = url('/panel/' . $matches[1]);
-                                              } else {
-                                                  $menuUrl = '#';
-                                              }
-                                          }
-                                      }
-                                      $menuActive = in_array($menu->route, array_keys(app('router')->getRoutes()->getRoutesByName())) ? request()->routeIs($menu->route) : false;
-                                  @endphp
-                                  <a href="{{ $menuUrl }}" class="nav-link {{ $menuActive ? 'active' : '' }}">
+                                  <a href="{{ route($menu->route) }}" class="nav-link {{ $activeClass }}">
                               @else
                                   <a href="{{ $menu->url }}" class="nav-link">
                               @endif
@@ -384,11 +311,6 @@
               $isUsersActive = request()->routeIs('users.*');
               $isRolesActive = request()->routeIs('roles.*');
               $isUserMenuActive = $isUsersActive || $isRolesActive;
-          @endphp
-          
-          @php
-              \Log::info('Total menu items processed for display: ' . $menus->count());
-              $isUsersActive = request()->routeIs('users.*');
           @endphp
           <li class="nav-item has-treeview {{ $isUserMenuActive ? 'menu-open' : '' }}">
             <a href="#" class="nav-link {{ $isUserMenuActive ? 'active' : '' }}">

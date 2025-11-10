@@ -11,7 +11,7 @@
                 <div class="card-header">
                     <h3 class="card-title">Detail: {{ $contohPlugin->judul }}</h3>
                     <div class="card-tools">
-                        <a href="{{ route('contohplugin.index') }}" class="btn btn-secondary">Kembali</a>
+                        <a href="{{ in_array('panel.contohplugin.index', array_keys(app('router')->getRoutes()->getRoutesByName())) ? route('panel.contohplugin.index') : url('/panel/contohplugin') }}" class="btn btn-secondary">Kembali</a>
                     </div>
                 </div>
                 <!-- /.card-header -->
@@ -68,8 +68,8 @@
                 </div>
                 <!-- /.card-body -->
                 <div class="card-footer">
-                    <a href="{{ route('contohplugin.index') }}" class="btn btn-secondary">Kembali ke Daftar</a>
-                    <a href="{{ route('contohplugin.edit', $contohPlugin->id) }}" class="btn btn-primary">Edit</a>
+                    <a href="{{ in_array('panel.contohplugin.index', array_keys(app('router')->getRoutes()->getRoutesByName())) ? route('panel.contohplugin.index') : url('/panel/contohplugin') }}" class="btn btn-secondary">Kembali ke Daftar</a>
+                    <a href="{{ in_array('panel.contohplugin.edit', array_keys(app('router')->getRoutes()->getRoutesByName())) ? route('panel.contohplugin.edit', $contohPlugin->id) : url('/panel/contohplugin/' . $contohPlugin->id . '/edit') }}" class="btn btn-primary">Edit</a>
                 </div>
             </div>
             <!-- /.card -->

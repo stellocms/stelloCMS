@@ -9,7 +9,7 @@
                 <div class="card-header">
                     <h3 class="card-title">Daftar Berita</h3>
                     <div class="card-tools">
-                        <a href="<?php echo e(route('berita.create')); ?>" class="btn btn-primary">Tambah Berita</a>
+                        <a href="<?php echo e(in_array('panel.berita.create', array_keys(app('router')->getRoutes()->getRoutesByName())) ? route('panel.berita.create') : url('/panel/berita/create')); ?>" class="btn btn-primary">Tambah Berita</a>
                     </div>
                 </div>
                 <!-- /.card-header -->
@@ -39,9 +39,9 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <a href="<?php echo e(route('berita.show', $item->id)); ?>" class="btn btn-sm btn-info">Lihat</a>
-                                    <a href="<?php echo e(route('berita.edit', $item->id)); ?>" class="btn btn-sm btn-primary">Edit</a>
-                                    <form action="<?php echo e(route('berita.destroy', $item->id)); ?>" method="POST" class="d-inline">
+                                    <a href="<?php echo e(in_array('panel.berita.show', array_keys(app('router')->getRoutes()->getRoutesByName())) ? route('panel.berita.show', $item->id) : url('/panel/berita/' . $item->id)); ?>" class="btn btn-sm btn-info">Lihat</a>
+                                    <a href="<?php echo e(in_array('panel.berita.edit', array_keys(app('router')->getRoutes()->getRoutesByName())) ? route('panel.berita.edit', $item->id) : url('/panel/berita/' . $item->id . '/edit')); ?>" class="btn btn-sm btn-primary">Edit</a>
+                                    <form action="<?php echo e(in_array('panel.berita.destroy', array_keys(app('router')->getRoutes()->getRoutesByName())) ? route('panel.berita.destroy', $item->id) : url('/panel/berita/' . $item->id)); ?>" method="POST" class="d-inline">
                                         <?php echo csrf_field(); ?>
                                         <?php echo method_field('DELETE'); ?>
                                         <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus berita ini?')">Hapus</button>

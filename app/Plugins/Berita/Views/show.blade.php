@@ -11,13 +11,13 @@
                 <div class="card-header">
                     <h3 class="card-title">Detail Berita</h3>
                     <div class="card-tools">
-                        <a href="{{ route('berita.edit', $berita->id) }}" class="btn btn-primary">Edit</a>
-                        <form action="{{ route('berita.destroy', $berita->id) }}" method="POST" class="d-inline">
+                        <a href="{{ in_array('panel.berita.edit', array_keys(app('router')->getRoutes()->getRoutesByName())) ? route('panel.berita.edit', $berita->id) : url('/panel/berita/' . $berita->id . '/edit') }}" class="btn btn-primary">Edit</a>
+                        <form action="{{ in_array('panel.berita.destroy', array_keys(app('router')->getRoutes()->getRoutesByName())) ? route('panel.berita.destroy', $berita->id) : url('/panel/berita/' . $berita->id) }}" method="POST" class="d-inline">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger" onclick="return confirm('Yakin ingin menghapus berita ini?')">Hapus</button>
                         </form>
-                        <a href="{{ route('berita.index') }}" class="btn btn-default">Kembali</a>
+                        <a href="{{ in_array('panel.berita.index', array_keys(app('router')->getRoutes()->getRoutesByName())) ? route('panel.berita.index') : url('/panel/berita') }}" class="btn btn-default">Kembali</a>
                     </div>
                 </div>
                 <!-- /.card-header -->

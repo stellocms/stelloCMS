@@ -57,10 +57,10 @@
                         <div class="dropdown">
                             <a href="#" class="dropdown-toggle text-dark" data-bs-toggle="dropdown"><small><i class="fa fa-home text-primary me-2"></i> My Dashboard</small></a>
                             <div class="dropdown-menu rounded">
-                                <a href="<?php echo e(url('/panel/profile')); ?>" class="dropdown-item"><i class="fas fa-user-alt me-2"></i> My Profile</a>
-                                <a href="<?php echo e(url('/panel/messages')); ?>" class="dropdown-item"><i class="fas fa-comment-alt me-2"></i> Inbox</a>
-                                <a href="<?php echo e(url('/panel/notifications')); ?>" class="dropdown-item"><i class="fas fa-bell me-2"></i> Notifications</a>
-                                <a href="<?php echo e(url('/panel/settings')); ?>" class="dropdown-item"><i class="fas fa-cog me-2"></i> Account Settings</a>
+                                <a href="<?php echo e(url('/profile')); ?>" class="dropdown-item"><i class="fas fa-user-alt me-2"></i> My Profile</a>
+                                <a href="<?php echo e(url('/messages')); ?>" class="dropdown-item"><i class="fas fa-comment-alt me-2"></i> Inbox</a>
+                                <a href="<?php echo e(url('/notifications')); ?>" class="dropdown-item"><i class="fas fa-bell me-2"></i> Notifications</a>
+                                <a href="<?php echo e(url('/settings')); ?>" class="dropdown-item"><i class="fas fa-cog me-2"></i> Account Settings</a>
                                 <a href="<?php echo e(url('/logout')); ?>" class="dropdown-item"><i class="fas fa-power-off me-2"></i> Log Out</a>
                             </div>
                         </div>
@@ -106,7 +106,7 @@
                                         <div class="nav-item dropdown">
                                             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><?php echo e($menu->title); ?></a>
                                             <div class="dropdown-menu m-0">
-                                                <?php $__currentLoopData = $menu->children; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $submenu): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <?php $__currentLoopData = $menu->children->sortBy('order'); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $submenu): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                     <?php if(empty($submenu->roles) || (auth()->check() && auth()->user()->role && in_array(auth()->user()->role->name, $submenu->roles))): ?>
                                                         <?php if($submenu->route && Route::has($submenu->route)): ?>
                                                             <a href="<?php echo e(route($submenu->route)); ?>" class="dropdown-item <?php echo e(request()->routeIs($submenu->route) ? 'active' : ''); ?>"><?php echo e($submenu->title); ?></a>
@@ -124,7 +124,7 @@
                             <?php endif; ?>
                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </div>
-                    <a href="<?php echo e(url('/panel')); ?>" class="btn btn-primary rounded-pill py-2 px-4 my-3 my-lg-0 flex-shrink-0">Get Started</a>
+                    <a href="<?php echo e(url('')); ?>" class="btn btn-primary rounded-pill py-2 px-4 my-3 my-lg-0 flex-shrink-0">Get Started</a>
                 </div>
             </nav>
 
@@ -184,7 +184,7 @@
                             
                             <a href="<?php echo e(url('/')); ?>"><i class="fas fa-angle-right me-2"></i> Home</a>
                             
-                            <?php $__currentLoopData = $footerMenus; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $menu): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <?php $__currentLoopData = $footerMenus->sortBy('order'); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $menu): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <?php if(empty($menu->roles) || (auth()->check() && auth()->user()->role && in_array(auth()->user()->role->name, $menu->roles))): ?>
                                     <?php if($menu->route && Route::has($menu->route)): ?>
                                         <a href="<?php echo e(route($menu->route)); ?>"><i class="fas fa-angle-right me-2"></i> <?php echo e($menu->title); ?></a>

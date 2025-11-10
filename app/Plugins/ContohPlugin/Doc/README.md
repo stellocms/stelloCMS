@@ -1,20 +1,33 @@
-# Dokumentasi Plugin Contoh
+# Dokumentasi Plugin ContohPlugin
 
-## Gambaran Umum
+## Deskripsi
 
-Plugin Contoh adalah plugin demonstrasi untuk sistem stelloCMS. Plugin ini menunjukkan struktur dan praktik terbaik dalam pembuatan plugin untuk sistem CMS. Plugin ini menyediakan fitur CRUD untuk mengelola item dengan dukungan frontend dan slug URL-friendly.
+Plugin ContohPlugin adalah plugin demonstrasi untuk sistem stelloCMS. Plugin ini menunjukkan struktur dan praktik terbaik dalam pembuatan plugin untuk sistem CMS. Plugin ini menyediakan fitur CRUD untuk mengelola item dengan dukungan frontend dan slug URL-friendly.
 
-## Fitur
+## Versi
+- 1.0.0
 
-- **CRUD Lengkap**: Create, Read, Update, Delete untuk item plugin
-- **Backend Admin**: Panel administrasi untuk pengelolaan data
-- **Frontend Publik**: Tampilan publik untuk menampilkan data
-- **Slug Otomatis**: Pembuatan slug otomatis dari judul item
-- **Gambar Pendukung**: Upload dan tampilan gambar untuk setiap item
-- **Status Aktif/Nonaktif**: Pengaturan status publikasi item
-- **SEO Friendly**: URL menggunakan slug untuk optimasi pencarian
+## Fitur Utama
 
-## Struktur Plugin
+### 1. Manajemen Item Lengkap
+- CRUD (Create, Read, Update, Delete) item
+- Upload dan manajemen gambar untuk item
+- Status publikasi (aktif/tidak aktif)
+- Slug otomatis dari judul
+- Relasi dengan pengguna (jika diterapkan)
+
+### 2. Akses Ganda
+- Tampilan admin untuk manajemen item
+- Tampilan publik untuk pengunjung
+- Route terpisah untuk admin dan publik
+
+### 3. Frontend Responsif
+- Tampilan grid card untuk daftar item
+- Tampilan detail dengan breadcrumb
+- Sidebar informasi tambahan
+- Struktur SEO-friendly
+
+## Struktur File
 
 ```
 app/Plugins/ContohPlugin/
@@ -30,50 +43,85 @@ app/Plugins/ContohPlugin/
 │   └── frontpage/
 │       ├── index.blade.php
 │       └── show.blade.php
-├── routes.php
-├── plugin.json
+├── Database/
+│   ├── Migrations/
+│   │   └── [migration_file].php
+│   └── Seeders/
+│       └── [seeder_file].php
 ├── Doc/
 │   ├── README.md
+│   ├── API.md
+│   ├── DEVELOPMENT.md
 │   ├── DEVELOPING.md
 │   ├── HELPERS.md
 │   └── INSTALLATION.md
+├── plugin.json
+└── routes.php
 ```
 
-## Instalasi
+## Model
 
-### Manual
-1. Salin folder plugin ke `app/Plugins/ContohPlugin/`
-2. Login ke panel administrasi
-3. Buka menu "Plugin"
-4. Klik "Instal" pada ContohPlugin
-5. Plugin siap digunakan
+### Tabel `contoh_plugins`
 
-### Via Upload
-1. Buka menu "Plugin" di panel administrasi
-2. Klik tombol "Upload Plugin"
-3. Pilih file `ContohPlugin.zip`
-4. Tunggu proses upload dan instalasi selesai
-5. Plugin otomatis aktif
+| Kolom | Tipe Data | Deskripsi |
+|-------|-----------|-----------|
+| id | BIGINT (unsigned) | Primary key |
+| judul | VARCHAR(255) | Judul item |
+| deskripsi | TEXT | Deskripsi/isi item |
+| gambar | VARCHAR(255) (nullable) | Path gambar item |
+| tanggal_dibuat | TIMESTAMP (nullable) | Tanggal pembuatan item |
+| aktif | BOOLEAN | Status publikasi (aktif/tidak) |
+| slug | VARCHAR(255) | Slug URL-friendly (unik) |
+| created_at | TIMESTAMP | Tanggal pembuatan |
+| updated_at | TIMESTAMP | Tanggal pembaruan |
 
-## Penggunaan
+## Routes
 
-### Backend (Admin Panel)
+### Rute Admin (memerlukan otentikasi)
+- `GET /panel/contohplugin` → `ContohPluginController@index` (nama route: `panel.contohplugin.index`)
+- `GET /panel/contohplugin/create` → `ContohPluginController@create` (nama route: `panel.contohplugin.create`)
+- `POST /panel/contohplugin` → `ContohPluginController@store` (nama route: `panel.contohplugin.store`)
+- `GET /panel/contohplugin/{id}/edit` → `ContohPluginController@edit` (nama route: `panel.contohplugin.edit`)
+- `PUT /panel/contohplugin/{id}` → `ContohPluginController@update` (nama route: `panel.contohplugin.update`)
+- `DELETE /panel/contohplugin/{id}` → `ContohPluginController@destroy` (nama route: `panel.contohplugin.destroy`)
+- `GET /panel/contohplugin/{id}` → `ContohPluginController@show` (nama route: `panel.contohplugin.show`)
 
-Setelah instalasi, plugin akan membuat menu di panel administrasi:
-- Menu: "Manajemen Plugin Contoh"
-- URL: `/panel/contohplugin`
-- Fitur: Tambah, edit, hapus, dan lihat item
+### Rute Publik
+- `GET /contohplugin` → `ContohPluginController@frontpageIndex` (nama route: `contohplugin.frontpage.index`)
+- `GET /contohplugin/{slug}` → `ContohPluginController@frontpageShow` (nama route: `contohplugin.frontpage.show`)
 
-### Frontend (Publik)
+## Controller
 
-Plugin menyediakan tampilan publik:
-- Daftar item: `/contohplugin`
-- Detail item: `/contohplugin/{slug}`
+### ContohPluginController
 
-## Konfigurasi
+#### Method Admin
+- `index()` - Menampilkan daftar item untuk admin
+- `create()` - Menampilkan form tambah item
+- `store(Request $request)` - Menyimpan item baru
+- `show($id)` - Menampilkan detail item untuk admin
+- `edit($id)` - Menampilkan form edit item
+- `update(Request $request, $id)` - Memperbarui item
+- `destroy($id)` - Menghapus item
 
-### File plugin.json
+#### Method Publik
+- `frontpageIndex()` - Menampilkan daftar item untuk publik
+- `frontpageShow($slug)` - Menampilkan detail item untuk publik
 
+## View
+
+### Tampilan Admin
+- `index.blade.php` - Daftar item dengan opsi CRUD
+- `create.blade.php` - Form tambah item
+- `edit.blade.php` - Form edit item
+- `show.blade.php` - Detail item untuk admin
+
+### Tampilan Frontend
+- `frontpage/index.blade.php` - Daftar item dalam format card untuk publik
+- `frontpage/show.blade.php` - Detail item untuk publik dengan breadcrumb
+
+## Konfigurasi Plugin
+
+### plugin.json
 ```json
 {
     "name": "ContohPlugin",
@@ -89,72 +137,77 @@ Plugin menyediakan tampilan publik:
 }
 ```
 
-### Model
+## Instalasi dan Konfigurasi
 
-Model `ContohPlugin` menggunakan fitur berikut:
-- Auto-generate slug dari judul
-- Validasi data
-- Relasi (jika diperlukan)
+1. Plugin akan otomatis terdeteksi oleh sistem plugin stelloCMS
+2. Jalankan migrasi untuk membuat tabel `contoh_plugins`: `php artisan migrate`
+3. Plugin siap digunakan
 
-### Struktur Tabel
+## Panduan Penggunaan
 
-```sql
-CREATE TABLE `contoh_plugins` (
-    `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    `judul` VARCHAR(255) NOT NULL,
-    `deskripsi` TEXT NOT NULL,
-    `gambar` VARCHAR(255) NULL,
-    `tanggal_dibuat` TIMESTAMP NULL,
-    `aktif` BOOLEAN DEFAULT TRUE,
-    `slug` VARCHAR(255) NOT NULL UNIQUE,
-    `created_at` TIMESTAMP NULL DEFAULT NULL,
-    `updated_at` TIMESTAMP NULL DEFAULT NULL
-);
-```
+### Untuk Admin
+1. Akses `/panel/contohplugin` untuk mengelola item
+2. Gunakan tombol "Tambah Contoh Plugin" untuk membuat item baru
+3. Gunakan tombol edit/hapus untuk mengelola item yang sudah ada
+4. Gunakan checkbox "Aktif" untuk mengatur status publikasi
 
-## Helper Functions
+### Untuk Pengunjung
+1. Akses `/contohplugin` untuk melihat daftar item publik
+2. Klik judul item untuk melihat detail item
 
-### generate_slug()
+## Panduan Pengembang
 
-Helper untuk membuat slug URL-friendly:
+### Model ContohPlugin
 ```php
-$slug = generate_slug($judul);
+use App\Plugins\ContohPlugin\Models\ContohPlugin;
+
+$item = ContohPlugin::where('aktif', true)->get();
+$item = ContohPlugin::where('slug', $slug)->first();
+$item = ContohPlugin::create($data);
 ```
 
-## Routing
+### Route dalam View
+#### Admin View
+```php
+// Dalam view admin
+route('panel.contohplugin.index')     // Daftar item
+route('panel.contohplugin.create')    // Tambah item
+route('panel.contohplugin.edit', $id) // Edit item
+```
 
-### Backend Routes
-- `GET /panel/contohplugin` - Daftar item (admin)
-- `GET /panel/contohplugin/create` - Form tambah (admin)
-- `POST /panel/contohplugin` - Simpan item (admin)
-- `GET /panel/contohplugin/{id}/edit` - Form edit (admin)
-- `PUT /panel/contohplugin/{id}` - Update item (admin)
-- `DELETE /panel/contohplugin/{id}` - Hapus item (admin)
+#### Frontend View
+```php
+// Dalam view frontend
+route('contohplugin.frontpage.index')     // Daftar item publik
+route('contohplugin.frontpage.show', $slug) // Detail item publik
+```
 
-### Frontend Routes
-- `GET /contohplugin` - Daftar item (publik)
-- `GET /contohplugin/{slug}` - Detail item (publik)
+## Integrasi dengan Sistem
 
-## Panduan Pengembangan Plugin
+### Menu Otomatis
+- Plugin akan menambahkan menu otomatis ke sistem menu admin
+- Nama menu: "ContohPlugin" 
+- Route: `panel.contohplugin.index`
+- Icon: `fas fa-cube`
 
-Lihat dokumentasi lengkap di [DEVELOPING.md](DEVELOPING.md) untuk informasi tentang cara membuat plugin baru dari awal.
+### Hak Akses
+- Menu tersedia untuk role: admin, operator
+- Akses route dilindungi dengan middleware `auth`
 
 ## Troubleshooting
 
-### Plugin Tidak Muncul di Menu
-- Pastikan plugin telah diinstal dengan benar di sistem
-- Cek apakah nama plugin sesuai dengan nama folder
-- Pastikan plugin.json valid dan komplit
+### Error Route Tidak Ditemukan
+- Pastikan plugin aktif di halaman manajemen plugin
+- Jalankan `php artisan route:clear` untuk membersihkan cache route
 
-### Route Tidak Bekerja
-- Pastikan route telah di-definisikan dengan benar
-- Clear route cache: `php artisan route:clear`
+### Error View Tidak Ditemukan
+- Pastikan namespace plugin benar (`contohplugin::`)
+- Jalankan `php artisan view:clear` untuk membersihkan cache view
 
-### View Tidak Ditemukan
-- Pastikan namespace view benar
-- Pastikan file view berada di lokasi yang benar
-- Clear view cache: `php artisan view:clear`
+### Gambar Tidak Muncul
+- Pastikan folder `storage/app/public` bisa diakses
+- Pastikan symlink sudah dibuat: `php artisan storage:link`
 
-## Lisensi
-
-Plugin ini merupakan bagian dari sistem stelloCMS dan dilisensikan di bawah lisensi MIT.
+### Slug Tidak Dibuat Otomatis
+- Pastikan helper `generate_slug` terdaftar
+- Cek apakah field `judul` telah diisi saat pembuatan item
