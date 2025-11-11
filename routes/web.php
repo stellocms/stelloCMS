@@ -25,7 +25,7 @@ Route::get('/', function () {
 
 // Route alias for Laravel's default login route name - corrected to use full URL
 Route::get('/login', function () {
-    return redirect(route('panel.login'));
+    return redirect('/');
 })->name('login');
 
 // Captcha route

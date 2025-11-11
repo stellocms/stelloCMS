@@ -22,33 +22,214 @@ class BeritaController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'judul' => 'required|string|max:255',
-            'isi' => 'required',
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
-
-        $data = $request->all();
-
-        if ($request->hasFile('gambar')) {
-            $gambarPath = $request->file('gambar')->store('berita', 'public');
-            $data['gambar'] = $gambarPath;
+        \Log::info('BeritaController@store called');
+        \Log::info('Request data keys: ' . implode(', ', array_keys($request->all())));
+        \Log::info('Has file gambar: ' . ($request->hasFile('gambar') ? 'true' : 'false'));
+        \Log::info('Has unsplash_image_url: ' . ($request->has('unsplash_image_url') ? 'true' : 'false'));
+        
+        if ($request->has('unsplash_image_url')) {
+            \Log::info('Unsplash image URL value: ' . $request->unsplash_image_url);
         }
 
-        Berita::create($data);
+        $rules = [
+            'judul' => 'required|string|max:255',
+            'isi' => 'required',
+            'meta_description' => 'nullable|string|max:500',
+            'meta_keywords' => 'nullable|string|max:255',
+            'slug' => 'nullable|string|max:255|unique:berita',
+        ];
 
-        $redirectUrl = in_array('panel.berita.index', array_keys(app('router')->getRoutes()->getRoutesByName())) ? 
+        // Tambahkan validasi gambar hanya jika bukan dari Unsplash
+        if ($request->hasFile('gambar')) {
+            $rules['gambar'] = 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048';
+        }
+
+        $request->validate($rules);
+
+        $data = $request->except(['unsplash_image_url', '_token', '_method']); // Exclude fields that shouldn't be saved directly to the model
+
+        // Handle upload dari komputer pengguna
+        if ($request->hasFile('gambar')) {
+            $judul = $request->judul ?? 'berita';
+            $slug = \Illuminate\Support\Str::slug($judul, '_');
+            
+            // Dapatkan file yang diunggah
+            $uploadedFile = $request->file('gambar');
+            $extension = $uploadedFile->getClientOriginalExtension();
+            
+            // Buat nama file unik
+            $uniqueFilename = time() . '_' . $slug;
+            
+            // Simpan file sementara untuk diproses
+            $tempPath = $uploadedFile->store('temp', 'public');
+            $fullTempPath = storage_path('app/public/' . $tempPath);
+            
+            // Buat thumbnail dengan watermark menggunakan helper
+            $targetDirectory = 'berita';
+            
+            // Generate thumbnails
+            $thumbnails = \App\Helpers\ImageHelper::generateThumbnailsWithWatermark(
+                $fullTempPath,
+                $targetDirectory,
+                $uniqueFilename,
+                $extension
+            );
+            
+            // Gunakan thumbnail dengan ukuran 800px sebagai gambar utama
+            $largeThumb = collect($thumbnails)->first(function($thumb) {
+                return strpos($thumb, '_thumb_large') !== false;
+            });
+            
+            if ($largeThumb) {
+                $data['gambar'] = $largeThumb;
+            }
+            
+            // Hapus file sementara setelah diproses
+            if (file_exists($fullTempPath)) {
+                unlink($fullTempPath);
+            }
+            // Hapus dari storage temp juga
+            Storage::disk('public')->delete($tempPath);
+        } 
+        // Handle gambar dari Unsplash URL - download ke local saat disimpan
+        elseif ($request->has('unsplash_image_url')) {
+            \Log::info('Processing Unsplash URL: ' . $request->unsplash_image_url);
+            \Log::info('Unsplash URL detected: ' . $request->unsplash_image_url);
+            
+            $imageUrl = $request->unsplash_image_url;
+            
+            // Coba beberapa pendekatan untuk download gambar
+            $imageContent = null;
+            
+            // Pendekatan 1: cURL dengan header tambahan
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $imageUrl);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
+            curl_setopt($ch, CURLOPT_REFERER, 'https://unsplash.com/');
+            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+            curl_setopt($ch, CURLOPT_HEADER, false);
+            
+            $imageContent = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $contentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE) ?? '';
+            $error = curl_error($ch);
+            curl_close($ch);
+            
+            \Log::info('CURL Response - HTTP Code: ' . $httpCode . ', Content-Type: ' . $contentType . ', Error: ' . $error . ', Content Length: ' . ($imageContent !== null ? strlen($imageContent) : 0));
+            
+            // Jika cURL gagal, coba pendekatan file_get_contents dengan konteks
+            if ($imageContent === false || $httpCode !== 200) {
+                \Log::info('cURL failed, trying file_get_contents with context');
+                
+                try {
+                    $context = stream_context_create([
+                        'http' => [
+                            'method' => 'GET',
+                            'header' => [
+                                'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                                'Referer: https://unsplash.com/',
+                                'Accept: image/webp,image/apng,image/*,*/*;q=0.8'
+                            ],
+                            'timeout' => 30
+                        ]
+                    ]);
+                    
+                    $imageContent = file_get_contents($imageUrl, false, $context);
+                    $httpCode = $imageContent !== false ? 200 : 0;
+                    
+                    \Log::info('file_get_contents result - Content Length: ' . ($imageContent !== null ? strlen($imageContent) : 0));
+                } catch (\Exception $e) {
+                    \Log::error('Exception in file_get_contents: ' . $e->getMessage());
+                    $imageContent = null;
+                }
+            }
+            
+            if ($imageContent !== false && $imageContent !== null && $httpCode === 200) {
+                $judul = $request->judul ?? 'unsplash_image';
+                $slug = \Illuminate\Support\Str::slug($judul, '_');
+                
+                // Deteksi ekstensi dari header content-type
+                $extension = 'jpg'; // default
+                if (strpos($contentType, 'png') !== false) {
+                    $extension = 'png';
+                } elseif (strpos($contentType, 'gif') !== false) {
+                    $extension = 'gif';
+                } elseif (strpos($contentType, 'jpeg') !== false || strpos($contentType, 'jpg') !== false) {
+                    $extension = 'jpg';
+                }
+                
+                // Buat nama file yang unik berdasarkan slug judul
+                $filename = time() . '_' . $slug;
+                $tempPath = 'temp/' . $filename . '.' . $extension;
+
+                // Simpan sementara untuk diproses
+                $result = \Illuminate\Support\Facades\Storage::disk('public')->put($tempPath, $imageContent);
+                
+                if ($result) {
+                    $fullTempPath = storage_path('app/public/' . $tempPath);
+                    
+                    // Buat thumbnail dengan watermark menggunakan helper
+                    $targetDirectory = 'berita';
+                    
+                    // Generate thumbnails
+                    $thumbnails = \App\Helpers\ImageHelper::generateThumbnailsWithWatermark(
+                        $fullTempPath,
+                        $targetDirectory,
+                        $filename,
+                        $extension
+                    );
+                    
+                    // Gunakan thumbnail dengan ukuran 800px sebagai gambar utama
+                    $largeThumb = collect($thumbnails)->first(function($thumb) {
+                        return strpos($thumb, '_thumb_large') !== false;
+                    });
+                    
+                    if ($largeThumb) {
+                        $data['gambar'] = $largeThumb;
+                        \Log::info('Image with watermark saved successfully, path: ' . $largeThumb);
+                    }
+                    
+                    // Hapus file sementara setelah diproses
+                    if (file_exists($fullTempPath)) {
+                        unlink($fullTempPath);
+                    }
+                    // Hapus dari storage temp juga
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($tempPath);
+                } else {
+                    \Log::error('Failed to save image to temporary storage');
+                }
+            } else {
+                \Log::error('Failed to download image from URL. HTTP Code: ' . $httpCode . ', Error: ' . $error);
+            }
+        }
+
+        // Set viewer to 0 for new records
+        $data['viewer'] = 0;
+
+        $berita = Berita::create($data);
+
+        \Log::info('Berita created with ID: ' . $berita->id . ', gambar path: ' . ($berita->gambar ?? 'null'));
+
+        $redirectUrl = in_array('panel.berita.index', array_keys(app('router')->getRoutes()->getRoutesByName())) ?
             route('panel.berita.index') : url('/panel/berita');
         return redirect($redirectUrl)->with('success', 'Berita berhasil ditambahkan.');
     }
 
     public function show($id)
     {
-        $berita = Berita::findOrFail($id);
+        // Check if the parameter is numeric (ID) or string (slug)
+        if (is_numeric($id)) {
+            $berita = Berita::findOrFail($id);
+        } else {
+            $berita = Berita::bySlug($id)->firstOrFail();
+        }
 
         // Check if accessed via admin route or public route
         if (request()->routeIs('panel.berita.*')) {
-            // If accessed from admin route, return admin view  
+            // If accessed from admin route, return admin view
             return view('berita::show', compact('berita'));
         } else {
             // If accessed from public route, return frontend view
@@ -65,14 +246,33 @@ class BeritaController extends Controller
 
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'judul' => 'required|string|max:255',
-            'isi' => 'required',
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+        \Log::info('BeritaController@update called for ID: ' . $id);
+        \Log::info('Request data keys: ' . implode(', ', array_keys($request->all())));
+        \Log::info('Has file gambar: ' . ($request->hasFile('gambar') ? 'true' : 'false'));
+        \Log::info('Has unsplash_image_url: ' . ($request->has('unsplash_image_url') ? 'true' : 'false'));
+        
+        if ($request->has('unsplash_image_url')) {
+            \Log::info('Unsplash image URL value: ' . $request->unsplash_image_url);
+        }
 
         $berita = Berita::findOrFail($id);
-        $data = $request->all();
+        
+        $rules = [
+            'judul' => 'required|string|max:255',
+            'isi' => 'required',
+            'meta_description' => 'nullable|string|max:500',
+            'meta_keywords' => 'nullable|string|max:255',
+            'slug' => 'nullable|string|max:255|unique:berita,slug,' . $id,
+        ];
+
+        // Tambahkan validasi gambar hanya jika bukan dari Unsplash
+        if ($request->hasFile('gambar')) {
+            $rules['gambar'] = 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048';
+        }
+
+        $request->validate($rules);
+
+        $data = $request->except(['unsplash_image_url']); // Exclude the URL field from being saved directly to the model
 
         if ($request->hasFile('gambar')) {
             // Hapus gambar lama jika ada
@@ -80,13 +280,172 @@ class BeritaController extends Controller
                 unlink(storage_path('app/public/' . $berita->gambar));
             }
 
-            $gambarPath = $request->file('gambar')->store('berita', 'public');
-            $data['gambar'] = $gambarPath;
+            $judul = $request->judul ?? 'berita';
+            $slug = \Illuminate\Support\Str::slug($judul, '_');
+            
+            // Dapatkan file yang diunggah
+            $uploadedFile = $request->file('gambar');
+            $extension = $uploadedFile->getClientOriginalExtension();
+            
+            // Buat nama file unik
+            $uniqueFilename = time() . '_' . $slug;
+            
+            // Simpan file sementara untuk diproses
+            $tempPath = $uploadedFile->store('temp', 'public');
+            $fullTempPath = storage_path('app/public/' . $tempPath);
+            
+            // Buat thumbnail dengan watermark menggunakan helper
+            $targetDirectory = 'berita';
+            
+            // Generate thumbnails
+            $thumbnails = \App\Helpers\ImageHelper::generateThumbnailsWithWatermark(
+                $fullTempPath,
+                $targetDirectory,
+                $uniqueFilename,
+                $extension
+            );
+            
+            // Gunakan thumbnail dengan ukuran 800px sebagai gambar utama
+            $largeThumb = collect($thumbnails)->first(function($thumb) {
+                return strpos($thumb, '_thumb_large') !== false;
+            });
+            
+            if ($largeThumb) {
+                $data['gambar'] = $largeThumb;
+            }
+            
+            // Hapus file sementara setelah diproses
+            if (file_exists($fullTempPath)) {
+                unlink($fullTempPath);
+            }
+            // Hapus dari storage temp juga
+            Storage::disk('public')->delete($tempPath);
+        } 
+        // Handle gambar dari Unsplash URL - download ke local saat update
+        elseif ($request->has('unsplash_image_url')) {
+            \Log::info('Unsplash URL detected in update: ' . $request->unsplash_image_url);
+            
+            $imageUrl = $request->unsplash_image_url;
+            
+            // Hapus gambar lama jika ada
+            if ($berita->gambar && file_exists(storage_path('app/public/' . $berita->gambar))) {
+                unlink(storage_path('app/public/' . $berita->gambar));
+                \Log::info('Old image deleted: ' . $berita->gambar);
+            }
+            
+            // Coba beberapa pendekatan untuk download gambar
+            $imageContent = null;
+            
+            // Pendekatan 1: cURL dengan header tambahan
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $imageUrl);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
+            curl_setopt($ch, CURLOPT_REFERER, 'https://unsplash.com/');
+            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+            curl_setopt($ch, CURLOPT_HEADER, false);
+            
+            $imageContent = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $contentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE) ?? '';
+            $error = curl_error($ch);
+            curl_close($ch);
+            
+            \Log::info('CURL Response in update - HTTP Code: ' . $httpCode . ', Content-Type: ' . $contentType . ', Error: ' . $error . ', Content Length: ' . ($imageContent !== null ? strlen($imageContent) : 0));
+            
+            // Jika cURL gagal, coba pendekatan file_get_contents dengan konteks
+            if ($imageContent === false || $httpCode !== 200) {
+                \Log::info('cURL failed in update, trying file_get_contents with context');
+                
+                try {
+                    $context = stream_context_create([
+                        'http' => [
+                            'method' => 'GET',
+                            'header' => [
+                                'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                                'Referer: https://unsplash.com/',
+                                'Accept: image/webp,image/apng,image/*,*/*;q=0.8'
+                            ],
+                            'timeout' => 30
+                        ]
+                    ]);
+                    
+                    $imageContent = file_get_contents($imageUrl, false, $context);
+                    $httpCode = $imageContent !== false ? 200 : 0;
+                    
+                    \Log::info('file_get_contents result in update - Content Length: ' . ($imageContent !== null ? strlen($imageContent) : 0));
+                } catch (\Exception $e) {
+                    \Log::error('Exception in file_get_contents in update: ' . $e->getMessage());
+                    $imageContent = null;
+                }
+            }
+            
+            if ($imageContent !== false && $imageContent !== null && $httpCode === 200) {
+                $judul = $request->judul ?? 'unsplash_image';
+                $slug = \Illuminate\Support\Str::slug($judul, '_');
+                
+                // Deteksi ekstensi dari header content-type
+                $extension = 'jpg'; // default
+                if (strpos($contentType, 'png') !== false) {
+                    $extension = 'png';
+                } elseif (strpos($contentType, 'gif') !== false) {
+                    $extension = 'gif';
+                } elseif (strpos($contentType, 'jpeg') !== false || strpos($contentType, 'jpg') !== false) {
+                    $extension = 'jpg';
+                }
+                
+                // Buat nama file yang unik berdasarkan slug judul
+                $filename = time() . '_' . $slug;
+                $tempPath = 'temp/' . $filename . '.' . $extension;
+
+                // Simpan sementara untuk diproses
+                $result = \Illuminate\Support\Facades\Storage::disk('public')->put($tempPath, $imageContent);
+                
+                if ($result) {
+                    $fullTempPath = storage_path('app/public/' . $tempPath);
+                    
+                    // Buat thumbnail dengan watermark menggunakan helper
+                    $targetDirectory = 'berita';
+                    
+                    // Generate thumbnails
+                    $thumbnails = \App\Helpers\ImageHelper::generateThumbnailsWithWatermark(
+                        $fullTempPath,
+                        $targetDirectory,
+                        $filename,
+                        $extension
+                    );
+                    
+                    // Gunakan thumbnail dengan ukuran 800px sebagai gambar utama
+                    $largeThumb = collect($thumbnails)->first(function($thumb) {
+                        return strpos($thumb, '_thumb_large') !== false;
+                    });
+                    
+                    if ($largeThumb) {
+                        $data['gambar'] = $largeThumb;
+                        \Log::info('Image with watermark saved successfully in update, path: ' . $largeThumb);
+                    }
+                    
+                    // Hapus file sementara setelah diproses
+                    if (file_exists($fullTempPath)) {
+                        unlink($fullTempPath);
+                    }
+                    // Hapus dari storage temp juga
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($tempPath);
+                } else {
+                    \Log::error('Failed to save image to temporary storage in update');
+                }
+            } else {
+                \Log::error('Failed to download image from URL in update. HTTP Code: ' . $httpCode . ', Error: ' . $error);
+            }
         }
 
         $berita->update($data);
 
-        $redirectUrl = in_array('panel.berita.index', array_keys(app('router')->getRoutes()->getRoutesByName())) ? 
+        \Log::info('Berita updated with ID: ' . $berita->id . ', gambar path: ' . ($berita->gambar ?? 'null'));
+
+        $redirectUrl = in_array('panel.berita.index', array_keys(app('router')->getRoutes()->getRoutesByName())) ?
             route('panel.berita.index') : url('/panel/berita');
         return redirect($redirectUrl)->with('success', 'Berita berhasil diperbarui.');
     }
@@ -102,7 +461,7 @@ class BeritaController extends Controller
 
         $berita->delete();
 
-        $redirectUrl = in_array('panel.berita.index', array_keys(app('router')->getRoutes()->getRoutesByName())) ? 
+        $redirectUrl = in_array('panel.berita.index', array_keys(app('router')->getRoutes()->getRoutesByName())) ?
             route('panel.berita.index') : url('/panel/berita');
         return redirect($redirectUrl)->with('success', 'Berita berhasil dihapus.');
     }
@@ -117,10 +476,80 @@ class BeritaController extends Controller
         return view('berita::frontend.index', compact('berita'));
     }
 
-    public function publicShow($id)
+    public function publicShow($slug)
     {
-        $berita = Berita::where('aktif', true)->findOrFail($id);
+        $berita = Berita::where('aktif', true)->bySlug($slug)->firstOrFail();
+
+        // Increment viewer count
+        $berita->increment('viewer');
 
         return view('berita::frontend.show', compact('berita'));
+    }
+
+    public function searchUnsplash(Request $request)
+    {
+        // Ambil pengaturan dari tabel settings
+        $accessKey = \App\Models\Setting::where('pengaturan', 'unsplash-access')->first();
+        $secretKey = \App\Models\Setting::where('pengaturan', 'unsplash-secret')->first();
+
+        \Log::info('Unsplash search called - Access key exists: ' . ($accessKey ? 'true' : 'false') . ', Secret key exists: ' . ($secretKey ? 'true' : 'false'));
+
+        if (!$accessKey || !$secretKey) {
+            \Log::error('Unsplash API keys not configured');
+            return response()->json(['error' => 'Unsplash API keys not configured'], 400);
+        }
+
+        $query = $request->query('query', 'random'); // Gunakan query dari judul atau random
+        $perPage = $request->query('per_page', 12);
+
+        $url = "https://api.unsplash.com/search/photos?query=" . urlencode($query) . "&per_page={$perPage}&client_id=" . urlencode($accessKey->nilai);
+
+        \Log::info('Unsplash API URL: ' . $url);
+
+        $context = stream_context_create([
+            'http' => [
+                'method' => 'GET',
+                'header' => [
+                    'Accept: application/json',
+                    'User-Agent: stelloCMS/1.0',
+                    'Authorization: Client-ID ' . $accessKey->nilai
+                ],
+                'timeout' => 10
+            ]
+        ]);
+
+        $response = @file_get_contents($url, false, $context);
+        
+        \Log::info('Unsplash API response length: ' . ($response !== false ? strlen($response) : 'false'));
+
+        if ($response === false) {
+            \Log::error('Failed to fetch images from Unsplash');
+            return response()->json(['error' => 'Failed to fetch images from Unsplash'], 500);
+        }
+
+        $data = json_decode($response, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            \Log::error('Invalid response from Unsplash: ' . json_last_error_msg());
+            return response()->json(['error' => 'Invalid response from Unsplash'], 500);
+        }
+
+        return response()->json($data);
+    }
+
+
+    
+    public function checkUnsplashKeys()
+    {
+        try {
+            $accessKey = \App\Models\Setting::where('pengaturan', 'unsplash-access')->first();
+            $secretKey = \App\Models\Setting::where('pengaturan', 'unsplash-secret')->first();
+
+            $hasKeys = $accessKey && $secretKey && !empty($accessKey->nilai) && !empty($secretKey->nilai);
+        } catch (\Exception $e) {
+            $hasKeys = false;
+        }
+
+        return response()->json(['hasKeys' => $hasKeys]);
     }
 }

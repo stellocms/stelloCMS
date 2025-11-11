@@ -1,14 +1,14 @@
-<?php
-
-return [
-    'name' => 'Berita',
-    'version' => '1.0.0',
-    'description' => 'Plugin untuk mengelola berita dan informasi',
-    'author' => 'SimPeDe Development Team',
-    'author_url' => 'https://simpede.id',
-    'required_version' => '1.0.0',
-    'database' => [
-        'migrations' => 'Database/Migrations',
-        'seeders' => 'Database/Seeders',
-    ],
-];
+{
+    "name": "Berita",
+    "version": "1.0.0",
+    "description": "Plugin untuk mengelola berita dan informasi",
+    "author": "SimPeDe Development Team",
+    "author_url": "https://simpede.id",
+    "required_version": "1.0.0",
+    "database": {
+        "migrations": "Database/Migrations",
+        "seeders": "Database/Seeders"
+    },
+    "install_script": "install.php",
+    "helpers": "helpers.php"
+}

@@ -53,7 +53,7 @@
                 <div class="col-lg-4 text-center text-lg-end">
                     <div class="d-inline-flex align-items-center" style="height: 45px;">
                         <a href="<?php echo e(url('/register')); ?>" class="small me-3 text-dark"><i class="fa fa-user text-primary me-2"></i>Register</a>
-                        <a href="<?php echo e(url('/login')); ?>" class="small me-3 text-dark"><i class="fa fa-sign-in-alt text-primary me-2"></i>Login</a>
+                        <a href="<?php echo e(url('/panel')); ?>" class="small me-3 text-dark"><i class="fa fa-sign-in-alt text-primary me-2"></i>Login</a>
                         <div class="dropdown">
                             <a href="#" class="dropdown-toggle text-dark" data-bs-toggle="dropdown"><small><i class="fa fa-home text-primary me-2"></i> My Dashboard</small></a>
                             <div class="dropdown-menu rounded">

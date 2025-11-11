@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 // Rute frontend untuk menampilkan berita publik
 Route::prefix('berita')->group(function () {
     Route::get('/', [BeritaController::class, 'publicIndex'])->name('berita.index');
-    Route::get('/{id}', [BeritaController::class, 'publicShow'])->name('berita.show');
+    Route::get('/{slug}', [BeritaController::class, 'publicShow'])->name('berita.show');
 });
 
 // Rute untuk admin panel - semua user terotentikasi bisa mengakses

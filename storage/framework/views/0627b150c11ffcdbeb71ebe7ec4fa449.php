@@ -9,6 +9,12 @@
                 <div class="card-header">
                     <h3 class="card-title">Daftar Pengaturan</h3>
                     <div class="card-tools">
+                        <form action="<?php echo e(route('setting.clear_cache')); ?>" method="POST" class="d-inline">
+                            <?php echo csrf_field(); ?>
+                            <button type="submit" class="btn btn-warning mr-2">
+                                <i class="fas fa-broom"></i> Clear Cache
+                            </button>
+                        </form>
                         <a href="<?php echo e(route('setting.create')); ?>" class="btn btn-primary">Tambah Pengaturan</a>
                     </div>
                 </div>

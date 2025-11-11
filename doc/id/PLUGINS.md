@@ -18,16 +18,14 @@ Sistem plugin stelloCMS memungkinkan ekstensi fungsionalitas sistem melalui plug
 │   ├── create.blade.php
 │   ├── edit.blade.php
 │   └── show.blade.php
-├── Database/
-│   ├── Migrations/
-│   │   └── {timestamp}_{deskripsi}_table.php
-│   └── Seeders/
-│       └── {NamaTable}Seeder.php
 ├── routes.php
 ├── plugin.json
+├── install.php (opsional - untuk mengelola struktur database secara dinamis)
 ├── helpers.php (opsional)
 └── README.md (opsional)
 ```
+
+**Catatan:** Folder `Database/` dengan migrasi tradisional tidak lagi diperlukan jika menggunakan file `install.php` untuk mengelola struktur database secara dinamis.
 
 ## File Konfigurasi Plugin
 
@@ -50,13 +48,23 @@ File `plugin.json` berisi informasi metadata tentang plugin:
 
 ## Pembuatan Plugin Baru
 
+### Penamaan Plugin
+Penting untuk mengikuti aturan penamaan plugin:
+- Gunakan format `PascalCase` (huruf kapital di awal setiap kata tanpa spasi atau underscore)
+- Contoh benar: `Berita`, `ContohPlugin`, `PengumumanDesa`
+- Contoh salah: `berita`, `contoh_plugin`, `pengumuman-desa`, `Manajemen keuangan`
+
+Catatan khusus: PluginManager mencari kelas `{NamaPlugin}Installer` secara otomatis berdasarkan nama folder plugin. Jika folder plugin bernama `PengumumanDesa`, maka kelas installer harus bernama `PengumumanDesaInstaller`.
+
 ### Langkah-langkah Membuat Plugin
-1. Buat folder plugin di `/app/Plugins/`
+1. Buat folder plugin di `/app/Plugins/` dengan nama mengikuti aturan penamaan
 2. Tambahkan file `plugin.json` dengan informasi plugin
 3. Buat controller, model, dan view yang diperlukan
 4. Tambahkan file `routes.php` untuk routing plugin
-5. Tambahkan migrasi database jika diperlukan
+5. Tambahkan file `install.php` (opsional) untuk mengelola struktur database secara dinamis (menggantikan folder Database/)
 6. Plugin akan terdeteksi secara otomatis
+
+**Catatan:** Gunakan file `install.php` dengan kelas `{NamaPlugin}Installer` untuk mengelola struktur database secara dinamis, menggantikan kebutuhan akan folder `Database/` dengan migrasi tradisional.
 
 ### Contoh plugin.json
 ```json

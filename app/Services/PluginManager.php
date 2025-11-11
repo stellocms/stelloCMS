@@ -116,10 +116,18 @@ class PluginManager
         $plugin->save();
 
         // Handle database tables for specific plugins
-        if ($pluginName === 'Berita') {
-            $this->createOrUpdateBeritaTable();
-        } else if ($pluginName === 'ContohPlugin') {
-            $this->createOrUpdateContohPluginTable();
+        // Check if plugin has an install script
+        $installScriptPath = $pluginPath . '/install.php';
+        if (File::exists($installScriptPath)) {
+            require_once $installScriptPath;
+            
+            // Dynamically determine the installer class name based on plugin name
+            $installerClass = $pluginName . 'Installer';
+            
+            // Run the installer if class exists
+            if (class_exists($installerClass) && method_exists($installerClass, 'install')) {
+                $installerClass::install();
+            }
         } else {
             // For other plugins, run migrations from plugin's Database/Migrations directory
             $this->runPluginMigrations($pluginName);
@@ -320,11 +328,21 @@ class PluginManager
         // Remove menu for the plugin
         $this->removePluginMenu($pluginName);
 
-        // Note: We don't drop the tables to preserve data
-        // If you want to drop tables, uncomment the following lines:
-        // if ($pluginName === 'Berita') {
-        //     \DB::statement('DROP TABLE IF EXISTS `berita`');
-        // }
+        // Check if plugin has an install script with uninstall method
+        $pluginPath = $this->pluginsPath . '/' . $pluginName;
+        $installScriptPath = $pluginPath . '/install.php';
+        if (File::exists($installScriptPath)) {
+            // Include the installer class to access uninstall method
+            require_once $installScriptPath;
+            
+            // Dynamically determine the installer class name based on plugin name
+            $installerClass = $pluginName . 'Installer';
+            
+            if (class_exists($installerClass) && method_exists($installerClass, 'uninstall')) {
+                // Call the uninstall method if it exists
+                $installerClass::uninstall();
+            }
+        }
 
         return true;
     }

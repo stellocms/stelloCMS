@@ -42,7 +42,7 @@
                                             </p>
                                         </div>
                                         <div class="card-footer">
-                                            <a href="{{ in_array('berita.show', array_keys(app('router')->getRoutes()->getRoutesByName())) ? route('berita.show', $item->id) : url('/berita/' . $item->id) }}"
+                                            <a href="{{ in_array('berita.show', array_keys(app('router')->getRoutes()->getRoutesByName())) ? route('berita.show', $item->slug) : url('/berita/' . $item->slug) }}"
                                                class="btn btn-primary btn-sm">Baca Selengkapnya</a>
                                         </div>
                                     </div>

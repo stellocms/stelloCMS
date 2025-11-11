@@ -18,6 +18,11 @@ class RouteServiceProvider extends ServiceProvider
     public const HOME = '/panel/dashboard';
 
     /**
+     * The path to your application's login route.
+     */
+    public const LOGIN_PATH = '/panel';
+
+    /**
      * Define your route model bindings, pattern filters, and other route configuration.
      */
     public function boot(): void

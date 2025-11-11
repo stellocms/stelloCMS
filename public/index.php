@@ -1,5 +1,22 @@
 <?php
 
+// Redirect ke installer jika folder install masih ada dan user mengakses root
+if (is_dir(__DIR__.'/install')) {
+    $requestUri = $_SERVER['REQUEST_URI'];
+    
+    // Hanya redirect jika bukan sedang mengakses folder install
+    if (strpos($requestUri, '/install') !== 0) {
+        $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http");
+        $host = $_SERVER['HTTP_HOST'];
+        $basePath = dirname($_SERVER['SCRIPT_NAME']);
+        $installUrl = $protocol . "://" . $host . $basePath . "/install/";
+        
+        // Redirect ke installer
+        header("Location: $installUrl");
+        exit;
+    }
+}
+
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Http\Request;
 

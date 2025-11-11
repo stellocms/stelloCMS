@@ -24,6 +24,7 @@ Selamat datang di dokumentasi stelloCMS. Dokumen ini menyediakan panduan lengkap
 2. [Configuration Reference](CONFIGURATION_REFERENCE.md) - Referensi konfigurasi lengkap
 3. [Environment Variables](ENVIRONMENT_VARIABLES.md) - Daftar dan penjelasan variabel lingkungan
 4. [CLI Commands](CLI_COMMANDS.md) - Daftar dan penjelasan command line interface
+5. [Plugin Naming Conventions](PLUGIN_NAMING_CONVENTIONS.md) - Aturan penamaan plugin untuk pengembang
 
 ## Perubahan Penting
 

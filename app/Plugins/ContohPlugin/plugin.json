@@ -5,8 +5,5 @@
     "author": "StelloCMS Developer",
     "author_url": "https://stellocms.com",
     "required_version": "1.0.0",
-    "database": {
-        "migrations": "Database/Migrations",
-        "seeders": "Database/Seeders"
-    }
+    "install_script": "install.php"
 }

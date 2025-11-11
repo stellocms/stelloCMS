@@ -132,10 +132,11 @@ To create a new theme:
 
 ### Creating Plugins
 To create a new plugin:
-1. Follow the defined plugin structure
+1. Follow the defined plugin structure and naming conventions (use PascalCase for plugin name)
 2. Use appropriate namespace (`App\Plugins\{PluginName}\...`)
 3. Add database migrations if needed
-4. Use `view_theme()` helper for plugin view rendering
+4. Optionally, add `install.php` with `{PluginName}Installer` class for dynamic table management
+5. Use `view_theme()` helper for plugin view rendering
 
 ## Troubleshooting
 

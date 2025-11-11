@@ -68,4 +68,18 @@ class SettingController extends Controller
 
         return redirect()->route('setting.index')->with('success', 'Pengaturan berhasil dihapus.');
     }
+    
+    public function clearCache()
+    {
+        try {
+            \Artisan::call('config:clear');
+            \Artisan::call('cache:clear');
+            \Artisan::call('view:clear');
+            \Artisan::call('route:clear');
+            
+            return redirect()->back()->with('success', 'Cache berhasil dibersihkan.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal membersihkan cache: ' . $e->getMessage());
+        }
+    }
 }

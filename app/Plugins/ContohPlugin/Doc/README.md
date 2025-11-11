@@ -43,11 +43,6 @@ app/Plugins/ContohPlugin/
 │   └── frontpage/
 │       ├── index.blade.php
 │       └── show.blade.php
-├── Database/
-│   ├── Migrations/
-│   │   └── [migration_file].php
-│   └── Seeders/
-│       └── [seeder_file].php
 ├── Doc/
 │   ├── README.md
 │   ├── API.md
@@ -56,8 +51,11 @@ app/Plugins/ContohPlugin/
 │   ├── HELPERS.md
 │   └── INSTALLATION.md
 ├── plugin.json
-└── routes.php
+├── routes.php
+└── install.php
 ```
+
+**Catatan:** Folder `Database/` tidak lagi diperlukan karena struktur tabel sekarang ditangani melalui file `install.php`.
 
 ## Model
 
@@ -133,9 +131,25 @@ app/Plugins/ContohPlugin/
     "database": {
         "migrations": "Database/Migrations",
         "seeders": "Database/Seeders"
-    }
+    },
+    "install_script": "install.php"
 }
 ```
+
+## File Install.php
+
+File `install.php` adalah script untuk menangani pembuatan dan pembaruan struktur tabel `contoh_plugins` secara dinamis. File ini berisi class `{NamaPlugin}Installer` (dalam kasus ini `ContohPluginInstaller`) yang menyediakan metode untuk:
+
+- `install()` - Membuat atau memperbarui struktur tabel contoh_plugins
+- `uninstall()` - Menghapus tabel contoh_plugins saat plugin dihapus
+
+**Catatan penting:** PluginManager akan secara otomatis mencari class `{NamaPlugin}Installer` berdasarkan nama folder plugin. Dalam kasus ini, karena nama plugin adalah "ContohPlugin", maka nama kelas harus "ContohPluginInstaller".
+
+Fitur dari installer:
+- Mengecek apakah tabel sudah ada sebelum membuat
+- Memperbarui struktur tabel jika kolom baru ditambahkan
+- Menjamin keunikan kolom slug
+- Memperbarui tipe data kolom jika diperlukan
 
 ## Instalasi dan Konfigurasi
 

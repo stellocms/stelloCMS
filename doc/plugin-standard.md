@@ -17,11 +17,12 @@ app/Plugins/NamaPlugin/
 │   ├── create.blade.php
 │   ├── edit.blade.php
 │   └── show.blade.php
-├── Database/
-│   └── Migrations/
 ├── plugin.json
-└── routes.php
+├── routes.php
+└── install.php (opsional - untuk mengelola struktur database secara dinamis)
 ```
+
+**Catatan:** Folder `Database/` dengan migrasi tradisional tidak lagi diperlukan jika menggunakan file `install.php` untuk mengelola struktur database secara dinamis. File `install.php` berisi kelas `{NamaPlugin}Installer` yang menangani pembuatan dan pembaruan struktur tabel secara otomatis.
 
 ## File Konfigurasi
 

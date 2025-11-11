@@ -249,15 +249,10 @@
                       ->get();
               
               // Debug: Log jumlah menu
-              \Log::info('Menu items count: ' . $menus->count());
-              \Log::info('Menu items: ' . $menus->toJson());
               
               // Debug: Log user info and plugin info
               $currentUser = auth()->user();
-              \Log::info('Current user: ' . ($currentUser ? $currentUser->name . ' (Role: ' . ($currentUser->role ? $currentUser->role->name : 'none') . ')' : 'not logged in'));
-              \Log::info('Total plugins: ' . count($allPlugins));
               foreach($allPlugins as $plugin) {
-                  \Log::info('Plugin: ' . $plugin['name'] . ' - Active: ' . ($plugin['active'] ? 'YES' : 'NO'));
               }
           @endphp
           
@@ -268,7 +263,6 @@
                       $pluginActive = $menu->plugin_name ? app(App\Services\PluginManager::class)->isPluginActive($menu->plugin_name) : false;
                       $shouldDisplay = !$menu->route || ($routeExists || ($menu->plugin_name && $pluginActive));
                       
-                      \Log::info('Menu: ' . $menu->title . ' - Route exists: ' . ($routeExists ? 'YES' : 'NO') . ' - Plugin active: ' . ($pluginActive ? 'YES' : 'NO') . ' - Should display: ' . ($shouldDisplay ? 'YES' : 'NO') . ' - Route name: ' . ($menu->route ? $menu->route : 'N/A'));
                   @endphp
                   @if(!$menu->route || (in_array($menu->route, array_keys(app('router')->getRoutes()->getRoutesByName())) || ($menu->plugin_name && app(App\Services\PluginManager::class)->isPluginActive($menu->plugin_name))))
                       @if($menu->children->count() > 0)
@@ -387,7 +381,6 @@
           @endphp
           
           @php
-              \Log::info('Total menu items processed for display: ' . $menus->count());
               $isUsersActive = request()->routeIs('users.*');
           @endphp
           <li class="nav-item has-treeview {{ $isUserMenuActive ? 'menu-open' : '' }}">
