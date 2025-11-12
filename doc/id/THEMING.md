@@ -375,3 +375,24 @@ Tema Standar mendukung semua jenis widget dengan tampilan yang optimal:
 - Tampilan yang responsif dan konsisten di berbagai ukuran layar
 
 Tema ini memberikan contoh implementasi sistem tema dan widget yang fleksibel dan modern dalam sistem stelloCMS.
+
+## Best Practices dalam Pengembangan Tema
+
+### Route Penting untuk Tema
+Beberapa route penting yang perlu didefinisikan untuk mendukung sistem tema:
+
+```php
+// routes/web.php
+Route::get('/', [HomeController::class, 'index'])->name('home');  // Route untuk halaman utama
+```
+
+Route `home` sangat penting untuk tema frontend yang mungkin merujuk ke route ini dalam navigasi mereka. Jika route ini tidak ditemukan, tema akan mengalami error seperti `"Route [home] not defined."`.
+
+### Best Practices Pengembangan Tema
+- Gunakan route named yang sudah ada daripada hardcoding URL
+- Gunakan helper `route()` untuk link internal untuk keamanan dan fleksibilitas
+- Pastikan tema memiliki fallback untuk route atau menu yang tidak ditemukan
+- Gunakan struktur namespace tema yang konsisten
+- Jadikan asset tema responsif dan kompatibel dengan mode gelap/terang
+- Gunakan caching untuk elemen yang sering diakses untuk meningkatkan performa
+- Implementasikan error handling untuk konten dinamis dari plugin
