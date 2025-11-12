@@ -19,6 +19,8 @@ CREATE TABLE menus (
     is_active BOOLEAN DEFAULT TRUE,
     plugin_name VARCHAR(255) NULL,
     roles JSON NULL,
+    type ENUM('admin', 'frontend') DEFAULT 'admin',
+    position ENUM('sidebar-left', 'sidebar-right', 'header', 'footer') DEFAULT 'sidebar-left',
     created_at TIMESTAMP NULL,
     updated_at TIMESTAMP NULL,
     
@@ -37,6 +39,8 @@ CREATE TABLE menus (
 - **is_active**: Status aktif menu
 - **plugin_name**: Nama plugin yang terkait (jika ada)
 - **roles**: Array JSON role yang dapat mengakses menu
+- **type**: Tipe menu (admin atau frontend)
+- **position**: Posisi menu di tampilan (sidebar-left, sidebar-right, header, footer)
 - **created_at/updated_at**: Timestamp
 
 ## Hirarki Menu
@@ -451,7 +455,7 @@ class MenusTableSeeder extends Seeder
 
 ### Integrasi Plugin
 - Plugin harus membuat menu secara otomatis saat diinstal
-- Menu plugin harus dihapus saat plugin dihapus
+- Menu yang terkait dengan plugin harus dihapus saat plugin dihapus
 - Gunakan icon yang sesuai dengan fungsi plugin
 - Batasi akses menu plugin sesuai dengan kebutuhan
 
@@ -494,6 +498,28 @@ class MenusTableSeeder extends Seeder
 
 Untuk dokumentasi lengkap tentang sistem menu sidebar admin yang mencakup menu statis dan dinamis dari plugin, lihat [Sistem-Menu-Sidebar-Admin.md](../Sistem-Menu-Sidebar-Admin.md).
 
+## Struktur Widgets
+
+### Tabel Widgets
+Selain tabel menu, sistem juga memiliki tabel widgets untuk menampilkan elemen tampilan dinamis:
+```sql
+CREATE TABLE widgets (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    type ENUM('plugin', 'text', 'html') NOT NULL,
+    position ENUM('header', 'sidebar-left', 'sidebar-right', 'footer', 'home') NOT NULL,
+    status ENUM('aktif', 'nonaktif') DEFAULT 'aktif',
+    content TEXT NULL,
+    plugin_name VARCHAR(255) NULL,
+    order INT DEFAULT 0,
+    settings JSON NULL,
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+```
+
+Tabel widgets digunakan untuk menyimpan elemen tampilan dinamis yang dapat ditampilkan di berbagai posisi dalam sistem frontend dan admin. Fitur widgets menyediakan fleksibilitas dalam menampilkan konten statis, dinamis, atau dari plugin di berbagai area tampilan.
+
 ## Sistem Widgets
 
 Sistem widgets adalah komponen tambahan yang menyediakan manajemen elemen tampilan yang dapat ditampilkan di berbagai posisi dalam sistem. Widget mendukung tiga jenis konten: plugin, teks, dan HTML, serta dapat ditempatkan di posisi header, sidebar-kiri, sidebar-kanan, footer, atau home.
@@ -504,9 +530,8 @@ Sistem widgets adalah komponen tambahan yang menyediakan manajemen elemen tampil
 - **Manajemen**: Sistem CRUD lengkap untuk mengelola widget
 - **Pengaturan**: Dukungan pengaturan spesifik per widget (JSON)
 - **Pemfilteran**: Filter berdasarkan status (aktif/nonaktif), posisi, dan tipe
-
-### Integrasi dengan Menu
-Widget diakses melalui menu **Pengaturan** → **Widgets** di sidebar admin. Menu ini secara otomatis ditambahkan ke dalam sistem dan hanya dapat diakses oleh role admin dan operator.
+- **Tabs Berdasarkan Posisi**: Widget dikelompokkan dalam tabs berdasarkan posisi masing-masing
+- **Drag-and-Drop untuk Pengurutan**: Pengguna dapat mengurutkan widget melalui drag-and-drop
 
 ### Implementasi
 Widget dapat diimplementasikan di frontend dengan fungsi helper khusus atau dengan mengambil data langsung dari model `Widget`. Sistem ini memungkinkan pengelolaan elemen tampilan dinamis tanpa mengubah kode utama.

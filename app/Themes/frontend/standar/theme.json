@@ -1,9 +1,0 @@
-{
-    "name": "Standar",
-    "version": "1.0.0",
-    "description": "Tema frontend modern dengan gaya Canva.com menggunakan Tailwind CSS dan Alpine.js",
-    "author": "stelloCMS Development Team",
-    "author_url": "https://stellocms.com",
-    "screenshot": "img/screenshot.png",
-    "tags": ["modern", "tailwind", "alpinejs", "canva-style", "responsive"]
-}

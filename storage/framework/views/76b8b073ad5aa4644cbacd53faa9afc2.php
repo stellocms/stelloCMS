@@ -1,8 +1,6 @@
-@extends('theme.admin.adminlte::layouts.app')
+<?php $__env->startSection('page_title', 'Manajemen Tema'); ?>
 
-@section('page_title', 'Manajemen Tema')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
@@ -13,7 +11,7 @@
                         <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#uploadThemeModal">
                             <i class="fas fa-upload"></i> Upload Tema
                         </button>
-                        <a href="{{ route('themes.scan.get') }}" class="btn btn-sm btn-primary">
+                        <a href="<?php echo e(route('themes.scan.get')); ?>" class="btn btn-sm btn-primary">
                             <i class="fas fa-sync"></i> Scan Tema
                         </a>
                     </div>
@@ -32,57 +30,57 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($frontendThemes as $theme)
+                            <?php $__empty_1 = true; $__currentLoopData = $frontendThemes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $theme): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                             <tr>
-                                <td>{{ $theme->name }}</td>
-                                <td>{{ $theme->version ?? 'N/A' }}</td>
-                                <td>{{ $theme->description ?? 'No description' }}</td>
+                                <td><?php echo e($theme->name); ?></td>
+                                <td><?php echo e($theme->version ?? 'N/A'); ?></td>
+                                <td><?php echo e($theme->description ?? 'No description'); ?></td>
                                 <td>
-                                    @if($theme->is_default)
+                                    <?php if($theme->is_default): ?>
                                         <span class="badge badge-primary">Default</span>
-                                    @elseif($theme->is_active)
+                                    <?php elseif($theme->is_active): ?>
                                         <span class="badge badge-success">Active</span>
-                                    @else
+                                    <?php else: ?>
                                         <span class="badge badge-secondary">Inactive</span>
-                                    @endif
+                                    <?php endif; ?>
                                 </td>
                                 <td>
-                                    @if($theme->is_installed)
-                                        @if(!$theme->is_default)
-                                            <form method="POST" action="{{ route('themes.set_default', ['type' => 'frontend', 'name' => $theme->name]) }}" style="display: inline;">
-                                                @csrf
+                                    <?php if($theme->is_installed): ?>
+                                        <?php if(!$theme->is_default): ?>
+                                            <form method="POST" action="<?php echo e(route('themes.set_default', ['type' => 'frontend', 'name' => $theme->name])); ?>" style="display: inline;">
+                                                <?php echo csrf_field(); ?>
                                                 <button type="submit" class="btn btn-sm btn-outline-primary" onclick="return confirm('Yakin ingin menjadikan tema ini sebagai default?')">Jadikan Default</button>
                                             </form>
-                                        @endif
-                                        @if($theme->is_active)
-                                            <form method="POST" action="{{ route('themes.deactivate', ['type' => 'frontend', 'name' => $theme->name]) }}" style="display: inline;">
-                                                @csrf
+                                        <?php endif; ?>
+                                        <?php if($theme->is_active): ?>
+                                            <form method="POST" action="<?php echo e(route('themes.deactivate', ['type' => 'frontend', 'name' => $theme->name])); ?>" style="display: inline;">
+                                                <?php echo csrf_field(); ?>
                                                 <button type="submit" class="btn btn-sm btn-outline-warning" onclick="return confirm('Yakin ingin menonaktifkan tema ini?')">Nonaktifkan</button>
                                             </form>
-                                        @else
-                                            <form method="POST" action="{{ route('themes.activate', ['type' => 'frontend', 'name' => $theme->name]) }}" style="display: inline;">
-                                                @csrf
+                                        <?php else: ?>
+                                            <form method="POST" action="<?php echo e(route('themes.activate', ['type' => 'frontend', 'name' => $theme->name])); ?>" style="display: inline;">
+                                                <?php echo csrf_field(); ?>
                                                 <button type="submit" class="btn btn-sm btn-outline-success" onclick="return confirm('Yakin ingin mengaktifkan tema ini?')">Aktifkan</button>
                                             </form>
-                                        @endif
-                                        <form method="POST" action="{{ route('themes.uninstall', ['type' => 'frontend', 'name' => $theme->name]) }}" style="display: inline;">
-                                            @csrf
-                                            @method('DELETE')
+                                        <?php endif; ?>
+                                        <form method="POST" action="<?php echo e(route('themes.uninstall', ['type' => 'frontend', 'name' => $theme->name])); ?>" style="display: inline;">
+                                            <?php echo csrf_field(); ?>
+                                            <?php echo method_field('DELETE'); ?>
                                             <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Yakin ingin menghapus tema ini?')">Uninstall</button>
                                         </form>
-                                    @else
-                                        <form method="POST" action="{{ route('themes.install', ['type' => 'frontend', 'name' => $theme->name]) }}" style="display: inline;">
-                                            @csrf
+                                    <?php else: ?>
+                                        <form method="POST" action="<?php echo e(route('themes.install', ['type' => 'frontend', 'name' => $theme->name])); ?>" style="display: inline;">
+                                            <?php echo csrf_field(); ?>
                                             <button type="submit" class="btn btn-sm btn-outline-info" onclick="return confirm('Yakin ingin menginstal tema ini?')">Install</button>
                                         </form>
-                                    @endif
+                                    <?php endif; ?>
                                 </td>
                             </tr>
-                            @empty
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                             <tr>
                                 <td colspan="5" class="text-center">Tidak ada tema frontend ditemukan</td>
                             </tr>
-                            @endforelse
+                            <?php endif; ?>
                         </tbody>
                     </table>
 
@@ -98,57 +96,57 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($adminThemes as $theme)
+                            <?php $__empty_1 = true; $__currentLoopData = $adminThemes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $theme): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                             <tr>
-                                <td>{{ $theme->name }}</td>
-                                <td>{{ $theme->version ?? 'N/A' }}</td>
-                                <td>{{ $theme->description ?? 'No description' }}</td>
+                                <td><?php echo e($theme->name); ?></td>
+                                <td><?php echo e($theme->version ?? 'N/A'); ?></td>
+                                <td><?php echo e($theme->description ?? 'No description'); ?></td>
                                 <td>
-                                    @if($theme->is_default)
+                                    <?php if($theme->is_default): ?>
                                         <span class="badge badge-primary">Default</span>
-                                    @elseif($theme->is_active)
+                                    <?php elseif($theme->is_active): ?>
                                         <span class="badge badge-success">Active</span>
-                                    @else
+                                    <?php else: ?>
                                         <span class="badge badge-secondary">Inactive</span>
-                                    @endif
+                                    <?php endif; ?>
                                 </td>
                                 <td>
-                                    @if($theme->is_installed)
-                                        @if(!$theme->is_default)
-                                            <form method="POST" action="{{ route('themes.set_default', ['type' => 'admin', 'name' => $theme->name]) }}" style="display: inline;">
-                                                @csrf
+                                    <?php if($theme->is_installed): ?>
+                                        <?php if(!$theme->is_default): ?>
+                                            <form method="POST" action="<?php echo e(route('themes.set_default', ['type' => 'admin', 'name' => $theme->name])); ?>" style="display: inline;">
+                                                <?php echo csrf_field(); ?>
                                                 <button type="submit" class="btn btn-sm btn-outline-primary" onclick="return confirm('Yakin ingin menjadikan tema ini sebagai default?')">Jadikan Default</button>
                                             </form>
-                                        @endif
-                                        @if($theme->is_active)
-                                            <form method="POST" action="{{ route('themes.deactivate', ['type' => 'admin', 'name' => $theme->name]) }}" style="display: inline;">
-                                                @csrf
+                                        <?php endif; ?>
+                                        <?php if($theme->is_active): ?>
+                                            <form method="POST" action="<?php echo e(route('themes.deactivate', ['type' => 'admin', 'name' => $theme->name])); ?>" style="display: inline;">
+                                                <?php echo csrf_field(); ?>
                                                 <button type="submit" class="btn btn-sm btn-outline-warning" onclick="return confirm('Yakin ingin menonaktifkan tema ini?')">Nonaktifkan</button>
                                             </form>
-                                        @else
-                                            <form method="POST" action="{{ route('themes.activate', ['type' => 'admin', 'name' => $theme->name]) }}" style="display: inline;">
-                                                @csrf
+                                        <?php else: ?>
+                                            <form method="POST" action="<?php echo e(route('themes.activate', ['type' => 'admin', 'name' => $theme->name])); ?>" style="display: inline;">
+                                                <?php echo csrf_field(); ?>
                                                 <button type="submit" class="btn btn-sm btn-outline-success" onclick="return confirm('Yakin ingin mengaktifkan tema ini?')">Aktifkan</button>
                                             </form>
-                                        @endif
-                                        <form method="POST" action="{{ route('themes.uninstall', ['type' => 'admin', 'name' => $theme->name]) }}" style="display: inline;">
-                                            @csrf
-                                            @method('DELETE')
+                                        <?php endif; ?>
+                                        <form method="POST" action="<?php echo e(route('themes.uninstall', ['type' => 'admin', 'name' => $theme->name])); ?>" style="display: inline;">
+                                            <?php echo csrf_field(); ?>
+                                            <?php echo method_field('DELETE'); ?>
                                             <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Yakin ingin menghapus tema ini?')">Uninstall</button>
                                         </form>
-                                    @else
-                                        <form method="POST" action="{{ route('themes.install', ['type' => 'admin', 'name' => $theme->name]) }}" style="display: inline;">
-                                            @csrf
+                                    <?php else: ?>
+                                        <form method="POST" action="<?php echo e(route('themes.install', ['type' => 'admin', 'name' => $theme->name])); ?>" style="display: inline;">
+                                            <?php echo csrf_field(); ?>
                                             <button type="submit" class="btn btn-sm btn-outline-info" onclick="return confirm('Yakin ingin menginstal tema ini?')">Install</button>
                                         </form>
-                                    @endif
+                                    <?php endif; ?>
                                 </td>
                             </tr>
-                            @empty
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                             <tr>
                                 <td colspan="5" class="text-center">Tidak ada tema admin ditemukan</td>
                             </tr>
-                            @endforelse
+                            <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
@@ -163,8 +161,8 @@
 <div class="modal fade" id="uploadThemeModal" tabindex="-1" role="dialog" aria-labelledby="uploadThemeModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form action="{{ route('themes.upload') }}" method="POST" enctype="multipart/form-data">
-                @csrf
+            <form action="<?php echo e(route('themes.upload')); ?>" method="POST" enctype="multipart/form-data">
+                <?php echo csrf_field(); ?>
                 <div class="modal-header">
                     <h5 class="modal-title" id="uploadThemeModalLabel">Upload Tema Baru</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -215,4 +213,5 @@ document.querySelector('.custom-file-input').addEventListener('change', function
     nextSibling.innerText = fileName;
 });
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('theme.admin.adminlte::layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\htdocs\stelloCMS\app\Themes/admin/adminlte/themes/index.blade.php ENDPATH**/ ?>

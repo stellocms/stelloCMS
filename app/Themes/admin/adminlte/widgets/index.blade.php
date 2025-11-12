@@ -18,284 +18,243 @@
                 </div>
                 <!-- /.card-header -->
 
-                <!-- Grid 3x3 untuk widget berdasarkan posisi -->
+                <!-- Tabs untuk widget berdasarkan posisi -->
+                <div class="card-header p-0 border-bottom-0">
+                    <ul class="nav nav-tabs" id="widgetsTab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="header-widgets-tab" data-toggle="tab" href="#header-widgets" role="tab" aria-controls="header-widgets" aria-selected="true">
+                                <i class="fas fa-heading"></i> Header Widgets
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="sidebar-left-tab" data-toggle="tab" href="#left-widgets" role="tab" aria-controls="left-widgets" aria-selected="false">
+                                <i class="fas fa-align-left"></i> Sidebar Left
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="sidebar-right-tab" data-toggle="tab" href="#right-widgets" role="tab" aria-controls="right-widgets" aria-selected="false">
+                                <i class="fas fa-align-right"></i> Sidebar Right
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="footer-widgets-tab" data-toggle="tab" href="#footer-widgets" role="tab" aria-controls="footer-widgets" aria-selected="false">
+                                <i class="fas fa-file-alt"></i> Footer Widgets
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="home-widgets-tab" data-toggle="tab" href="#home-widgets" role="tab" aria-controls="home-widgets" aria-selected="false">
+                                <i class="fas fa-home"></i> Home Widgets
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
                 <div class="card-body">
-                    <div class="grid-container">
-                        <table class="table table-bordered">
-                            <tbody>
-                                <!-- Baris 1: Header (span 3 kolom) -->
-                                <tr>
-                                    <td colspan="3" class="position-header bg-gray-light">
-                                        <div class="d-flex justify-content-between align-items-center mb-2">
-                                            <h4 class="position-title mb-0">
-                                                <i class="fas fa-header"></i> Header Widgets
-                                            </h4>
-                                            <span class="badge badge-primary">{{ $headerWidgets->count() }} widgets</span>
+                    <div class="tab-content" id="widgetsTabContent">
+                        <!-- Header Widgets Tab -->
+                        <div class="tab-pane fade show active" id="header-widgets" role="tabpanel" aria-labelledby="header-widgets-tab">
+                            @if(isset($headerWidgets) && $headerWidgets->count() > 0)
+                                <div class="list-group" id="header-widgets-list">
+                                    @foreach($headerWidgets as $widget)
+                                    <div class="list-group-item" data-widget-id="{{ $widget->id }}">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <div>
+                                                <h5 class="mb-1">{{ $widget->name }}</h5>
+                                                <small class="text-muted">Order: {{ $widget->order }}</small>
+                                            </div>
+                                            <div>
+                                                <span class="badge badge-{{ $widget->type === 'plugin' ? 'info' : ($widget->type === 'text' ? 'warning' : 'success') }}">
+                                                    {{ ucfirst($widget->type) }}
+                                                </span>
+                                                <span class="badge {{ $widget->status === 'aktif' ? 'badge-success' : 'badge-danger' }}">
+                                                    {{ $widget->status }}
+                                                </span>
+                                            </div>
                                         </div>
-                                        <div id="header-widgets-container" class="position-widgets-container" data-position="header">
-                                            @if($headerWidgets->count() > 0)
-                                                @foreach($headerWidgets as $widget)
-                                                <div class="position-widget card mb-2" data-id="{{ $widget->id }}">
-                                                    <div class="card-body p-2">
-                                                        <div class="d-flex justify-content-between">
-                                                            <div class="flex-grow-1">
-                                                                <h6 class="card-title mb-1">{{ Str::limit($widget->name, 30) }}</h6>
-                                                                <div class="small text-muted">
-                                                                    <span class="badge badge-{{ $widget->type === 'plugin' ? 'info' : ($widget->type === 'text' ? 'warning' : 'success') }}">
-                                                                        {{ ucfirst($widget->type) }}
-                                                                    </span>
-                                                                    <span class="badge {{ $widget->status === 'aktif' ? 'badge-success' : 'badge-danger' }}">
-                                                                        {{ $widget->status }}
-                                                                    </span>
-                                                                    <small>Order: {{ $widget->order }}</small>
-                                                                </div>
-                                                            </div>
-                                                            <div class="btn-group btn-group-sm ml-2">
-                                                                <a href="{{ route('panel.widgets.show', $widget->id) }}" class="btn btn-info" title="Lihat">
-                                                                    <i class="fas fa-eye"></i>
-                                                                </a>
-                                                                <a href="{{ route('panel.widgets.edit', $widget->id) }}" class="btn btn-primary" title="Edit">
-                                                                    <i class="fas fa-edit"></i>
-                                                                </a>
-                                                                <form action="{{ route('panel.widgets.destroy', $widget->id) }}" method="POST" class="d-inline">
-                                                                    @csrf
-                                                                    @method('DELETE')
-                                                                    <button type="submit" class="btn btn-danger" title="Hapus" onclick="return confirm('Yakin ingin menghapus widget ini?')">
-                                                                        <i class="fas fa-trash"></i>
-                                                                    </button>
-                                                                </form>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                @endforeach
-                                            @else
-                                                <div class="alert alert-secondary text-center mb-0">
-                                                    Tidak ada widget di posisi Header
-                                                </div>
-                                            @endif
+                                        <p class="mb-1">{{ Str::limit(strip_tags($widget->content ?? ''), 80, '...') }}</p>
+                                        <small class="text-muted">{{ $widget->plugin_name ?: 'Tidak ada plugin' }}</small>
+                                        <div class="mt-2">
+                                            <a href="{{ route('panel.widgets.show', $widget->id) }}" class="btn btn-sm btn-info">Lihat</a>
+                                            <a href="{{ route('panel.widgets.edit', $widget->id) }}" class="btn btn-sm btn-primary">Edit</a>
+                                            <form action="{{ route('panel.widgets.destroy', $widget->id) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus widget ini?')">Hapus</button>
+                                            </form>
                                         </div>
-                                    </td>
-                                </tr>
-                                
-                                <!-- Baris 2: Sidebar Left (kolom 1), Home (kolom 2), Sidebar Right (kolom 3) -->
-                                <tr>
-                                    <!-- Sidebar Left -->
-                                    <td class="position-sidebar-left bg-gray-light">
-                                        <div class="d-flex justify-content-between align-items-center mb-2">
-                                            <h4 class="position-title mb-0">
-                                                <i class="fas fa-align-left"></i> Sidebar Kiri
-                                            </h4>
-                                            <span class="badge badge-primary">{{ $sidebarLeftWidgets->count() }} widgets</span>
+                                    </div>
+                                    @endforeach
+                                </div>
+                            @else
+                                <div class="alert alert-info">
+                                    Belum ada widget di posisi Header.
+                                </div>
+                            @endif
+                        </div>
+
+                        <!-- Sidebar Left Widgets Tab -->
+                        <div class="tab-pane fade" id="left-widgets" role="tabpanel" aria-labelledby="sidebar-left-tab">
+                            @if(isset($sidebarLeftWidgets) && $sidebarLeftWidgets->count() > 0)
+                                <div class="list-group" id="sidebar-left-widgets-list">
+                                    @foreach($sidebarLeftWidgets as $widget)
+                                    <div class="list-group-item" data-widget-id="{{ $widget->id }}">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <div>
+                                                <h5 class="mb-1">{{ $widget->name }}</h5>
+                                                <small class="text-muted">Order: {{ $widget->order }}</small>
+                                            </div>
+                                            <div>
+                                                <span class="badge badge-{{ $widget->type === 'plugin' ? 'info' : ($widget->type === 'text' ? 'warning' : 'success') }}">
+                                                    {{ ucfirst($widget->type) }}
+                                                </span>
+                                                <span class="badge {{ $widget->status === 'aktif' ? 'badge-success' : 'badge-danger' }}">
+                                                    {{ $widget->status }}
+                                                </span>
+                                            </div>
                                         </div>
-                                        <div id="sidebar-left-widgets-container" class="position-widgets-container" data-position="sidebar-left">
-                                            @if($sidebarLeftWidgets->count() > 0)
-                                                @foreach($sidebarLeftWidgets as $widget)
-                                                <div class="position-widget card mb-2" data-id="{{ $widget->id }}">
-                                                    <div class="card-body p-2">
-                                                        <div class="d-flex justify-content-between">
-                                                            <div class="flex-grow-1">
-                                                                <h6 class="card-title mb-1">{{ Str::limit($widget->name, 25) }}</h6>
-                                                                <div class="small text-muted">
-                                                                    <span class="badge badge-{{ $widget->type === 'plugin' ? 'info' : ($widget->type === 'text' ? 'warning' : 'success') }}">
-                                                                        {{ ucfirst($widget->type) }}
-                                                                    </span>
-                                                                    <span class="badge {{ $widget->status === 'aktif' ? 'badge-success' : 'badge-danger' }}">
-                                                                        {{ $widget->status }}
-                                                                    </span>
-                                                                    <small>Order: {{ $widget->order }}</small>
-                                                                </div>
-                                                            </div>
-                                                            <div class="btn-group btn-group-sm ml-2">
-                                                                <a href="{{ route('panel.widgets.show', $widget->id) }}" class="btn btn-info" title="Lihat">
-                                                                    <i class="fas fa-eye"></i>
-                                                                </a>
-                                                                <a href="{{ route('panel.widgets.edit', $widget->id) }}" class="btn btn-primary" title="Edit">
-                                                                    <i class="fas fa-edit"></i>
-                                                                </a>
-                                                                <form action="{{ route('panel.widgets.destroy', $widget->id) }}" method="POST" class="d-inline">
-                                                                    @csrf
-                                                                    @method('DELETE')
-                                                                    <button type="submit" class="btn btn-danger" title="Hapus" onclick="return confirm('Yakin ingin menghapus widget ini?')">
-                                                                        <i class="fas fa-trash"></i>
-                                                                    </button>
-                                                                </form>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                @endforeach
-                                            @else
-                                                <div class="alert alert-secondary text-center mb-0">
-                                                    Tidak ada widget di posisi Sidebar Kiri
-                                                </div>
-                                            @endif
+                                        <p class="mb-1">{{ Str::limit(strip_tags($widget->content ?? ''), 80, '...') }}</p>
+                                        <small class="text-muted">{{ $widget->plugin_name ?: 'Tidak ada plugin' }}</small>
+                                        <div class="mt-2">
+                                            <a href="{{ route('panel.widgets.show', $widget->id) }}" class="btn btn-sm btn-info">Lihat</a>
+                                            <a href="{{ route('panel.widgets.edit', $widget->id) }}" class="btn btn-sm btn-primary">Edit</a>
+                                            <form action="{{ route('panel.widgets.destroy', $widget->id) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus widget ini?')">Hapus</button>
+                                            </form>
                                         </div>
-                                    </td>
-                                    
-                                    <!-- Home -->
-                                    <td class="position-home bg-gray-light">
-                                        <div class="d-flex justify-content-between align-items-center mb-2">
-                                            <h4 class="position-title mb-0">
-                                                <i class="fas fa-home"></i> Home
-                                            </h4>
-                                            <span class="badge badge-primary">{{ $homeWidgets->count() }} widgets</span>
+                                    </div>
+                                    @endforeach
+                                </div>
+                            @else
+                                <div class="alert alert-info">
+                                    Belum ada widget di posisi Sidebar Kiri.
+                                </div>
+                            @endif
+                        </div>
+
+                        <!-- Sidebar Right Widgets Tab -->
+                        <div class="tab-pane fade" id="right-widgets" role="tabpanel" aria-labelledby="sidebar-right-tab">
+                            @if(isset($sidebarRightWidgets) && $sidebarRightWidgets->count() > 0)
+                                <div class="list-group" id="sidebar-right-widgets-list">
+                                    @foreach($sidebarRightWidgets as $widget)
+                                    <div class="list-group-item" data-widget-id="{{ $widget->id }}">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <div>
+                                                <h5 class="mb-1">{{ $widget->name }}</h5>
+                                                <small class="text-muted">Order: {{ $widget->order }}</small>
+                                            </div>
+                                            <div>
+                                                <span class="badge badge-{{ $widget->type === 'plugin' ? 'info' : ($widget->type === 'text' ? 'warning' : 'success') }}">
+                                                    {{ ucfirst($widget->type) }}
+                                                </span>
+                                                <span class="badge {{ $widget->status === 'aktif' ? 'badge-success' : 'badge-danger' }}">
+                                                    {{ $widget->status }}
+                                                </span>
+                                            </div>
                                         </div>
-                                        <div id="home-widgets-container" class="position-widgets-container" data-position="home">
-                                            @if($homeWidgets->count() > 0)
-                                                @foreach($homeWidgets as $widget)
-                                                <div class="position-widget card mb-2" data-id="{{ $widget->id }}">
-                                                    <div class="card-body p-2">
-                                                        <div class="d-flex justify-content-between">
-                                                            <div class="flex-grow-1">
-                                                                <h6 class="card-title mb-1">{{ Str::limit($widget->name, 25) }}</h6>
-                                                                <div class="small text-muted">
-                                                                    <span class="badge badge-{{ $widget->type === 'plugin' ? 'info' : ($widget->type === 'text' ? 'warning' : 'success') }}">
-                                                                        {{ ucfirst($widget->type) }}
-                                                                    </span>
-                                                                    <span class="badge {{ $widget->status === 'aktif' ? 'badge-success' : 'badge-danger' }}">
-                                                                        {{ $widget->status }}
-                                                                    </span>
-                                                                    <small>Order: {{ $widget->order }}</small>
-                                                                </div>
-                                                            </div>
-                                                            <div class="btn-group btn-group-sm ml-2">
-                                                                <a href="{{ route('panel.widgets.show', $widget->id) }}" class="btn btn-info" title="Lihat">
-                                                                    <i class="fas fa-eye"></i>
-                                                                </a>
-                                                                <a href="{{ route('panel.widgets.edit', $widget->id) }}" class="btn btn-primary" title="Edit">
-                                                                    <i class="fas fa-edit"></i>
-                                                                </a>
-                                                                <form action="{{ route('panel.widgets.destroy', $widget->id) }}" method="POST" class="d-inline">
-                                                                    @csrf
-                                                                    @method('DELETE')
-                                                                    <button type="submit" class="btn btn-danger" title="Hapus" onclick="return confirm('Yakin ingin menghapus widget ini?')">
-                                                                        <i class="fas fa-trash"></i>
-                                                                    </button>
-                                                                </form>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                @endforeach
-                                            @else
-                                                <div class="alert alert-secondary text-center mb-0">
-                                                    Tidak ada widget di posisi Home
-                                                </div>
-                                            @endif
+                                        <p class="mb-1">{{ Str::limit(strip_tags($widget->content ?? ''), 80, '...') }}</p>
+                                        <small class="text-muted">{{ $widget->plugin_name ?: 'Tidak ada plugin' }}</small>
+                                        <div class="mt-2">
+                                            <a href="{{ route('panel.widgets.show', $widget->id) }}" class="btn btn-sm btn-info">Lihat</a>
+                                            <a href="{{ route('panel.widgets.edit', $widget->id) }}" class="btn btn-sm btn-primary">Edit</a>
+                                            <form action="{{ route('panel.widgets.destroy', $widget->id) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus widget ini?')">Hapus</button>
+                                            </form>
                                         </div>
-                                    </td>
-                                    
-                                    <!-- Sidebar Right -->
-                                    <td class="position-sidebar-right bg-gray-light">
-                                        <div class="d-flex justify-content-between align-items-center mb-2">
-                                            <h4 class="position-title mb-0">
-                                                <i class="fas fa-align-right"></i> Sidebar Kanan
-                                            </h4>
-                                            <span class="badge badge-primary">{{ $sidebarRightWidgets->count() }} widgets</span>
+                                    </div>
+                                    @endforeach
+                                </div>
+                            @else
+                                <div class="alert alert-info">
+                                    Belum ada widget di posisi Sidebar Kanan.
+                                </div>
+                            @endif
+                        </div>
+
+                        <!-- Footer Widgets Tab -->
+                        <div class="tab-pane fade" id="footer-widgets" role="tabpanel" aria-labelledby="footer-widgets-tab">
+                            @if(isset($footerWidgets) && $footerWidgets->count() > 0)
+                                <div class="list-group" id="footer-widgets-list">
+                                    @foreach($footerWidgets as $widget)
+                                    <div class="list-group-item" data-widget-id="{{ $widget->id }}">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <div>
+                                                <h5 class="mb-1">{{ $widget->name }}</h5>
+                                                <small class="text-muted">Order: {{ $widget->order }}</small>
+                                            </div>
+                                            <div>
+                                                <span class="badge badge-{{ $widget->type === 'plugin' ? 'info' : ($widget->type === 'text' ? 'warning' : 'success') }}">
+                                                    {{ ucfirst($widget->type) }}
+                                                </span>
+                                                <span class="badge {{ $widget->status === 'aktif' ? 'badge-success' : 'badge-danger' }}">
+                                                    {{ $widget->status }}
+                                                </span>
+                                            </div>
                                         </div>
-                                        <div id="sidebar-right-widgets-container" class="position-widgets-container" data-position="sidebar-right">
-                                            @if($sidebarRightWidgets->count() > 0)
-                                                @foreach($sidebarRightWidgets as $widget)
-                                                <div class="position-widget card mb-2" data-id="{{ $widget->id }}">
-                                                    <div class="card-body p-2">
-                                                        <div class="d-flex justify-content-between">
-                                                            <div class="flex-grow-1">
-                                                                <h6 class="card-title mb-1">{{ Str::limit($widget->name, 25) }}</h6>
-                                                                <div class="small text-muted">
-                                                                    <span class="badge badge-{{ $widget->type === 'plugin' ? 'info' : ($widget->type === 'text' ? 'warning' : 'success') }}">
-                                                                        {{ ucfirst($widget->type) }}
-                                                                    </span>
-                                                                    <span class="badge {{ $widget->status === 'aktif' ? 'badge-success' : 'badge-danger' }}">
-                                                                        {{ $widget->status }}
-                                                                    </span>
-                                                                    <small>Order: {{ $widget->order }}</small>
-                                                                </div>
-                                                            </div>
-                                                            <div class="btn-group btn-group-sm ml-2">
-                                                                <a href="{{ route('panel.widgets.show', $widget->id) }}" class="btn btn-info" title="Lihat">
-                                                                    <i class="fas fa-eye"></i>
-                                                                </a>
-                                                                <a href="{{ route('panel.widgets.edit', $widget->id) }}" class="btn btn-primary" title="Edit">
-                                                                    <i class="fas fa-edit"></i>
-                                                                </a>
-                                                                <form action="{{ route('panel.widgets.destroy', $widget->id) }}" method="POST" class="d-inline">
-                                                                    @csrf
-                                                                    @method('DELETE')
-                                                                    <button type="submit" class="btn btn-danger" title="Hapus" onclick="return confirm('Yakin ingin menghapus widget ini?')">
-                                                                        <i class="fas fa-trash"></i>
-                                                                    </button>
-                                                                </form>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                @endforeach
-                                            @else
-                                                <div class="alert alert-secondary text-center mb-0">
-                                                    Tidak ada widget di posisi Sidebar Kanan
-                                                </div>
-                                            @endif
+                                        <p class="mb-1">{{ Str::limit(strip_tags($widget->content ?? ''), 80, '...') }}</p>
+                                        <small class="text-muted">{{ $widget->plugin_name ?: 'Tidak ada plugin' }}</small>
+                                        <div class="mt-2">
+                                            <a href="{{ route('panel.widgets.show', $widget->id) }}" class="btn btn-sm btn-info">Lihat</a>
+                                            <a href="{{ route('panel.widgets.edit', $widget->id) }}" class="btn btn-sm btn-primary">Edit</a>
+                                            <form action="{{ route('panel.widgets.destroy', $widget->id) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus widget ini?')">Hapus</button>
+                                            </form>
                                         </div>
-                                    </td>
-                                </tr>
-                                
-                                <!-- Baris 3: Footer (span 3 kolom) -->
-                                <tr>
-                                    <td colspan="3" class="position-footer bg-gray-light">
-                                        <div class="d-flex justify-content-between align-items-center mb-2">
-                                            <h4 class="position-title mb-0">
-                                                <i class="fas fa-file-alt"></i> Footer Widgets
-                                            </h4>
-                                            <span class="badge badge-primary">{{ $footerWidgets->count() }} widgets</span>
+                                    </div>
+                                    @endforeach
+                                </div>
+                            @else
+                                <div class="alert alert-info">
+                                    Belum ada widget di posisi Footer.
+                                </div>
+                            @endif
+                        </div>
+
+                        <!-- Home Widgets Tab -->
+                        <div class="tab-pane fade" id="home-widgets" role="tabpanel" aria-labelledby="home-widgets-tab">
+                            @if(isset($homeWidgets) && $homeWidgets->count() > 0)
+                                <div class="list-group" id="home-widgets-list">
+                                    @foreach($homeWidgets as $widget)
+                                    <div class="list-group-item" data-widget-id="{{ $widget->id }}">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <div>
+                                                <h5 class="mb-1">{{ $widget->name }}</h5>
+                                                <small class="text-muted">Order: {{ $widget->order }}</small>
+                                            </div>
+                                            <div>
+                                                <span class="badge badge-{{ $widget->type === 'plugin' ? 'info' : ($widget->type === 'text' ? 'warning' : 'success') }}">
+                                                    {{ ucfirst($widget->type) }}
+                                                </span>
+                                                <span class="badge {{ $widget->status === 'aktif' ? 'badge-success' : 'badge-danger' }}">
+                                                    {{ $widget->status }}
+                                                </span>
+                                            </div>
                                         </div>
-                                        <div id="footer-widgets-container" class="position-widgets-container" data-position="footer">
-                                            @if($footerWidgets->count() > 0)
-                                                @foreach($footerWidgets as $widget)
-                                                <div class="position-widget card mb-2" data-id="{{ $widget->id }}">
-                                                    <div class="card-body p-2">
-                                                        <div class="d-flex justify-content-between">
-                                                            <div class="flex-grow-1">
-                                                                <h6 class="card-title mb-1">{{ Str::limit($widget->name, 30) }}</h6>
-                                                                <div class="small text-muted">
-                                                                    <span class="badge badge-{{ $widget->type === 'plugin' ? 'info' : ($widget->type === 'text' ? 'warning' : 'success') }}">
-                                                                        {{ ucfirst($widget->type) }}
-                                                                    </span>
-                                                                    <span class="badge {{ $widget->status === 'aktif' ? 'badge-success' : 'badge-danger' }}">
-                                                                        {{ $widget->status }}
-                                                                    </span>
-                                                                    <small>Order: {{ $widget->order }}</small>
-                                                                </div>
-                                                            </div>
-                                                            <div class="btn-group btn-group-sm ml-2">
-                                                                <a href="{{ route('panel.widgets.show', $widget->id) }}" class="btn btn-info" title="Lihat">
-                                                                    <i class="fas fa-eye"></i>
-                                                                </a>
-                                                                <a href="{{ route('panel.widgets.edit', $widget->id) }}" class="btn btn-primary" title="Edit">
-                                                                    <i class="fas fa-edit"></i>
-                                                                </a>
-                                                                <form action="{{ route('panel.widgets.destroy', $widget->id) }}" method="POST" class="d-inline">
-                                                                    @csrf
-                                                                    @method('DELETE')
-                                                                    <button type="submit" class="btn btn-danger" title="Hapus" onclick="return confirm('Yakin ingin menghapus widget ini?')">
-                                                                        <i class="fas fa-trash"></i>
-                                                                    </button>
-                                                                </form>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                @endforeach
-                                            @else
-                                                <div class="alert alert-secondary text-center mb-0">
-                                                    Tidak ada widget di posisi Footer
-                                                </div>
-                                            @endif
+                                        <p class="mb-1">{{ Str::limit(strip_tags($widget->content ?? ''), 80, '...') }}</p>
+                                        <small class="text-muted">{{ $widget->plugin_name ?: 'Tidak ada plugin' }}</small>
+                                        <div class="mt-2">
+                                            <a href="{{ route('panel.widgets.show', $widget->id) }}" class="btn btn-sm btn-info">Lihat</a>
+                                            <a href="{{ route('panel.widgets.edit', $widget->id) }}" class="btn btn-sm btn-primary">Edit</a>
+                                            <form action="{{ route('panel.widgets.destroy', $widget->id) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus widget ini?')">Hapus</button>
+                                            </form>
                                         </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                    </div>
+                                    @endforeach
+                                </div>
+                            @else
+                                <div class="alert alert-info">
+                                    Belum ada widget di posisi Home.
+                                </div>
+                            @endif
+                        </div>
                     </div>
                 </div>
                 <!-- /.card-body -->
@@ -305,119 +264,222 @@
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Tambahkan script untuk drag-and-drop -->
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 
 <script>
-$(document).ready(function() {
-    // Enable sortable for all position containers - allow connections between containers
-    $('[id$="-widgets-container"]').each(function() {
-        const $container = $(this);
-        const position = $container.data('position');
-        
-        $container.sortable({
-            placeholder: 'ui-sortable-placeholder',
-            cursor: 'move',
-            opacity: 0.7,
-            tolerance: 'pointer',
-            connectWith: '[id$="-widgets-container"]', // Allow dragging between containers
-            update: function(event, ui) {
-                // Update order when widget is moved within same container or between containers
-                const newPosition = $(this).data('position');
-                updateWidgetPositionsAndOrders();
-            },
-            stop: function(event, ui) {
-                // Update all positions and orders after movement
-                updateWidgetPositionsAndOrders();
-            }
-        });
+document.addEventListener('DOMContentLoaded', function() {
+    // Enable sortable for each widget list - header, sidebar-left, sidebar-right, footer, home
+    $('#header-widgets-list').sortable({
+        placeholder: 'ui-sortable-placeholder',
+        cursor: 'move',
+        opacity: 0.7,
+        update: function(event, ui) {
+            updateWidgetOrder('header');
+        }
     });
     
-    // Function to update all widget positions and orders via AJAX
-    function updateWidgetPositionsAndOrders() {
-        // Collect all widget data from all containers
-        const allWidgetData = [];
+    $('#sidebar-left-widgets-list').sortable({
+        placeholder: 'ui-sortable-placeholder',
+        cursor: 'move',
+        opacity: 0.7,
+        update: function(event, ui) {
+            updateWidgetOrder('sidebar-left');
+        }
+    });
+    
+    $('#sidebar-right-widgets-list').sortable({
+        placeholder: 'ui-sortable-placeholder',
+        cursor: 'move',
+        opacity: 0.7,
+        update: function(event, ui) {
+            updateWidgetOrder('sidebar-right');
+        }
+    });
+    
+    $('#footer-widgets-list').sortable({
+        placeholder: 'ui-sortable-placeholder',
+        cursor: 'move',
+        opacity: 0.7,
+        update: function(event, ui) {
+            updateWidgetOrder('footer');
+        }
+    });
+    
+    $('#home-widgets-list').sortable({
+        placeholder: 'ui-sortable-placeholder',
+        cursor: 'move',
+        opacity: 0.7,
+        update: function(event, ui) {
+            updateWidgetOrder('home');
+        }
+    });
+
+    // Function to update widget order via AJAX
+    function updateWidgetOrder(position) {
+        const widgetIds = [];
         
-        $('[id$="-widgets-container"]').each(function() {
-            const containerPosition = $(this).data('position');
-            $(this).find('[data-id]').each(function(index) {
-                allWidgetData.push({
-                    id: $(this).data('id'),
-                    position: containerPosition,
-                    order: index + 1
+        // Ambil semua widget ID dari container yang sesuai
+        switch(position) {
+            case 'header':
+                $('#header-widgets-list').find('[data-widget-id]').each(function(index) {
+                    widgetIds.push({
+                        id: $(this).data('widget-id'),
+                        order: index + 1
+                    });
                 });
-            });
-        });
+                break;
+            case 'sidebar-left':
+                $('#sidebar-left-widgets-list').find('[data-widget-id]').each(function(index) {
+                    widgetIds.push({
+                        id: $(this).data('widget-id'),
+                        order: index + 1
+                    });
+                });
+                break;
+            case 'sidebar-right':
+                $('#sidebar-right-widgets-list').find('[data-widget-id]').each(function(index) {
+                    widgetIds.push({
+                        id: $(this).data('widget-id'),
+                        order: index + 1
+                    });
+                });
+                break;
+            case 'footer':
+                $('#footer-widgets-list').find('[data-widget-id]').each(function(index) {
+                    widgetIds.push({
+                        id: $(this).data('widget-id'),
+                        order: index + 1
+                    });
+                });
+                break;
+            case 'home':
+                $('#home-widgets-list').find('[data-widget-id]').each(function(index) {
+                    widgetIds.push({
+                        id: $(this).data('widget-id'),
+                        order: index + 1
+                    });
+                });
+                break;
+        }
         
-        if (allWidgetData.length > 0) {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            
+        if (widgetIds.length > 0) {
             $.ajax({
                 url: '{{ route("panel.widgets.update-order") }}',
                 method: 'POST',
                 data: {
-                    all_widgets: allWidgetData
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                    position: position,
+                    widget_ids: widgetIds
                 },
                 success: function(response) {
-                    console.log('All positions and orders updated successfully:', response);
-                    
-                    // Update order numbers in the UI for all positions
-                    $('[id$="-widgets-container"]').each(function() {
-                        const containerPosition = $(this).data('position');
-                        $(this).find('[data-id]').each(function(index) {
-                            $(this).find('small:last').text('Order: ' + (index + 1));
-                        });
-                    });
+                    console.log('Order updated successfully for ' + position);
+                    // Tampilkan pesan sukses ke pengguna
+                    showSuccessMessage('Urutan widget di posisi ' + capitalizeFirstLetter(position.replace('-', ' ')) + ' berhasil diperbarui.');
                 },
                 error: function(xhr, status, error) {
-                    console.error('Error updating positions and orders:', error);
-                    alert('Gagal memperbarui posisi dan urutan widget. Silakan coba lagi.');
-                    
-                    // Reload page to revert changes in case of error
-                    location.reload();
+                    console.error('Error updating order for ' + position + ':', error);
+                    showErrorMessage('Gagal memperbarui urutan widget di posisi ' + capitalizeFirstLetter(position.replace('-', ' ')));
                 }
             });
         }
     }
     
-    // Function to update widget position when moved between containers
-    function updateWidgetPosition(widgetId, newPosition) {
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
+    // Helper function to show success message
+    function showSuccessMessage(message) {
+        // Tambahkan elemen pesan jika belum ada
+        if ($('#flash-message').length === 0) {
+            $('body').append('<div id="flash-message" class="position-fixed top-0 right-0 p-3" style="z-index: 9999; right: 10px; top: 10px;"></div>');
+        }
         
-        $.ajax({
-            url: '{{ route("panel.widgets.update-position") }}',
-            method: 'POST',
-            data: {
-                id: widgetId,
-                position: newPosition
-            },
-            success: function(response) {
-                console.log('Position updated successfully for widget ' + widgetId + ' to ' + newPosition + ':', response);
-                
-                // Update the position attribute in the DOM
-                $(`[data-id="${widgetId}"]`).attr('data-position', newPosition);
-            },
-            error: function(xhr, status, error) {
-                console.error('Error updating position for widget ' + widgetId + ':', error);
-                alert('Gagal memperbarui posisi widget. Silakan coba lagi.');
-                
-                // Reload page to revert changes in case of error
-                location.reload();
-            }
-        });
+        $('#flash-message').html(`
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                ${message}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        `);
+        
+        // Hilangkan pesan setelah 5 detik
+        setTimeout(function() {
+            $('#flash-message').fadeOut();
+        }, 5000);
     }
     
-    // Add CSS for sortable placeholder
-    $('<style>.ui-sortable-placeholder{background:#f39c12!important;border:1px dashed #ccc!important;visibility:visible!important;height:50px!important;width:100%!important;max-width:100%!important;margin-bottom:2px!important}.ui-sortable-helper{box-shadow: 0 2px 10px rgba(0,0,0,0.3)!important;}</style>').appendTo('head');
+    // Helper function to show error message
+    function showErrorMessage(message) {
+        // Tambahkan elemen pesan jika belum ada
+        if ($('#flash-message').length === 0) {
+            $('body').append('<div id="flash-message" class="position-fixed top-0 right-0 p-3" style="z-index: 9999; right: 10px; top: 10px;"></div>');
+        }
+        
+        $('#flash-message').html(`
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                ${message}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        `);
+        
+        // Hilangkan pesan setelah 5 detik
+        setTimeout(function() {
+            $('#flash-message').fadeOut();
+        }, 5000);
+    }
+    
+    // Helper function to capitalize first letter
+    function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
 });
 </script>
+
+<style>
+    .ui-sortable-placeholder {
+        height: 50px;
+        background: #f39c12 !important;
+        border: 1px dashed #ccc !important;
+        visibility: visible !important;
+        margin-bottom: 10px;
+        border-radius: 5px;
+    }
+    
+    .list-group-item {
+        cursor: move;
+        transition: all 0.2s ease;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .list-group-item:hover {
+        background-color: #f8f9fa;
+        transform: translateX(2px);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Tab styling */
+    .nav-tabs .nav-link.active {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid transparent;
+    }
+    
+    /* Badge styling */
+    .badge {
+        font-size: 0.75em;
+    }
+    
+    /* Card styling */
+    .card {
+        box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+        transition: all 0.2s ease;
+    }
+    
+    .card:hover {
+        box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    }
+</style>
 @endsection

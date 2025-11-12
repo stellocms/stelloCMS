@@ -1,0 +1,175 @@
+﻿<?php
+
+namespace App\Http\Controllers;
+
+use App\Services\ThemeService;
+use App\Models\Theme;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
+
+class ThemeController extends Controller
+{
+    protected $themeService;
+
+    public function __construct(ThemeService $themeService)
+    {
+        $this->themeService = $themeService;
+    }
+
+    /**
+     * Display a listing of the themes.
+     */
+    public function index()
+    {
+        $frontendThemes = $this->themeService->getThemesByType('frontend');
+        $adminThemes = $this->themeService->getThemesByType('admin');
+
+        return view('theme.admin.adminlte::themes.index', compact('frontendThemes', 'adminThemes'));
+    }
+
+    /**
+     * Install a theme
+     */
+    public function install(Request $request, $type, $name)
+    {
+        $theme = $this->themeService->installTheme($type, $name);
+        
+        if ($theme) {
+            return redirect()->back()->with('success', "Theme {$name} installed successfully.");
+        }
+        
+        return redirect()->back()->with('error', "Failed to install theme {$name}.");
+    }
+
+    /**
+     * Uninstall a theme
+     */
+    public function uninstall(Request $request, $type, $name)
+    {
+        $result = $this->themeService->uninstallTheme($type, $name);
+        
+        if ($result) {
+            return redirect()->back()->with('success', "Theme {$name} uninstalled successfully.");
+        }
+        
+        return redirect()->back()->with('error', "Failed to uninstall theme {$name}.");
+    }
+
+    /**
+     * Activate a theme
+     */
+    public function activate(Request $request, $type, $name)
+    {
+        $result = $this->themeService->activateTheme($type, $name);
+        
+        if ($result) {
+            return redirect()->back()->with('success', "Theme {$name} activated successfully.");
+        }
+        
+        return redirect()->back()->with('error', "Failed to activate theme {$name}.");
+    }
+
+    /**
+     * Deactivate a theme
+     */
+    public function deactivate(Request $request, $type, $name)
+    {
+        $result = $this->themeService->deactivateTheme($type, $name);
+        
+        if ($result) {
+            return redirect()->back()->with('success', "Theme {$name} deactivated successfully.");
+        }
+        
+        return redirect()->back()->with('error', "Failed to deactivate theme {$name}.");
+    }
+
+    /**
+     * Set a theme as default
+     */
+    public function setDefault(Request $request, $type, $name)
+    {
+        $result = $this->themeService->setDefaultTheme($type, $name);
+        
+        if ($result) {
+            return redirect()->back()->with('success', "Theme {$name} set as default successfully.");
+        }
+        
+        return redirect()->back()->with('error', "Failed to set theme {$name} as default.");
+    }
+
+    /**
+     * Scan for available themes in the filesystem
+     */
+    public function scan()
+    {
+        // Scan directories for available themes
+        $themeDirs = [
+            'frontend' => app_path('Themes/frontend'),
+            'admin' => app_path('Themes/admin'),
+        ];
+
+        $foundThemes = [];
+
+        foreach ($themeDirs as $type => $dir) {
+            if (is_dir($dir)) {
+                foreach (scandir($dir) as $themeDir) {
+                    if ($themeDir !== '.' && $themeDir !== '..') {
+                        $themePath = $dir . '/' . $themeDir;
+                        if (is_dir($themePath)) {
+                            // Check if theme.json exists
+                            $themeJsonPath = $themePath . '/theme.json';
+
+                            if (file_exists($themeJsonPath)) {
+                                $themeData = json_decode(file_get_contents($themeJsonPath), true);
+                                $themeData['name'] = $themeDir;
+                                $themeData['type'] = $type;
+
+                                // Check if theme exists in database
+                                $dbTheme = \App\Models\Theme::where('type', $type)->where('name', $themeDir)->first();
+
+                                if ($dbTheme) {
+                                    // Update existing theme
+                                    $dbTheme->update([
+                                        'version' => $themeData['version'] ?? null,
+                                        'description' => $themeData['description'] ?? null,
+                                        'author' => $themeData['author'] ?? null,
+                                        'author_url' => $themeData['author_url'] ?? null,
+                                        'screenshot' => $themeData['screenshot'] ?? null,
+                                        'tags' => $themeData['tags'] ?? null,
+                                    ]);
+                                } else {
+                                    // Create new theme record
+                                    \App\Models\Theme::create([
+                                        'name' => $themeDir,
+                                        'type' => $type,
+                                        'version' => $themeData['version'] ?? null,
+                                        'description' => $themeData['description'] ?? null,
+                                        'author' => $themeData['author'] ?? null,
+                                        'author_url' => $themeData['author_url'] ?? null,
+                                        'screenshot' => $themeData['screenshot'] ?? null,
+                                        'tags' => $themeData['tags'] ?? null,
+                                        'is_active' => true,
+                                        'is_installed' => true,
+                                        'is_default' => false,
+                                    ]);
+                                }
+
+                                $foundThemes[] = $themeData;
+                            } else {
+                                // Create theme record without metadata if theme.json doesn't exist
+                                if (!\App\Models\Theme::where('type', $type)->where('name', $themeDir)->exists()) {
+                                    \App\Models\Theme::create([
+                                        'name' => $themeDir,
+                                        'type' => $type,
+                                        'description' => 'Theme without metadata',
+                                        'is_active' => true,
+                                        'is_installed' => true,
+                                        'is_default' => false,
+                                    ]);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }

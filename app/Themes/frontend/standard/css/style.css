@@ -1,0 +1,115 @@
+/* Custom CSS for Standard Theme */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+/* Gradient backgrounds */
+.gradient-bg {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.gradient-bg-card {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.gradient-bg-button {
+    background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+}
+
+/* Card shadows */
+.card-hover {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hover:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* Button styles */
+.btn-gradient {
+    background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-gradient:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.25);
+}
+
+/* Animation classes */
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Utility classes */
+.text-shadow {
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+.hover-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.25);
+}
+
+/* Dark mode styles */
+.dark .gradient-bg {
+    background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+}
+
+.dark .card-hover:hover {
+    box-shadow: 0 25px 50px -12px rgba(255, 255, 255, 0.1);
+}
+
+/* Sortable widget styles for drag-n-drop */
+.sortable-widget {
+    min-height: 20px;
+}
+
+.sortable-widget .list-group-item {
+    cursor: move;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    margin-bottom: 0.5rem;
+    transition: all 0.2s;
+}
+
+.sortable-widget .list-group-item:hover {
+    border-color: #cbd5e0;
+}
+
+.sortable-widget .list-group-item.ui-sortable-helper {
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.25);
+    border: 2px solid #3182ce;
+}
+
+.sortable-widget .list-group-item.ui-sortable-placeholder {
+    border: 1px dashed #a0aec0;
+    visibility: visible !important;
+    background: #ebf8ff;
+    margin: 0.5rem 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .mobile-menu-open {
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+}

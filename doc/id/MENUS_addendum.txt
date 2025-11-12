@@ -1,0 +1,21 @@
+## Struktur Widgets
+
+### Tabel Widgets
+Selain tabel menu, sistem juga memiliki tabel widgets untuk menampilkan elemen tampilan dinamis:
+```sql
+CREATE TABLE widgets (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    type ENUM('plugin', 'text', 'html') NOT NULL,
+    position ENUM('header', 'sidebar-left', 'sidebar-right', 'footer', 'home') NOT NULL,
+    status ENUM('aktif', 'nonaktif') DEFAULT 'aktif',
+    content TEXT NULL,
+    plugin_name VARCHAR(255) NULL,
+    order INT DEFAULT 0,
+    settings JSON NULL,
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+```
+
+Tabel widgets digunakan untuk menyimpan elemen tampilan dinamis yang dapat ditampilkan di berbagai posisi dalam sistem frontend dan admin. Fitur widgets menyediakan fleksibilitas dalam menampilkan konten statis, dinamis, atau dari plugin di berbagai area tampilan.

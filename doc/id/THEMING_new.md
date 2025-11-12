@@ -341,9 +341,9 @@ class ThemePreviewController extends Controller
 }
 ```
 
-## Tema Standard
+## Tema Standar
 
-Tema Standard adalah tema frontend bawaan yang dirancang dengan gaya modern seperti Canva.com menggunakan Tailwind CSS dan Alpine.js. Tema ini menampilkan fungsionalitas widget dengan tabs berdasarkan posisi dan drag-and-drop untuk pengurutan.
+Tema Standar adalah tema frontend bawaan yang dirancang dengan gaya modern seperti Canva.com menggunakan Tailwind CSS dan Alpine.js. Tema ini menampilkan fungsionalitas widget dengan tabs berdasarkan posisi dan drag-and-drop untuk pengurutan.
 
 ### Fitur Tema Standar
 - Desain modern menggunakan Tailwind CSS untuk styling

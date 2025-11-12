@@ -1,0 +1,31 @@
+        $this->themeService->clearCache();
+
+        return redirect()->back()->with('success', 'Themes scanned and database updated successfully.');
+    }
+
+    /**
+     * Sync themes from filesystem to database
+     */
+    public function sync()
+    {
+        // Run the scan method to sync themes
+        return $this->scan();
+    }
+
+    /**
+     * Switch admin theme (for backward compatibility)
+     */
+    public function switchAdminTheme(Request $request)
+    {
+        $request->validate([
+            'theme' => 'required|string'
+        ]);
+
+        $result = $this->themeService->setDefaultTheme('admin', $request->theme);
+
+        if ($result) {
+            return redirect()->back()->with('success', 'Admin theme changed successfully.');
+        }
+
+        return redirect()->back()->with('error', 'Failed to change admin theme.');
+    }

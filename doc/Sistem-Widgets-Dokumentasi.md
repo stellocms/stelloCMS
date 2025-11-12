@@ -566,6 +566,30 @@ Salah satu keunggulan sistem ini adalah kemampuan membuat widget secara otomatis
 
 Hal ini memudahkan administrator dalam menyiapkan elemen tampilan yang relevan tanpa perlu membuatnya secara manual.
 
+## Route dan Konfigurasi Sistem
+
+### Route Home
+Sistem telah diperbarui untuk menambahkan route named 'home' untuk mendukung navigasi ke halaman utama dari tema frontend:
+
+```php
+// routes/web.php
+Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('home');
+```
+
+Route ini memungkinkan tema dan widget mengakses homepage dengan `route('home')` tanpa mengalami error "Route [home] not defined". Ini merupakan komponen penting dalam sistem navigasi tema frontend.
+
+### Route untuk Widget
+Sistem widgets menggunakan route-route berikut:
+- `GET /panel/widgets` → Menampilkan halaman manajemen widgets dengan tabs berdasarkan posisi
+- `POST /panel/widgets/update-order` → Memperbarui urutan widget melalui drag-and-drop
+- `GET /panel/widgets/create` → Menampilkan form pembuatan widget baru
+- `POST /panel/widgets` → Menyimpan widget baru
+- `GET /panel/widgets/{id}/edit` → Menampilkan form edit widget
+- `PUT /panel/widgets/{id}` → Memperbarui widget
+- `DELETE /panel/widgets/{id}` → Menghapus widget
+
+Route-route ini menjamin fungsionalitas penuh dari sistem manajemen widget.
+
 ## Tampilan dan Pengelolaan Widgets
 
 Sistem widgets telah ditingkatkan dengan fitur tampilan yang lebih interaktif dan mudah digunakan.
@@ -595,6 +619,16 @@ Fitur ini meningkatkan pengalaman pengguna dalam mengorganisir tata letak elemen
 - Informasi tipe widget, status, dan konten disajikan secara jelas
 - Akses cepat ke fitur edit, lihat, dan hapus tersedia untuk setiap widget
 - Tampilan yang responsif dan konsisten dengan sistem adminLTE
+
+### Tabs Berdasarkan Posisi
+Sistem widgets kini menyediakan interface berbasis tabs yang memudahkan pengelolaan widget sesuai posisi penempatannya:
+- **Header Widgets**: Widget yang ditampilkan di bagian atas halaman
+- **Sidebar Left Widgets**: Widget untuk area sidebar di kiri
+- **Sidebar Right Widgets**: Widget untuk area sidebar di kanan
+- **Footer Widgets**: Widget yang ditampilkan di bagian bawah halaman
+- **Home Widgets**: Widget untuk ditampilkan di halaman utama
+
+Fitur ini memungkinkan pengguna untuk lebih mudah mengelola dan melihat widget sesuai dengan posisinya masing-masing.
 
 ### Manajemen Widget Interaktif
 Dengan sistem yang ditingkatkan, administrator dapat:
@@ -634,3 +668,45 @@ Saat plugin Berita diinstal melalui sistem manajemen plugin, secara otomatis aka
 - **Berita Acak**: Menampilkan 1 berita acak yang memiliki gambar
 
 Ketiga widget ini dibuat dengan pengaturan default dan posisi yang optimal, memudahkan administrator dalam mengelola tampilan halaman tanpa perlu membuat widget secara manual.
+
+## Tampilan dan Pengelolaan Widgets Modern
+
+### Tabs Berdasarkan Posisi
+Sistem widgets kini menyediakan interface berbasis tabs yang memudahkan pengelolaan widget sesuai posisi penempatannya:
+- **Header Widgets**: Widget yang ditampilkan di bagian atas halaman
+- **Sidebar Left Widgets**: Widget untuk area sidebar di kiri
+- **Sidebar Right Widgets**: Widget untuk area sidebar di kanan
+- **Footer Widgets**: Widget yang ditampilkan di bagian bawah halaman
+- **Home Widgets**: Widget untuk ditampilkan di halaman utama
+
+### Drag-and-Drop untuk Pengurutan
+Fitur drag-and-drop memungkinkan administrator:
+- Mengatur urutan tampilan widget hanya dengan menggeser
+- Melihat perubahan urutan secara real-time tanpa refresh
+- Menyimpan perubahan secara otomatis ke database
+- Mengelola tata letak elemen tampilan dengan lebih intuitif
+
+### Tampilan Widget yang Ditingkatkan
+- Desain berbasis card yang lebih informatif dan modern
+- Detail informasi widget (tipe, status, konten) ditampilkan jelas
+- Akses cepat ke fungsi edit, lihat, dan hapus
+- Responsif dan konsisten dengan antarmuka adminLTE
+
+### Pengelolaan Berdasarkan Posisi
+Sistem manajemen widgets sekarang memungkinkan pengelolaan yang terpisah untuk masing-masing posisi:
+- Widget dapat dikelola secara individual berdasarkan posisinya
+- Pengurutan bisa dilakukan dalam satu posisi tanpa mempengaruhi posisi lain
+- Visualisasi yang lebih jelas untuk masing-masing area tampilan
+- Efisiensi dalam pengelolaan elemen tampilan yang banyak
+
+### Fungsi Update Otomatis
+Sistem secara otomatis menyimpan perubahan posisi dan urutan widget:
+- Tidak perlu refresh halaman untuk melihat perubahan
+- Semua perubahan disimpan ke database secara real-time
+- Sistem menampilkan feedback ketika perubahan berhasil disimpan
+- Tidak ada kehilangan data saat proses pengurutan
+
+Fitur canggih ini memberikan kemudahan dan fleksibilitas tinggi dalam pengelolaan elemen tampilan tanpa perlu mengedit atau mengatur ulang setiap widget secara terpisah.
+- Semua perubahan disimpan ke database secara real-time
+- Sistem menampilkan feedback ketika perubahan berhasil disimpan
+- Tidak ada kehilangan data saat proses pengurutan

@@ -103,12 +103,12 @@ class WidgetController extends Controller
                        ]);
             }
         } else {
-            // Validasi untuk struktur data lama (hanya berdasarkan posisi)
+            // Validasi untuk struktur data baru yang mengirimkan posisi dan widget_ids
             $request->validate([
                 'position' => 'required|in:header,sidebar-left,sidebar-right,footer,home',
                 'widget_ids' => 'required|array',
-                'widget_ids.*.id' => 'integer|exists:widgets,id',
-                'widget_ids.*.order' => 'integer'
+                'widget_ids.*.id' => 'required|integer|exists:widgets,id',
+                'widget_ids.*.order' => 'required|integer'
             ]);
 
             $position = $request->position;

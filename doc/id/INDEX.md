@@ -99,3 +99,19 @@ stelloCMS dilisensikan di bawah lisensi MIT. Lihat file [LICENSE](../LICENSE) un
 
 ## Kontak
 Untuk pertanyaan dan dukungan, silakan hubungi tim pengembang stelloCMS di hello@stellocms.com.
+  
+"## Tema Standar"  
+""  
+"Tema standar adalah tema frontend modern yang dirancang dengan gaya seperti Canva.com menggunakan Tailwind CSS dan Alpine.js. Tema ini menawarkan antarmuka yang modern dan responsif dengan dukungan penuh untuk sistem widgets."  
+""  
+"### Fitur Tema Standar"  
+"- Desain modern menggunakan Tailwind CSS untuk styling"  
+"- Interaktivitas ringan dengan Alpine.js untuk efisiensi sumber daya"  
+"- Ikon dari Heroicons untuk tampilan visual yang bersih"  
+"- Tabs untuk mengelompokkan widget berdasarkan posisi"  
+"- Fitur drag-and-drop untuk mengurutkan widget"  
+"- Mode gelap/terang yang bisa diaktifkan"  
+"- Tampilan responsif yang konsisten di berbagai ukuran perangkat"  
+""  
+"### Penggunaan Tema Standar"  
+"Tema standar tersedia di sistem tema dan dapat diaktifkan melalui halaman **Pengaturan**  **Tema**. Setelah diaktifkan, tema akan menampilkan semua widget dengan tampilan modern dan fungsionalitas lengkap sesuai dengan posisi widget masing-masing." 
