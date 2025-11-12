@@ -87,6 +87,24 @@
                             @enderror
                         </div>
                         
+                        <!-- Dropdown kategori jika plugin kategori terinstal -->
+                        @if(class_exists('App\Plugins\Kategori\Models\Kategori') && function_exists('get_kategori_all'))
+                        <div class="form-group">
+                            <label for="kategori_id">Kategori (opsional)</label>
+                            <select class="form-control @error('kategori_id') is-invalid @enderror" id="kategori_id" name="kategori_id">
+                                <option value="">-- Pilih Kategori --</option>
+                                @foreach(get_kategori_all() as $kategori)
+                                    <option value="{{ $kategori->id }}" {{ old('kategori_id', $berita->kategori_id) == $kategori->id ? 'selected' : '' }}>
+                                        {{ $kategori->nama_kategori }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('kategori_id')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        @endif
+                        
                         <div class="form-group">
                             <div class="icheck-primary d-inline">
                                 <input type="checkbox" id="aktif" name="aktif" value="1" {{ old('aktif', $berita->aktif) ? 'checked' : '' }}>

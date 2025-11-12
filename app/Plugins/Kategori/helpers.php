@@ -50,3 +50,19 @@ if (!function_exists('get_kategori_by_id')) {
         return null;
     }
 }
+
+if (!function_exists('get_kategori_all')) {
+    /**
+     * Mendapatkan semua kategori (aktif dan non-aktif)
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    function get_kategori_all()
+    {
+        if (class_exists(App\Plugins\Kategori\Models\Kategori::class)) {
+            return Kategori::orderBy('nama_kategori')->get();
+        }
+        
+        return collect([]);
+    }
+}

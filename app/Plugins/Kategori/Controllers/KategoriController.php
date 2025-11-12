@@ -10,7 +10,15 @@ class KategoriController extends Controller
 {
     public function index()
     {
-        $kategori = Kategori::orderBy('created_at', 'desc')->paginate(10);
+        \Log::info('KategoriController@index accessed');
+        
+        try {
+            $kategori = Kategori::orderBy('created_at', 'desc')->paginate(10);
+            \Log::info('Kategori retrieved: ' . $kategori->count() . ' items');
+        } catch (\Exception $e) {
+            \Log::error('Error retrieving kategori: ' . $e->getMessage());
+            throw $e;
+        }
 
         return view('kategori::index', compact('kategori'));
     }

@@ -34,6 +34,11 @@ class BeritaInstaller
             // Lakukan pembaruan struktur tabel jika sudah ada
             static::updateTableStructure();
         }
+        
+        // Setelah instalasi selesai, coba buat widget
+        static::createLatestNewsWidget();
+        static::createPopularNewsWidget();
+        static::createRandomNewsWidget();
     }
 
     /**
@@ -51,7 +56,8 @@ class BeritaInstaller
             'meta_description' => 'string',
             'meta_keywords' => 'string',
             'slug' => 'string',
-            'viewer' => 'integer'
+            'viewer' => 'integer',
+            'kategori_id' => 'unsignedBigInteger'
         ];
 
         foreach ($columns as $columnName => $columnType) {
@@ -90,6 +96,15 @@ class BeritaInstaller
             !static::hasForeignKey('berita', 'berita_user_id_foreign')) {
             Schema::table('berita', function (Blueprint $table) {
                 $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
+            });
+        }
+
+        // Tambahkan foreign key untuk kategori_id jika belum ada dan plugin Kategori terinstal
+        if (Schema::hasColumn('berita', 'kategori_id') &&
+            !static::hasForeignKey('berita', 'berita_kategori_id_foreign') &&
+            Schema::hasTable('kategori_berita')) {
+            Schema::table('berita', function (Blueprint $table) {
+                $table->foreign('kategori_id')->references('id')->on('kategori_berita')->onDelete('set null');
             });
         }
 
@@ -210,12 +225,122 @@ class BeritaInstaller
     }
 
     /**
+     * Membuat widget otomatis untuk berita terbaru
+     */
+    public static function createLatestNewsWidget()
+    {
+        // Cek apakah tabel widgets ada
+        if (!Schema::hasTable('widgets')) {
+            return;
+        }
+
+        // Cek apakah widget sudah ada
+        $existingWidget = DB::table('widgets')->where('name', 'berita-terbaru-widget')->first();
+        
+        if (!$existingWidget) {
+            // Tambahkan widget berita terbaru
+            DB::table('widgets')->insert([
+                'name' => 'berita-terbaru-widget',
+                'type' => 'plugin',
+                'position' => 'sidebar-right',  // Cocok untuk sidebar kanan
+                'status' => 'aktif',
+                'content' => null,
+                'plugin_name' => 'Berita',  // Nama plugin harus sesuai
+                'order' => 1,
+                'settings' => json_encode([
+                    'limit' => 5,
+                    'show_date' => true,
+                    'show_thumbnails' => false,
+                    'title' => 'Berita Terbaru'
+                ]),
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ]);
+        }
+    }
+
+    /**
      * Menghapus tabel berita (untuk uninstall)
      */
     public static function uninstall()
     {
         if (Schema::hasTable('berita')) {
             Schema::dropIfExists('berita');
+        }
+        
+        // Hapus widget yang terkait dengan plugin berita jika diperlukan
+        if (Schema::hasTable('widgets')) {
+            DB::table('widgets')->where('plugin_name', 'Berita')->delete();
+        }
+    }
+    
+    /**
+     * Membuat widget otomatis untuk berita populer
+     */
+    public static function createPopularNewsWidget()
+    {
+        // Cek apakah tabel widgets ada
+        if (!Schema::hasTable('widgets')) {
+            return;
+        }
+
+        // Cek apakah widget sudah ada
+        $existingWidget = DB::table('widgets')->where('name', 'berita-populer-widget')->first();
+        
+        if (!$existingWidget) {
+            // Tambahkan widget berita populer
+            DB::table('widgets')->insert([
+                'name' => 'berita-populer-widget',
+                'type' => 'plugin',
+                'position' => 'sidebar-right',  // Cocok untuk sidebar kanan
+                'status' => 'aktif',
+                'content' => null,
+                'plugin_name' => 'Berita',  // Nama plugin harus sesuai
+                'order' => 2,  // Berada setelah widget berita terbaru
+                'settings' => json_encode([
+                    'limit' => 5,
+                    'show_views' => true,
+                    'show_date' => false,
+                    'title' => 'Berita Populer'
+                ]),
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ]);
+        }
+    }
+    
+    /**
+     * Membuat widget otomatis untuk berita acak yang memiliki gambar
+     */
+    public static function createRandomNewsWidget()
+    {
+        // Cek apakah tabel widgets ada
+        if (!Schema::hasTable('widgets')) {
+            return;
+        }
+
+        // Cek apakah widget sudah ada
+        $existingWidget = DB::table('widgets')->where('name', 'berita-acak-widget')->first();
+        
+        if (!$existingWidget) {
+            // Tambahkan widget berita acak
+            DB::table('widgets')->insert([
+                'name' => 'berita-acak-widget',
+                'type' => 'plugin',
+                'position' => 'sidebar-left',  // Cocok untuk sidebar kiri
+                'status' => 'aktif',
+                'content' => null,
+                'plugin_name' => 'Berita',  // Nama plugin harus sesuai
+                'order' => 3,  // Berada setelah widget berita terbaru dan populer
+                'settings' => json_encode([
+                    'limit' => 1,
+                    'has_image' => true,
+                    'random' => true,
+                    'title' => 'Berita Acak'
+                ]),
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ]);
         }
     }
 }

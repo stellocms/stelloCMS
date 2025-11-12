@@ -1,5 +1,7 @@
 <?php
 
+\Log::info('Loading Kategori routes');
+
 use App\Plugins\Kategori\Controllers\KategoriController;
 use Illuminate\Support\Facades\Route;
 
@@ -17,3 +19,5 @@ Route::prefix('panel/kategori')->middleware(['auth'])->group(function () {
     // API untuk mendapatkan kategori aktif
     Route::get('/api/active', [KategoriController::class, 'getActiveCategories'])->name('panel.kategori.api.active');
 });
+
+\Log::info('Kategori routes loaded');

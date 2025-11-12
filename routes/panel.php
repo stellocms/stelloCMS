@@ -99,6 +99,20 @@ Route::middleware(['auth', 'role:admin,kepala-desa,sekdes,kaur,kadus,rw,rt'])->g
         Route::get('/{id}', [\App\Plugins\ContohPlugin\Controllers\ContohPluginController::class, 'show'])->name('contohplugin.show');
     });
 
+    // Kategori routes - added manually to ensure they work without relying on route caching
+    Route::prefix('panel/kategori')->group(function () {
+        Route::get('/', [\App\Plugins\Kategori\Controllers\KategoriController::class, 'index'])->name('panel.kategori.index');
+        Route::get('/create', [\App\Plugins\Kategori\Controllers\KategoriController::class, 'create'])->name('panel.kategori.create');
+        Route::post('/', [\App\Plugins\Kategori\Controllers\KategoriController::class, 'store'])->name('panel.kategori.store');
+        Route::get('/{id}/edit', [\App\Plugins\Kategori\Controllers\KategoriController::class, 'edit'])->name('panel.kategori.edit');
+        Route::put('/{id}', [\App\Plugins\Kategori\Controllers\KategoriController::class, 'update'])->name('panel.kategori.update');
+        Route::delete('/{id}', [\App\Plugins\Kategori\Controllers\KategoriController::class, 'destroy'])->name('panel.kategori.destroy');
+        Route::get('/{id}', [\App\Plugins\Kategori\Controllers\KategoriController::class, 'show'])->name('panel.kategori.show');
+
+        // API untuk mendapatkan kategori aktif
+        Route::get('/api/active', [\App\Plugins\Kategori\Controllers\KategoriController::class, 'getActiveCategories'])->name('panel.kategori.api.active');
+    });
+
     // Settings management routes - following the same pattern as other panel routes
     Route::get('/panel/setting', [\App\Http\Controllers\SettingController::class, 'index'])->name('setting.index');
     Route::get('/panel/setting/create', [\App\Http\Controllers\SettingController::class, 'create'])->name('setting.create');
@@ -115,6 +129,17 @@ Route::middleware(['auth', 'role:admin,kepala-desa,sekdes,kaur,kadus,rw,rt'])->g
     Route::get('/panel/update/{id}/edit', [\App\Http\Controllers\UpdateController::class, 'edit'])->name('update.edit');
     Route::put('/panel/update/{id}', [\App\Http\Controllers\UpdateController::class, 'update'])->name('update.update');
     Route::delete('/panel/update/{id}', [\App\Http\Controllers\UpdateController::class, 'destroy'])->name('update.destroy');
+
+    // Widget management routes
+    Route::get('/panel/widgets', [\App\Http\Controllers\WidgetController::class, 'index'])->name('panel.widgets.index');
+    Route::get('/panel/widgets/create', [\App\Http\Controllers\WidgetController::class, 'create'])->name('panel.widgets.create');
+    Route::post('/panel/widgets', [\App\Http\Controllers\WidgetController::class, 'store'])->name('panel.widgets.store');
+    Route::get('/panel/widgets/{widget}', [\App\Http\Controllers\WidgetController::class, 'show'])->name('panel.widgets.show');
+    Route::get('/panel/widgets/{widget}/edit', [\App\Http\Controllers\WidgetController::class, 'edit'])->name('panel.widgets.edit');
+    Route::put('/panel/widgets/{widget}', [\App\Http\Controllers\WidgetController::class, 'update'])->name('panel.widgets.update');
+    Route::delete('/panel/widgets/{widget}', [\App\Http\Controllers\WidgetController::class, 'destroy'])->name('panel.widgets.destroy');
+    Route::post('/panel/widgets/update-order', [\App\Http\Controllers\WidgetController::class, 'updateOrder'])->name('panel.widgets.update-order');
+    Route::post('/panel/widgets/update-position', [\App\Http\Controllers\WidgetController::class, 'updatePosition'])->name('panel.widgets.update-position');
 });
 
 // Dynamic plugin routes - automatically handle routes for installed and active plugins

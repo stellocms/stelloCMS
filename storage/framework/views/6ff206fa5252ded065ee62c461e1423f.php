@@ -147,6 +147,39 @@ endif;
 unset($__errorArgs, $__bag); ?>
                         </div>
 
+                        <!-- Dropdown kategori jika plugin kategori terinstal -->
+                        <?php if(class_exists('App\Plugins\Kategori\Models\Kategori') && function_exists('get_kategori_all')): ?>
+                        <div class="form-group">
+                            <label for="kategori_id">Kategori (opsional)</label>
+                            <select class="form-control <?php $__errorArgs = ['kategori_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" id="kategori_id" name="kategori_id">
+                                <option value="">-- Pilih Kategori --</option>
+                                <?php $__currentLoopData = get_kategori_all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $kategori): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <option value="<?php echo e($kategori->id); ?>" <?php echo e(old('kategori_id') == $kategori->id ? 'selected' : ''); ?>>
+                                        <?php echo e($kategori->nama_kategori); ?>
+
+                                    </option>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            </select>
+                            <?php $__errorArgs = ['kategori_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="invalid-feedback"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                        </div>
+                        <?php endif; ?>
+                        
                         <div class="form-group">
                             <div class="icheck-primary d-inline">
                                 <input type="checkbox" id="aktif" name="aktif" value="1" <?php echo e(old('aktif', true) ? 'checked' : ''); ?>>

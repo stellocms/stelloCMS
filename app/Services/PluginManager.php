@@ -366,7 +366,7 @@ class PluginManager
             'position' => 'sidebar-left', // Valid enum value for sidebar menu
             'is_active' => true,
             'order' => 0, // Default order
-            'roles' => ['admin', 'operator'] // Updated roles for plugin management
+            'roles' => ['admin', 'administrator', 'adminstrator', 'operator'] // Updated roles for plugin management to include all admin-like roles
         ]);
 
         $adminMenu->save();

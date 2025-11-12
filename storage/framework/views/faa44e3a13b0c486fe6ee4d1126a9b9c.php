@@ -447,6 +447,12 @@
                 </a>
               </li>
               <li class="nav-item">
+                <a href="<?php echo e(route('panel.widgets.index')); ?>" class="nav-link <?php echo e($isMenusActive ? 'active' : ''); ?>">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Widgets</p>
+                </a>
+              </li>
+              <li class="nav-item">
                 <a href="<?php echo e(route('setting.index')); ?>" class="nav-link <?php echo e($isSettingsActive ? 'active' : ''); ?>">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Setting</p>

@@ -21,5 +21,11 @@ Route::prefix('panel/berita')->middleware(['auth'])->group(function () {
 
     // Route untuk menampilkan berita di admin (opsional)
     Route::get('/{id}', [BeritaController::class, 'show'])->name('panel.berita.show');
+    
+    // API untuk widget berita terbaru
+    Route::get('/api/latest-news', [BeritaController::class, 'getLatestNewsData'])->name('panel.berita.api.latest-news');
+    
+    // API untuk widget berita populer
+    Route::get('/api/popular-news', [BeritaController::class, 'getPopularNewsData'])->name('panel.berita.api.popular-news');
 });
 

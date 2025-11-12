@@ -16,7 +16,8 @@ class Berita extends Model
         'meta_description',
         'meta_keywords',
         'slug',
-        'viewer'
+        'viewer',
+        'kategori_id'
     ];
     
     protected $table = 'berita';
@@ -26,6 +27,19 @@ class Berita extends Model
         'aktif' => 'boolean',
         'viewer' => 'integer'
     ];
+
+    /**
+     * Relasi ke kategori berita (jika plugin kategori terinstal)
+     */
+    public function kategori()
+    {
+        if (class_exists(\App\Plugins\Kategori\Models\Kategori::class)) {
+            return $this->belongsTo(\App\Plugins\Kategori\Models\Kategori::class, 'kategori_id');
+        }
+        
+        // Jika plugin kategori tidak terinstal, kembalikan relasi kosong
+        return $this->belongsTo(\Illuminate\Database\Eloquent\Model::class, 'dummy');
+    }
 
     /**
      * Generate a unique slug before saving

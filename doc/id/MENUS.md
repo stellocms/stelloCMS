@@ -490,6 +490,29 @@ class MenusTableSeeder extends Seeder
 - Menghapus tema CoreUI yang tidak digunakan untuk mengurangi ukuran sistem
 - Menyederhanakan struktur tema untuk kemudahan pemeliharaan
 
+## Dokumentasi Lengkap
+
+Untuk dokumentasi lengkap tentang sistem menu sidebar admin yang mencakup menu statis dan dinamis dari plugin, lihat [Sistem-Menu-Sidebar-Admin.md](../Sistem-Menu-Sidebar-Admin.md).
+
+## Sistem Widgets
+
+Sistem widgets adalah komponen tambahan yang menyediakan manajemen elemen tampilan yang dapat ditampilkan di berbagai posisi dalam sistem. Widget mendukung tiga jenis konten: plugin, teks, dan HTML, serta dapat ditempatkan di posisi header, sidebar-kiri, sidebar-kanan, footer, atau home.
+
+### Fitur Widget
+- **Tipe Konten**: Mendukung widget plugin, teks, dan HTML
+- **Penempatan**: Dapat ditempatkan di lima posisi berbeda
+- **Manajemen**: Sistem CRUD lengkap untuk mengelola widget
+- **Pengaturan**: Dukungan pengaturan spesifik per widget (JSON)
+- **Pemfilteran**: Filter berdasarkan status (aktif/nonaktif), posisi, dan tipe
+
+### Integrasi dengan Menu
+Widget diakses melalui menu **Pengaturan** → **Widgets** di sidebar admin. Menu ini secara otomatis ditambahkan ke dalam sistem dan hanya dapat diakses oleh role admin dan operator.
+
+### Implementasi
+Widget dapat diimplementasikan di frontend dengan fungsi helper khusus atau dengan mengambil data langsung dari model `Widget`. Sistem ini memungkinkan pengelolaan elemen tampilan dinamis tanpa mengubah kode utama.
+
+Untuk dokumentasi lengkap tentang sistem widgets, lihat [Sistem-Widgets-Dokumentasi.md](../Sistem-Widgets-Dokumentasi.md).
+
 ## Pengembangan Lebih Lanjut
 
 ### Extending Menu Model

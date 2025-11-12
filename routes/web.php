@@ -5,7 +5,47 @@ use Illuminate\Support\Facades\Route;
 // Frontend route
 Route::get('/', function () {
     try {
-        return view_theme('frontend', 'home.index');
+        // Ambil menu untuk header
+        $headerMenus = \App\Models\Menu::where('type', 'frontend')
+                           ->where('position', 'header')
+                           ->where('is_active', true)
+                           ->orderBy('order')
+                           ->get();
+                           
+        // Ambil widget berdasarkan posisi
+        $headerWidgets = \App\Models\Widget::aktif()
+                               ->byPosition('header')
+                               ->orderBy('order')
+                               ->get();
+                               
+        $sidebarLeftWidgets = \App\Models\Widget::aktif()
+                                    ->byPosition('sidebar-left')
+                                    ->orderBy('order')
+                                    ->get();
+                                    
+        $sidebarRightWidgets = \App\Models\Widget::aktif()
+                                     ->byPosition('sidebar-right')
+                                     ->orderBy('order')
+                                     ->get();
+                                     
+        $footerWidgets = \App\Models\Widget::aktif()
+                               ->byPosition('footer')
+                               ->orderBy('order')
+                               ->get();
+                               
+        $homeWidgets = \App\Models\Widget::aktif()
+                             ->byPosition('home')
+                             ->orderBy('order')
+                             ->get();
+
+        return view_theme('frontend', 'home.index', compact(
+            'headerMenus',
+            'headerWidgets',
+            'sidebarLeftWidgets',
+            'sidebarRightWidgets',
+            'footerWidgets',
+            'homeWidgets'
+        ));
     } catch (\Exception $e) {
         // Fallback jika helper view_theme mengalami error
         return '<!DOCTYPE html>

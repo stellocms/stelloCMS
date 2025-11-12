@@ -905,6 +905,9 @@ class PluginServiceProvider extends ServiceProvider
 }
 ```
 
+### Plugin Kategori - Contoh Implementasi Lengkap
+Plugin Kategori adalah contoh implementasi plugin yang lengkap dalam sistem stelloCMS. Plugin ini menyediakan fungsionalitas untuk mengelola kategori berita dan menunjukkan best practices dalam pembuatan plugin. Untuk dokumentasi lengkap tentang plugin Kategori, lihat [Plugin-Kategori-Dokumentasi.md](../Plugin-Kategori-Dokumentasi.md).
+
 ### Plugin dengan Testing
 ```php
 // tests/Feature/Plugins/BeritaTest.php
@@ -1029,5 +1032,76 @@ Plugin "Berita" sekarang dapat digunakan untuk:
 - Organisasi pemerintahan desa
 - Organisasi pemerintahan kota
 - Organisasi swasta
-- Organisasi nirlaba
+- Organisasi nirlabo
 - Dan berbagai jenis organisasi lainnya
+
+## Integrasi dengan Sistem Widgets
+
+Sistem plugin dapat diintegrasikan dengan sistem widgets untuk menampilkan konten plugin dalam bentuk widget. Plugin dapat direferensikan dalam widget dengan menggunakan tipe "plugin" dan mengisi field "plugin_name" dengan nama plugin yang sesuai.
+
+### Membuat Widget Plugin
+1. Akses halaman **Pengaturan** → **Widgets**
+2. Pilih tipe "Plugin" dalam form pembuatan widget
+3. Isi "Nama Plugin" dengan nama plugin yang sudah terinstal
+4. Widget akan menampilkan konten dari plugin tersebut
+
+### Implementasi Konten Widget Plugin
+Untuk memastikan plugin bisa ditampilkan sebagai widget, plugin harus menyediakan endpoint atau fungsi khusus untuk menampilkan konten widget:
+
+```php
+// Dalam controller plugin
+public function getWidgetContent($context = null) 
+{
+    // Implementasi untuk mendapatkan konten spesifik widget
+    // dari plugin ini
+    return view('plugin_namespace::widget-content', compact('data'));
+}
+```
+
+Sistem widgets memberikan fleksibilitas tambahan untuk menampilkan konten plugin di berbagai posisi dalam sistem stelloCMS.
+
+### Best Practices untuk Widget Plugin
+- Pastikan plugin menyediakan method khusus untuk konten widget
+- Gunakan format konten yang ringkas dan efisien untuk widget
+- Implementasikan caching jika konten memerlukan proses berat
+- Sesuaikan tampilan widget agar tidak terlalu besar atau panjang
+
+### Instalasi Otomatis Widget
+Plugin dapat dikembangkan untuk membuat widget secara otomatis saat diinstal menggunakan file `install.php`. Contoh implementasi dapat dilihat pada plugin Berita yang secara otomatis membuat widget "Berita Terbaru" saat plugin diinstal, membuat pengalaman pengguna lebih mudah dengan menyediakan elemen tampilan yang relevan secara otomatis.
+
+Struktur implementasi di `install.php`:
+```php
+private static function createLatestNewsWidget()
+{
+    // Cek apakah tabel widgets ada
+    if (!Schema::hasTable('widgets')) {
+        return;
+    }
+
+    // Cek apakah widget sudah ada
+    $existingWidget = DB::table('widgets')->where('name', 'berita-terbaru-widget')->first();
+    
+    if (!$existingWidget) {
+        // Tambahkan widget berita terbaru
+        DB::table('widgets')->insert([
+            'name' => 'berita-terbaru-widget',
+            'type' => 'plugin',
+            'position' => 'sidebar-right',
+            'status' => 'aktif',
+            'content' => null,
+            'plugin_name' => 'Berita',
+            'order' => 1,
+            'settings' => json_encode([
+                'limit' => 5,
+                'show_date' => true,
+                'show_thumbnails' => false,
+                'title' => 'Berita Terbaru'
+            ]),
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s')
+        ]);
+    }
+}
+```
+
+Dengan fitur ini, plugin dapat menyediakan elemen tampilan yang langsung tersedia setelah instalasi, meningkatkan pengalaman pengguna dan memberikan contoh penggunaan plugin yang lebih konkret.

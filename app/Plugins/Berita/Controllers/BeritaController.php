@@ -38,6 +38,11 @@ class BeritaController extends Controller
             'meta_keywords' => 'nullable|string|max:255',
             'slug' => 'nullable|string|max:255|unique:berita',
         ];
+        
+        // Tambahkan validasi kategori_id hanya jika plugin kategori terinstal
+        if (class_exists(\App\Plugins\Kategori\Models\Kategori::class)) {
+            $rules['kategori_id'] = 'nullable|numeric|exists:kategori_berita,id';
+        }
 
         // Tambahkan validasi gambar hanya jika bukan dari Unsplash
         if ($request->hasFile('gambar')) {
@@ -47,6 +52,14 @@ class BeritaController extends Controller
         $request->validate($rules);
 
         $data = $request->except(['unsplash_image_url', '_token', '_method']); // Exclude fields that shouldn't be saved directly to the model
+        
+        // Pastikan hanya field yang divalidasi yang disimpan
+        $allowedFields = array_keys($rules);
+        $data = array_intersect_key($data, array_flip($allowedFields));
+        
+        // Pastikan hanya field yang divalidasi yang disimpan
+        $allowedFields = array_keys($rules);
+        $data = array_intersect_key($data, array_flip($allowedFields));
 
         // Handle upload dari komputer pengguna
         if ($request->hasFile('gambar')) {
@@ -209,6 +222,11 @@ class BeritaController extends Controller
         // Set viewer to 0 for new records
         $data['viewer'] = 0;
 
+        // Hapus field kategori_id dari data jika plugin kategori tidak terinstal
+        if (!class_exists(\App\Plugins\Kategori\Models\Kategori::class)) {
+            unset($data['kategori_id']);
+        }
+
         $berita = Berita::create($data);
 
         \Log::info('Berita created with ID: ' . $berita->id . ', gambar path: ' . ($berita->gambar ?? 'null'));
@@ -264,6 +282,11 @@ class BeritaController extends Controller
             'meta_keywords' => 'nullable|string|max:255',
             'slug' => 'nullable|string|max:255|unique:berita,slug,' . $id,
         ];
+        
+        // Tambahkan validasi kategori_id hanya jika plugin kategori terinstal
+        if (class_exists(\App\Plugins\Kategori\Models\Kategori::class)) {
+            $rules['kategori_id'] = 'nullable|numeric|exists:kategori_berita,id';
+        }
 
         // Tambahkan validasi gambar hanya jika bukan dari Unsplash
         if ($request->hasFile('gambar')) {
@@ -441,6 +464,11 @@ class BeritaController extends Controller
             }
         }
 
+        // Hapus field kategori_id dari data jika plugin kategori tidak terinstal
+        if (!class_exists(\App\Plugins\Kategori\Models\Kategori::class)) {
+            unset($data['kategori_id']);
+        }
+
         $berita->update($data);
 
         \Log::info('Berita updated with ID: ' . $berita->id . ', gambar path: ' . ($berita->gambar ?? 'null'));
@@ -551,5 +579,114 @@ class BeritaController extends Controller
         }
 
         return response()->json(['hasKeys' => $hasKeys]);
+    }
+
+    /**
+     * Fungsi untuk mendapatkan widget berita terbaru
+     */
+    public function getLatestNewsWidget($limit = 5)
+    {
+        // Ambil berita aktif terbaru
+        $latestNews = Berita::where('aktif', true)
+                            ->orderBy('tanggal_publikasi', 'desc')
+                            ->limit($limit)
+                            ->get(['id', 'judul', 'tanggal_publikasi', 'gambar', 'slug']);
+
+        return view('berita::widget.latest-news', compact('latestNews'))->render();
+    }
+
+    /**
+     * Fungsi untuk mendapatkan data berita terbaru (API untuk widget)
+     */
+    public function getLatestNewsData($limit = 5)
+    {
+        $latestNews = Berita::where('aktif', true)
+                            ->orderBy('tanggal_publikasi', 'desc')
+                            ->limit($limit)
+                            ->get(['id', 'judul', 'tanggal_publikasi', 'gambar', 'slug', 'isi']);
+
+        return response()->json($latestNews);
+    }
+
+    /**
+     * Fungsi untuk mendapatkan widget berita populer
+     */
+    public function getPopularNewsWidget($limit = 5)
+    {
+        // Ambil berita aktif yang paling banyak dilihat (berdasarkan kolom viewer)
+        $popularNews = Berita::where('aktif', true)
+                            ->orderBy('viewer', 'desc')
+                            ->limit($limit)
+                            ->get(['id', 'judul', 'tanggal_publikasi', 'gambar', 'slug', 'viewer']);
+
+        return view('berita::widget.popular-news', compact('popularNews'))->render();
+    }
+
+    /**
+     * Fungsi untuk mendapatkan data berita populer (API untuk widget)
+     */
+    public function getPopularNewsData($limit = 5)
+    {
+        $popularNews = Berita::where('aktif', true)
+                            ->orderBy('viewer', 'desc')
+                            ->limit($limit)
+                            ->get(['id', 'judul', 'tanggal_publikasi', 'gambar', 'slug', 'viewer']);
+
+        return response()->json($popularNews);
+    }
+
+    /**
+     * Fungsi untuk mendapatkan widget berita acak yang memiliki gambar
+     */
+    public function getRandomNewsWidget($limit = 1)
+    {
+        // Ambil berita aktif yang memiliki gambar secara acak
+        $totalWithImages = Berita::where('aktif', true)
+                                  ->whereNotNull('gambar')
+                                  ->where('gambar', '!=', '')
+                                  ->count();
+
+        if ($totalWithImages == 0) {
+            // Jika tidak ada berita dengan gambar, kembalikan template kosong
+            return view('berita::widget.random-news', ['randomNews' => collect([])])->render();
+        }
+
+        // Ambil offset acak
+        $randomOffset = rand(0, max(0, $totalWithImages - 1));
+        
+        $randomNews = Berita::where('aktif', true)
+                           ->whereNotNull('gambar')
+                           ->where('gambar', '!=', '')
+                           ->offset($randomOffset)
+                           ->limit($limit)
+                           ->get(['id', 'judul', 'tanggal_publikasi', 'gambar', 'slug']);
+
+        return view('berita::widget.random-news', compact('randomNews'))->render();
+    }
+
+    /**
+     * Fungsi untuk mendapatkan data berita acak yang memiliki gambar (API untuk widget)
+     */
+    public function getRandomNewsData($limit = 1)
+    {
+        $totalWithImages = Berita::where('aktif', true)
+                                  ->whereNotNull('gambar')
+                                  ->where('gambar', '!=', '')
+                                  ->count();
+
+        if ($totalWithImages == 0) {
+            return response()->json(collect([]));
+        }
+
+        $randomOffset = rand(0, max(0, $totalWithImages - 1));
+        
+        $randomNews = Berita::where('aktif', true)
+                           ->whereNotNull('gambar')
+                           ->where('gambar', '!=', '')
+                           ->offset($randomOffset)
+                           ->limit($limit)
+                           ->get(['id', 'judul', 'tanggal_publikasi', 'gambar', 'slug']);
+
+        return response()->json($randomNews);
     }
 }

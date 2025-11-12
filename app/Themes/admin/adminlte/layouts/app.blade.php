@@ -446,6 +446,12 @@
                 </a>
               </li>
               <li class="nav-item">
+                <a href="{{ route('panel.widgets.index') }}" class="nav-link {{ $isMenusActive ? 'active' : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Widgets</p>
+                </a>
+              </li>
+              <li class="nav-item">
                 <a href="{{ route('setting.index') }}" class="nav-link {{ $isSettingsActive ? 'active' : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Setting</p>

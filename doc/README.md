@@ -113,6 +113,11 @@ simpede/
 2. [API Documentation](API.md) - Dokumentasi API untuk integrasi
 3. [Development Guidelines](DEVELOPMENT.md) - Panduan pengembangan dan best practices
 4. [Testing](TESTING.md) - Panduan testing dan quality assurance
+5. [Panduan Pembuatan Plugin](Panduan-Pembuatan-Plugin.md) - Panduan lengkap untuk membuat plugin
+6. [Contoh Implementasi: Plugin Kategori](Plugin-Kategori-Dokumentasi.md) - Dokumentasi lengkap plugin Kategori sebagai contoh implementasi
+7. [Sistem Menu Sidebar Admin](Sistem-Menu-Sidebar-Admin.md) - Dokumentasi lengkap tentang sistem menu sidebar admin yang mencakup menu statis dan dinamis dari plugin
+8. [Sistem Widgets](Sistem-Widgets-Dokumentasi.md) - Dokumentasi lengkap sistem manajemen widgets untuk tampilan dinamis
+9. [Cara Pembuatan Widget](Cara-Pembuatan-Widget.md) - Panduan praktis untuk membuat dan mengelola widget di sistem stelloCMS
 
 ### Referensi Teknis
 1. [Database Schema](DATABASE_SCHEMA.md) - Skema database lengkap
