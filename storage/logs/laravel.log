@@ -3739,3 +3739,27 @@
 [2025-11-12 10:50:03] local.INFO: RoleMiddleware accessed for route: panel.dashboard  
 [2025-11-12 10:50:03] local.INFO: User role: admin  
 [2025-11-12 10:50:03] local.INFO: User is admin, allowing access  
+[2025-11-12 10:52:34] local.INFO: Loading Kategori routes  
+[2025-11-12 10:52:34] local.INFO: Kategori routes loaded  
+[2025-11-12 10:52:46] local.INFO: Loading Kategori routes  
+[2025-11-12 10:52:46] local.INFO: Kategori routes loaded  
+[2025-11-12 10:52:46] local.INFO: RoleMiddleware accessed for route: panel.dashboard  
+[2025-11-12 10:52:46] local.INFO: User role: admin  
+[2025-11-12 10:52:46] local.INFO: User is admin, allowing access  
+[2025-11-12 10:52:50] local.INFO: Loading Kategori routes  
+[2025-11-12 10:52:50] local.INFO: Kategori routes loaded  
+[2025-11-12 10:52:50] local.INFO: RoleMiddleware accessed for route: setting.index  
+[2025-11-12 10:52:50] local.INFO: User role: admin  
+[2025-11-12 10:52:50] local.INFO: User is admin, allowing access  
+[2025-11-12 10:52:53] local.INFO: Loading Kategori routes  
+[2025-11-12 10:52:53] local.INFO: Kategori routes loaded  
+[2025-11-12 10:52:53] local.INFO: RoleMiddleware accessed for route: setting.clear_cache  
+[2025-11-12 10:52:53] local.INFO: User role: admin  
+[2025-11-12 10:52:53] local.INFO: User is admin, allowing access  
+[2025-11-12 10:53:01] local.INFO: Loading Kategori routes  
+[2025-11-12 10:53:01] local.INFO: Kategori routes loaded  
+[2025-11-12 10:53:01] local.INFO: RoleMiddleware accessed for route: setting.index  
+[2025-11-12 10:53:01] local.INFO: User role: admin  
+[2025-11-12 10:53:01] local.INFO: User is admin, allowing access  
+[2025-11-12 10:53:16] local.INFO: Loading Kategori routes  
+[2025-11-12 10:53:16] local.INFO: Kategori routes loaded  
