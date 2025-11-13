@@ -9,11 +9,11 @@ class WidgetController extends Controller
 {
     public function index()
     {
-        $headerWidgets = Widget::where('position', 'header')->orderBy('order')->get();
-        $sidebarLeftWidgets = Widget::where('position', 'sidebar-left')->orderBy('order')->get();
-        $sidebarRightWidgets = Widget::where('position', 'sidebar-right')->orderBy('order')->get();
-        $footerWidgets = Widget::where('position', 'footer')->orderBy('order')->get();
-        $homeWidgets = Widget::where('position', 'home')->orderBy('order')->get();
+        $headerWidgets = Widget::aktif()->byPosition('header')->orderBy('order')->get();
+        $sidebarLeftWidgets = Widget::aktif()->byPosition('sidebar-left')->orderBy('order')->get();
+        $sidebarRightWidgets = Widget::aktif()->byPosition('sidebar-right')->orderBy('order')->get();
+        $footerWidgets = Widget::aktif()->byPosition('footer')->orderBy('order')->get();
+        $homeWidgets = Widget::aktif()->byPosition('home')->orderBy('order')->get();
 
         return view_theme('admin', 'widgets.index', compact(
             'headerWidgets',

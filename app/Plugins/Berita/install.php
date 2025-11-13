@@ -39,6 +39,7 @@ class BeritaInstaller
         static::createLatestNewsWidget();
         static::createPopularNewsWidget();
         static::createRandomNewsWidget();
+        static::createSliderNewsWidget();
     }
 
     /**
@@ -252,6 +253,41 @@ class BeritaInstaller
                     'show_date' => true,
                     'show_thumbnails' => false,
                     'title' => 'Berita Terbaru'
+                ]),
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ]);
+        }
+    }
+
+    /**
+     * Membuat widget otomatis untuk slider berita
+     */
+    public static function createSliderNewsWidget()
+    {
+        // Cek apakah tabel widgets ada
+        if (!Schema::hasTable('widgets')) {
+            return;
+        }
+
+        // Cek apakah widget sudah ada
+        $existingWidget = DB::table('widgets')->where('name', 'slider-berita-widget')->first();
+        
+        if (!$existingWidget) {
+            // Tambahkan widget slider berita
+            DB::table('widgets')->insert([
+                'name' => 'slider-berita-widget',
+                'type' => 'plugin',
+                'position' => 'home',  // Cocok untuk home/slider area
+                'status' => 'aktif',
+                'content' => null,
+                'plugin_name' => 'Berita',  // Nama plugin harus sesuai
+                'order' => 2,
+                'settings' => json_encode([
+                    'limit' => 5,
+                    'show_date' => true,
+                    'show_title' => true,
+                    'title' => 'Slider Berita'
                 ]),
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')

@@ -152,3 +152,39 @@ if (!function_exists('get_random_news_data')) {
         return collect([]);
     }
 }
+
+if (!function_exists('get_slider_news_widget')) {
+    /**
+     * Get the slider news widget content that has images
+     *
+     * @param int $limit Number of news to show in slider (default 5)
+     * @return string HTML content of the slider widget
+     */
+    function get_slider_news_widget($limit = 5)
+    {
+        if (class_exists(App\Plugins\Berita\Controllers\BeritaController::class)) {
+            $controller = new App\Plugins\Berita\Controllers\BeritaController();
+            return $controller->getSliderNewsWidget($limit);
+        }
+
+        return '<div class="alert alert-info">Plugin Berita tidak aktif</div>';
+    }
+}
+
+if (!function_exists('get_slider_news_data')) {
+    /**
+     * Get the slider news data that has images
+     *
+     * @param int $limit Number of news to get for slider (default 5)
+     * @return \Illuminate\Support\Collection
+     */
+    function get_slider_news_data($limit = 5)
+    {
+        if (class_exists(App\Plugins\Berita\Controllers\BeritaController::class)) {
+            $controller = new App\Plugins\Berita\Controllers\BeritaController();
+            return $controller->getSliderNewsData($limit);
+        }
+
+        return collect([]);
+    }
+}

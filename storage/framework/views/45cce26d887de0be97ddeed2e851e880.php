@@ -1,10 +1,8 @@
-@extends('theme.admin.adminlte::layouts.app')
+<?php $__env->startSection('title', 'Manajemen Widgets - ' . cms_name()); ?>
+<?php $__env->startSection('page_title', 'Manajemen Widgets'); ?>
 
-@section('title', 'Manajemen Widgets - ' . cms_name())
-@section('page_title', 'Manajemen Widgets')
-
-@section('content')
-<meta name="csrf-token" content="{{ csrf_token() }}">
+<?php $__env->startSection('content'); ?>
+<meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
 
 <div class="container-fluid">
     <div class="row">
@@ -13,7 +11,7 @@
                 <div class="card-header">
                     <h3 class="card-title">Manajemen Widgets</h3>
                     <div class="card-tools">
-                        <a href="{{ route('panel.widgets.create') }}" class="btn btn-primary">Tambah Widget</a>
+                        <a href="<?php echo e(route('panel.widgets.create')); ?>" class="btn btn-primary">Tambah Widget</a>
                     </div>
                 </div>
                 <!-- /.card-header -->
@@ -30,37 +28,39 @@
                                             <h4 class="position-title mb-0">
                                                 <i class="fas fa-heading mr-2"></i> Header Widgets
                                             </h4>
-                                            <span class="badge badge-primary">{{ $headerWidgets->count() }} widgets</span>
+                                            <span class="badge badge-primary"><?php echo e($headerWidgets->count()); ?> widgets</span>
                                         </div>
                                         <div class="position-widgets-container sortable-widget" data-position="header" id="header-widgets-container">
-                                            @if($headerWidgets->count() > 0)
-                                                @foreach($headerWidgets as $widget)
-                                                <div class="position-widget card mb-2" data-id="{{ $widget->id }}" data-position="{{ $widget->position }}">
+                                            <?php if($headerWidgets->count() > 0): ?>
+                                                <?php $__currentLoopData = $headerWidgets; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $widget): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <div class="position-widget card mb-2" data-id="<?php echo e($widget->id); ?>" data-position="<?php echo e($widget->position); ?>">
                                                     <div class="card-body p-2">
                                                         <div class="d-flex justify-content-between">
                                                             <div class="flex-grow-1">
-                                                                <h6 class="mb-1">{{ Str::limit($widget->name, 30) }}</h6>
+                                                                <h6 class="mb-1"><?php echo e(Str::limit($widget->name, 30)); ?></h6>
                                                                 <div class="small text-muted">
-                                                                    <span class="badge badge-{{ $widget->type === 'plugin' ? 'info' : ($widget->type === 'text' ? 'warning' : 'success') }}">
-                                                                        {{ ucfirst($widget->type) }}
+                                                                    <span class="badge badge-<?php echo e($widget->type === 'plugin' ? 'info' : ($widget->type === 'text' ? 'warning' : 'success')); ?>">
+                                                                        <?php echo e(ucfirst($widget->type)); ?>
+
                                                                     </span>
-                                                                    <span class="badge {{ $widget->status === 'aktif' ? 'badge-success' : 'badge-danger' }}">
-                                                                        {{ $widget->status }}
+                                                                    <span class="badge <?php echo e($widget->status === 'aktif' ? 'badge-success' : 'badge-danger'); ?>">
+                                                                        <?php echo e($widget->status); ?>
+
                                                                     </span>
-                                                                    <small>Urutan: {{ $widget->order }}</small>
+                                                                    <small>Urutan: <?php echo e($widget->order); ?></small>
                                                                 </div>
-                                                                <p class="mb-1 mt-1 text-truncate">{{ Str::limit(strip_tags($widget->content ?? ''), 60, '...') }}</p>
+                                                                <p class="mb-1 mt-1 text-truncate"><?php echo e(Str::limit(strip_tags($widget->content ?? ''), 60, '...')); ?></p>
                                                             </div>
                                                             <div class="btn-group btn-group-sm ml-2">
-                                                                <a href="{{ route('panel.widgets.show', $widget->id) }}" class="btn btn-info" title="Lihat">
+                                                                <a href="<?php echo e(route('panel.widgets.show', $widget->id)); ?>" class="btn btn-info" title="Lihat">
                                                                     <i class="fas fa-eye"></i>
                                                                 </a>
-                                                                <a href="{{ route('panel.widgets.edit', $widget->id) }}" class="btn btn-primary" title="Edit">
+                                                                <a href="<?php echo e(route('panel.widgets.edit', $widget->id)); ?>" class="btn btn-primary" title="Edit">
                                                                     <i class="fas fa-edit"></i>
                                                                 </a>
-                                                                <form action="{{ route('panel.widgets.destroy', $widget->id) }}" method="POST" class="d-inline">
-                                                                    @csrf
-                                                                    @method('DELETE')
+                                                                <form action="<?php echo e(route('panel.widgets.destroy', $widget->id)); ?>" method="POST" class="d-inline">
+                                                                    <?php echo csrf_field(); ?>
+                                                                    <?php echo method_field('DELETE'); ?>
                                                                     <button type="submit" class="btn btn-danger" title="Hapus" onclick="return confirm('Yakin ingin menghapus widget ini?')">
                                                                         <i class="fas fa-trash"></i>
                                                                     </button>
@@ -69,13 +69,13 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                @endforeach
-                                            @else
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                            <?php else: ?>
                                                 <div class="alert alert-info text-center mb-0">
                                                     <i class="fas fa-info-circle mb-2"></i>
                                                     <p class="mb-0">Tidak ada widget di posisi Header</p>
                                                 </div>
-                                            @endif
+                                            <?php endif; ?>
                                         </div>
                                     </td>
                                 </tr>
@@ -88,37 +88,39 @@
                                             <h4 class="position-title mb-0">
                                                 <i class="fas fa-align-left mr-2"></i> Sidebar Kiri
                                             </h4>
-                                            <span class="badge badge-primary">{{ $sidebarLeftWidgets->count() }} widgets</span>
+                                            <span class="badge badge-primary"><?php echo e($sidebarLeftWidgets->count()); ?> widgets</span>
                                         </div>
                                         <div class="position-widgets-container sortable-widget" data-position="sidebar-left" id="left-widgets-container">
-                                            @if($sidebarLeftWidgets->count() > 0)
-                                                @foreach($sidebarLeftWidgets as $widget)
-                                                <div class="position-widget card mb-2" data-id="{{ $widget->id }}" data-position="{{ $widget->position }}">
+                                            <?php if($sidebarLeftWidgets->count() > 0): ?>
+                                                <?php $__currentLoopData = $sidebarLeftWidgets; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $widget): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <div class="position-widget card mb-2" data-id="<?php echo e($widget->id); ?>" data-position="<?php echo e($widget->position); ?>">
                                                     <div class="card-body p-2">
                                                         <div class="d-flex justify-content-between">
                                                             <div class="flex-grow-1">
-                                                                <h6 class="mb-1">{{ Str::limit($widget->name, 25) }}</h6>
+                                                                <h6 class="mb-1"><?php echo e(Str::limit($widget->name, 25)); ?></h6>
                                                                 <div class="small text-muted">
-                                                                    <span class="badge badge-{{ $widget->type === 'plugin' ? 'info' : ($widget->type === 'text' ? 'warning' : 'success') }}">
-                                                                        {{ ucfirst($widget->type) }}
+                                                                    <span class="badge badge-<?php echo e($widget->type === 'plugin' ? 'info' : ($widget->type === 'text' ? 'warning' : 'success')); ?>">
+                                                                        <?php echo e(ucfirst($widget->type)); ?>
+
                                                                     </span>
-                                                                    <span class="badge {{ $widget->status === 'aktif' ? 'badge-success' : 'badge-danger' }}">
-                                                                        {{ $widget->status }}
+                                                                    <span class="badge <?php echo e($widget->status === 'aktif' ? 'badge-success' : 'badge-danger'); ?>">
+                                                                        <?php echo e($widget->status); ?>
+
                                                                     </span>
-                                                                    <small>Urutan: {{ $widget->order }}</small>
+                                                                    <small>Urutan: <?php echo e($widget->order); ?></small>
                                                                 </div>
-                                                                <p class="mb-1 mt-1 text-truncate">{{ Str::limit(strip_tags($widget->content ?? ''), 40, '...') }}</p>
+                                                                <p class="mb-1 mt-1 text-truncate"><?php echo e(Str::limit(strip_tags($widget->content ?? ''), 40, '...')); ?></p>
                                                             </div>
                                                             <div class="btn-group btn-group-sm ml-2">
-                                                                <a href="{{ route('panel.widgets.show', $widget->id) }}" class="btn btn-info" title="Lihat">
+                                                                <a href="<?php echo e(route('panel.widgets.show', $widget->id)); ?>" class="btn btn-info" title="Lihat">
                                                                     <i class="fas fa-eye"></i>
                                                                 </a>
-                                                                <a href="{{ route('panel.widgets.edit', $widget->id) }}" class="btn btn-primary" title="Edit">
+                                                                <a href="<?php echo e(route('panel.widgets.edit', $widget->id)); ?>" class="btn btn-primary" title="Edit">
                                                                     <i class="fas fa-edit"></i>
                                                                 </a>
-                                                                <form action="{{ route('panel.widgets.destroy', $widget->id) }}" method="POST" class="d-inline">
-                                                                    @csrf
-                                                                    @method('DELETE')
+                                                                <form action="<?php echo e(route('panel.widgets.destroy', $widget->id)); ?>" method="POST" class="d-inline">
+                                                                    <?php echo csrf_field(); ?>
+                                                                    <?php echo method_field('DELETE'); ?>
                                                                     <button type="submit" class="btn btn-danger" title="Hapus" onclick="return confirm('Yakin ingin menghapus widget ini?')">
                                                                         <i class="fas fa-trash"></i>
                                                                     </button>
@@ -127,13 +129,13 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                @endforeach
-                                            @else
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                            <?php else: ?>
                                                 <div class="alert alert-info text-center">
                                                     <i class="fas fa-info-circle mb-2"></i>
                                                     <p class="mb-0">Tidak ada widget di posisi Sidebar Kiri</p>
                                                 </div>
-                                            @endif
+                                            <?php endif; ?>
                                         </div>
                                     </td>
                                     
@@ -143,37 +145,39 @@
                                             <h4 class="position-title mb-0">
                                                 <i class="fas fa-home mr-2"></i> Home Widgets
                                             </h4>
-                                            <span class="badge badge-primary">{{ $homeWidgets->count() }} widgets</span>
+                                            <span class="badge badge-primary"><?php echo e($homeWidgets->count()); ?> widgets</span>
                                         </div>
                                         <div class="position-widgets-container sortable-widget" data-position="home" id="home-widgets-container">
-                                            @if($homeWidgets->count() > 0)
-                                                @foreach($homeWidgets as $widget)
-                                                <div class="position-widget card mb-2" data-id="{{ $widget->id }}" data-position="{{ $widget->position }}">
+                                            <?php if($homeWidgets->count() > 0): ?>
+                                                <?php $__currentLoopData = $homeWidgets; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $widget): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <div class="position-widget card mb-2" data-id="<?php echo e($widget->id); ?>" data-position="<?php echo e($widget->position); ?>">
                                                     <div class="card-body p-2">
                                                         <div class="d-flex justify-content-between">
                                                             <div class="flex-grow-1">
-                                                                <h6 class="mb-1">{{ Str::limit($widget->name, 25) }}</h6>
+                                                                <h6 class="mb-1"><?php echo e(Str::limit($widget->name, 25)); ?></h6>
                                                                 <div class="small text-muted">
-                                                                    <span class="badge badge-{{ $widget->type === 'plugin' ? 'info' : ($widget->type === 'text' ? 'warning' : 'success') }}">
-                                                                        {{ ucfirst($widget->type) }}
+                                                                    <span class="badge badge-<?php echo e($widget->type === 'plugin' ? 'info' : ($widget->type === 'text' ? 'warning' : 'success')); ?>">
+                                                                        <?php echo e(ucfirst($widget->type)); ?>
+
                                                                     </span>
-                                                                    <span class="badge {{ $widget->status === 'aktif' ? 'badge-success' : 'badge-danger' }}">
-                                                                        {{ $widget->status }}
+                                                                    <span class="badge <?php echo e($widget->status === 'aktif' ? 'badge-success' : 'badge-danger'); ?>">
+                                                                        <?php echo e($widget->status); ?>
+
                                                                     </span>
-                                                                    <small>Urutan: {{ $widget->order }}</small>
+                                                                    <small>Urutan: <?php echo e($widget->order); ?></small>
                                                                 </div>
-                                                                <p class="mb-1 mt-1 text-truncate">{{ Str::limit(strip_tags($widget->content ?? ''), 40, '...') }}</p>
+                                                                <p class="mb-1 mt-1 text-truncate"><?php echo e(Str::limit(strip_tags($widget->content ?? ''), 40, '...')); ?></p>
                                                             </div>
                                                             <div class="btn-group btn-group-sm ml-2">
-                                                                <a href="{{ route('panel.widgets.show', $widget->id) }}" class="btn btn-info" title="Lihat">
+                                                                <a href="<?php echo e(route('panel.widgets.show', $widget->id)); ?>" class="btn btn-info" title="Lihat">
                                                                     <i class="fas fa-eye"></i>
                                                                 </a>
-                                                                <a href="{{ route('panel.widgets.edit', $widget->id) }}" class="btn btn-primary" title="Edit">
+                                                                <a href="<?php echo e(route('panel.widgets.edit', $widget->id)); ?>" class="btn btn-primary" title="Edit">
                                                                     <i class="fas fa-edit"></i>
                                                                 </a>
-                                                                <form action="{{ route('panel.widgets.destroy', $widget->id) }}" method="POST" class="d-inline">
-                                                                    @csrf
-                                                                    @method('DELETE')
+                                                                <form action="<?php echo e(route('panel.widgets.destroy', $widget->id)); ?>" method="POST" class="d-inline">
+                                                                    <?php echo csrf_field(); ?>
+                                                                    <?php echo method_field('DELETE'); ?>
                                                                     <button type="submit" class="btn btn-danger" title="Hapus" onclick="return confirm('Yakin ingin menghapus widget ini?')">
                                                                         <i class="fas fa-trash"></i>
                                                                     </button>
@@ -182,13 +186,13 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                @endforeach
-                                            @else
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                            <?php else: ?>
                                                 <div class="alert alert-info text-center">
                                                     <i class="fas fa-info-circle mb-2"></i>
                                                     <p class="mb-0">Tidak ada widget di posisi Home</p>
                                                 </div>
-                                            @endif
+                                            <?php endif; ?>
                                         </div>
                                     </td>
                                     
@@ -198,37 +202,39 @@
                                             <h4 class="position-title mb-0">
                                                 <i class="fas fa-align-right mr-2"></i> Sidebar Kanan
                                             </h4>
-                                            <span class="badge badge-primary">{{ $sidebarRightWidgets->count() }} widgets</span>
+                                            <span class="badge badge-primary"><?php echo e($sidebarRightWidgets->count()); ?> widgets</span>
                                         </div>
                                         <div class="position-widgets-container sortable-widget" data-position="sidebar-right" id="right-widgets-container">
-                                            @if($sidebarRightWidgets->count() > 0)
-                                                @foreach($sidebarRightWidgets as $widget)
-                                                <div class="position-widget card mb-2" data-id="{{ $widget->id }}" data-position="{{ $widget->position }}">
+                                            <?php if($sidebarRightWidgets->count() > 0): ?>
+                                                <?php $__currentLoopData = $sidebarRightWidgets; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $widget): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <div class="position-widget card mb-2" data-id="<?php echo e($widget->id); ?>" data-position="<?php echo e($widget->position); ?>">
                                                     <div class="card-body p-2">
                                                         <div class="d-flex justify-content-between">
                                                             <div class="flex-grow-1">
-                                                                <h6 class="mb-1">{{ Str::limit($widget->name, 25) }}</h6>
+                                                                <h6 class="mb-1"><?php echo e(Str::limit($widget->name, 25)); ?></h6>
                                                                 <div class="small text-muted">
-                                                                    <span class="badge badge-{{ $widget->type === 'plugin' ? 'info' : ($widget->type === 'text' ? 'warning' : 'success') }}">
-                                                                        {{ ucfirst($widget->type) }}
+                                                                    <span class="badge badge-<?php echo e($widget->type === 'plugin' ? 'info' : ($widget->type === 'text' ? 'warning' : 'success')); ?>">
+                                                                        <?php echo e(ucfirst($widget->type)); ?>
+
                                                                     </span>
-                                                                    <span class="badge {{ $widget->status === 'aktif' ? 'badge-success' : 'badge-danger' }}">
-                                                                        {{ $widget->status }}
+                                                                    <span class="badge <?php echo e($widget->status === 'aktif' ? 'badge-success' : 'badge-danger'); ?>">
+                                                                        <?php echo e($widget->status); ?>
+
                                                                     </span>
-                                                                    <small>Urutan: {{ $widget->order }}</small>
+                                                                    <small>Urutan: <?php echo e($widget->order); ?></small>
                                                                 </div>
-                                                                <p class="mb-1 mt-1 text-truncate">{{ Str::limit(strip_tags($widget->content ?? ''), 40, '...') }}</p>
+                                                                <p class="mb-1 mt-1 text-truncate"><?php echo e(Str::limit(strip_tags($widget->content ?? ''), 40, '...')); ?></p>
                                                             </div>
                                                             <div class="btn-group btn-group-sm ml-2">
-                                                                <a href="{{ route('panel.widgets.show', $widget->id) }}" class="btn btn-info" title="Lihat">
+                                                                <a href="<?php echo e(route('panel.widgets.show', $widget->id)); ?>" class="btn btn-info" title="Lihat">
                                                                     <i class="fas fa-eye"></i>
                                                                 </a>
-                                                                <a href="{{ route('panel.widgets.edit', $widget->id) }}" class="btn btn-primary" title="Edit">
+                                                                <a href="<?php echo e(route('panel.widgets.edit', $widget->id)); ?>" class="btn btn-primary" title="Edit">
                                                                     <i class="fas fa-edit"></i>
                                                                 </a>
-                                                                <form action="{{ route('panel.widgets.destroy', $widget->id) }}" method="POST" class="d-inline">
-                                                                    @csrf
-                                                                    @method('DELETE')
+                                                                <form action="<?php echo e(route('panel.widgets.destroy', $widget->id)); ?>" method="POST" class="d-inline">
+                                                                    <?php echo csrf_field(); ?>
+                                                                    <?php echo method_field('DELETE'); ?>
                                                                     <button type="submit" class="btn btn-danger" title="Hapus" onclick="return confirm('Yakin ingin menghapus widget ini?')">
                                                                         <i class="fas fa-trash"></i>
                                                                     </button>
@@ -237,13 +243,13 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                @endforeach
-                                            @else
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                            <?php else: ?>
                                                 <div class="alert alert-info text-center">
                                                     <i class="fas fa-info-circle mb-2"></i>
                                                     <p class="mb-0">Tidak ada widget di posisi Sidebar Kanan</p>
                                                 </div>
-                                            @endif
+                                            <?php endif; ?>
                                         </div>
                                     </td>
                                 </tr>
@@ -255,37 +261,39 @@
                                             <h4 class="position-title mb-0">
                                                 <i class="fas fa-file-alt mr-2"></i> Footer Widgets
                                             </h4>
-                                            <span class="badge badge-primary">{{ $footerWidgets->count() }} widgets</span>
+                                            <span class="badge badge-primary"><?php echo e($footerWidgets->count()); ?> widgets</span>
                                         </div>
                                         <div class="position-widgets-container sortable-widget" data-position="footer" id="footer-widgets-container">
-                                            @if($footerWidgets->count() > 0)
-                                                @foreach($footerWidgets as $widget)
-                                                <div class="position-widget card mb-2" data-id="{{ $widget->id }}" data-position="{{ $widget->position }}">
+                                            <?php if($footerWidgets->count() > 0): ?>
+                                                <?php $__currentLoopData = $footerWidgets; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $widget): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <div class="position-widget card mb-2" data-id="<?php echo e($widget->id); ?>" data-position="<?php echo e($widget->position); ?>">
                                                     <div class="card-body p-2">
                                                         <div class="d-flex justify-content-between">
                                                             <div class="flex-grow-1">
-                                                                <h6 class="mb-1">{{ Str::limit($widget->name, 30) }}</h6>
+                                                                <h6 class="mb-1"><?php echo e(Str::limit($widget->name, 30)); ?></h6>
                                                                 <div class="small text-muted">
-                                                                    <span class="badge badge-{{ $widget->type === 'plugin' ? 'info' : ($widget->type === 'text' ? 'warning' : 'success') }}">
-                                                                        {{ ucfirst($widget->type) }}
+                                                                    <span class="badge badge-<?php echo e($widget->type === 'plugin' ? 'info' : ($widget->type === 'text' ? 'warning' : 'success')); ?>">
+                                                                        <?php echo e(ucfirst($widget->type)); ?>
+
                                                                     </span>
-                                                                    <span class="badge {{ $widget->status === 'aktif' ? 'badge-success' : 'badge-danger' }}">
-                                                                        {{ $widget->status }}
+                                                                    <span class="badge <?php echo e($widget->status === 'aktif' ? 'badge-success' : 'badge-danger'); ?>">
+                                                                        <?php echo e($widget->status); ?>
+
                                                                     </span>
-                                                                    <small>Urutan: {{ $widget->order }}</small>
+                                                                    <small>Urutan: <?php echo e($widget->order); ?></small>
                                                                 </div>
-                                                                <p class="mb-1 mt-1 text-truncate">{{ Str::limit(strip_tags($widget->content ?? ''), 60, '...') }}</p>
+                                                                <p class="mb-1 mt-1 text-truncate"><?php echo e(Str::limit(strip_tags($widget->content ?? ''), 60, '...')); ?></p>
                                                             </div>
                                                             <div class="btn-group btn-group-sm ml-2">
-                                                                <a href="{{ route('panel.widgets.show', $widget->id) }}" class="btn btn-info" title="Lihat">
+                                                                <a href="<?php echo e(route('panel.widgets.show', $widget->id)); ?>" class="btn btn-info" title="Lihat">
                                                                     <i class="fas fa-eye"></i>
                                                                 </a>
-                                                                <a href="{{ route('panel.widgets.edit', $widget->id) }}" class="btn btn-primary" title="Edit">
+                                                                <a href="<?php echo e(route('panel.widgets.edit', $widget->id)); ?>" class="btn btn-primary" title="Edit">
                                                                     <i class="fas fa-edit"></i>
                                                                 </a>
-                                                                <form action="{{ route('panel.widgets.destroy', $widget->id) }}" method="POST" class="d-inline">
-                                                                    @csrf
-                                                                    @method('DELETE')
+                                                                <form action="<?php echo e(route('panel.widgets.destroy', $widget->id)); ?>" method="POST" class="d-inline">
+                                                                    <?php echo csrf_field(); ?>
+                                                                    <?php echo method_field('DELETE'); ?>
                                                                     <button type="submit" class="btn btn-danger" title="Hapus" onclick="return confirm('Yakin ingin menghapus widget ini?')">
                                                                         <i class="fas fa-trash"></i>
                                                                     </button>
@@ -294,13 +302,13 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                @endforeach
-                                            @else
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                            <?php else: ?>
                                                 <div class="alert alert-info text-center mb-0">
                                                     <i class="fas fa-info-circle mb-2"></i>
                                                     <p class="mb-0">Tidak ada widget di posisi Footer</p>
                                                 </div>
-                                            @endif
+                                            <?php endif; ?>
                                         </div>
                                     </td>
                                 </tr>
@@ -360,9 +368,9 @@
         padding: 0.125rem 0.25rem !important;
     }
 </style>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('scripts')
+<?php $__env->startSection('scripts'); ?>
 <script>
 $(document).ready(function() {
     // Initialize sortable for all widget containers with cross-position dragging enabled
@@ -408,7 +416,7 @@ $(document).ready(function() {
         
         if (widgetIds.length > 0) {
             $.ajax({
-                url: '{{ route("panel.widgets.update-order") }}',
+                url: '<?php echo e(route("panel.widgets.update-order")); ?>',
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -439,7 +447,7 @@ $(document).ready(function() {
     // Function to update widget position when moved between containers
     function updateWidgetPosition(widgetId, newPosition) {
         $.ajax({
-            url: '{{ route("panel.widgets.update-position") }}',
+            url: '<?php echo e(route("panel.widgets.update-position")); ?>',
             method: 'POST',
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -465,5 +473,7 @@ $(document).ready(function() {
     }
 });
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
 
+
+<?php echo $__env->make('theme.admin.adminlte::layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\htdocs\stelloCMS\app\Themes/admin/adminlte/widgets/index.blade.php ENDPATH**/ ?>

@@ -1,115 +1,117 @@
-/* Custom CSS for Standard Theme */
+/* Custom CSS for Standar Theme */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 body {
-    font-family: 'Inter', sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 
 /* Gradient backgrounds */
 .gradient-bg {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
 .gradient-bg-card {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
 }
 
 .gradient-bg-button {
-    background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+  background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
 }
 
-/* Card shadows */
+/* Card styling */
 .card-hover {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .card-hover:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  transform: translateY(-5px);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 }
 
-/* Button styles */
+/* Button styling */
 .btn-gradient {
-    background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-weight: 500;
-    transition: all 0.3s ease;
+  background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+  color: white;
+  padding: 0.75rem 2rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  border: none;
+  display: inline-block;
+  text-decoration: none;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
 }
 
 .btn-gradient:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.25);
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1);
 }
 
 /* Animation classes */
 .animate-fade-in {
-    animation: fadeIn 0.5s ease-in-out;
+  animation: fadeIn 0.5s ease-in-out;
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Text gradient */
+.bg-gradient-text {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
 }
 
 /* Utility classes */
 .text-shadow {
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
 }
 
 .hover-lift {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .hover-lift:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.25);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
 }
 
-/* Dark mode styles */
-.dark .gradient-bg {
-    background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+/* Dark mode overrides */
+.dark .bg-gradient-to-br {
+  background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
 }
 
-.dark .card-hover:hover {
-    box-shadow: 0 25px 50px -12px rgba(255, 255, 255, 0.1);
+.dark .bg-white {
+  background-color: #1f2937;
 }
 
-/* Sortable widget styles for drag-n-drop */
-.sortable-widget {
-    min-height: 20px;
+.dark .text-gray-900 {
+  color: #f9fafb;
 }
 
-.sortable-widget .list-group-item {
-    cursor: move;
-    border: 1px solid #e2e8f0;
-    border-radius: 0.5rem;
-    margin-bottom: 0.5rem;
-    transition: all 0.2s;
+.dark .text-gray-700 {
+  color: #d1d5db;
 }
 
-.sortable-widget .list-group-item:hover {
-    border-color: #cbd5e0;
-}
-
-.sortable-widget .list-group-item.ui-sortable-helper {
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.25);
-    border: 2px solid #3182ce;
-}
-
-.sortable-widget .list-group-item.ui-sortable-placeholder {
-    border: 1px dashed #a0aec0;
-    visibility: visible !important;
-    background: #ebf8ff;
-    margin: 0.5rem 0;
+.dark .text-gray-600 {
+  color: #9ca3af;
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-    .mobile-menu-open {
-        max-height: 80vh;
-        overflow-y: auto;
-    }
+  .mobile-menu-open {
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  
+  .card-hover:hover {
+    transform: none;  /* Disable hover effect on mobile */
+  }
 }

@@ -1,4 +1,4 @@
-# Dokumentasi Sistem Widgets untuk stelloCMS
+﻿# Dokumentasi Sistem Widgets untuk stelloCMS
 
 ## Daftar Isi
 1. [Gambaran Umum](#gambaran-umum)
@@ -115,14 +115,14 @@ Controller Widget menyediakan fungsi CRUD lengkap untuk manajemen widgets.
 ## Route dan URL
 
 ### Route System
-- `GET /panel/widgets` → `WidgetController@index` (nama route: `panel.widgets.index`)
-- `GET /panel/widgets/create` → `WidgetController@create` (nama route: `panel.widgets.create`)
-- `POST /panel/widgets` → `WidgetController@store` (nama route: `panel.widgets.store`)
-- `GET /panel/widgets/{widget}` → `WidgetController@show` (nama route: `panel.widgets.show`)
-- `GET /panel/widgets/{widget}/edit` → `WidgetController@edit` (nama route: `panel.widgets.edit`)
-- `PUT /panel/widgets/{widget}` → `WidgetController@update` (nama route: `panel.widgets.update`)
-- `DELETE /panel/widgets/{widget}` → `WidgetController@destroy` (nama route: `panel.widgets.destroy`)
-- `POST /panel/widgets/update-order` → `WidgetController@updateOrder` (nama route: `panel.widgets.update-order`)
+- `GET /panel/widgets` â†’ `WidgetController@index` (nama route: `panel.widgets.index`)
+- `GET /panel/widgets/create` â†’ `WidgetController@create` (nama route: `panel.widgets.create`)
+- `POST /panel/widgets` â†’ `WidgetController@store` (nama route: `panel.widgets.store`)
+- `GET /panel/widgets/{widget}` â†’ `WidgetController@show` (nama route: `panel.widgets.show`)
+- `GET /panel/widgets/{widget}/edit` â†’ `WidgetController@edit` (nama route: `panel.widgets.edit`)
+- `PUT /panel/widgets/{widget}` â†’ `WidgetController@update` (nama route: `panel.widgets.update`)
+- `DELETE /panel/widgets/{widget}` â†’ `WidgetController@destroy` (nama route: `panel.widgets.destroy`)
+- `POST /panel/widgets/update-order` â†’ `WidgetController@updateOrder` (nama route: `panel.widgets.update-order`)
 
 ## Manajemen Menu di Sidebar
 
@@ -130,7 +130,7 @@ Menu Widgets ditambahkan ke dalam menu Pengaturan di sidebar admin.
 
 ### Struktur Menu
 - **Parent Menu**: Pengaturan (`pengaturan`)
-  - **Submenu**: Widgets (`widgets`) → Route: `widgets.index`
+  - **Submenu**: Widgets (`widgets`) â†’ Route: `widgets.index`
   - Icon: `fas fa-th-large`
   - Akses role: `['admin', 'operator']`
 
@@ -184,7 +184,7 @@ Menu Widgets disimpan di tabel `menus` dengan konfigurasi:
 ## Penggunaan
 
 ### Menambahkan Widget Baru
-1. Akses **Pengaturan** → **Widgets** dari sidebar
+1. Akses **Pengaturan** â†’ **Widgets** dari sidebar
 2. Klik tombol "Tambah Widget"
 3. Isi formulir dengan informasi widget:
    - Nama widget
@@ -248,7 +248,7 @@ Jika ingin membuat widget plugin, ikuti langkah-langkah pembuatan plugin standar
 3. Registrasi plugin ke dalam sistem melalui menu plugin
 
 ### 2. Membuat Text Widget
-1. Akses halaman **Pengaturan** → **Widgets**
+1. Akses halaman **Pengaturan** â†’ **Widgets**
 2. Klik "Tambah Widget"
 3. Isi form dengan:
    - Nama: "Widget Informasi"
@@ -259,7 +259,7 @@ Jika ingin membuat widget plugin, ikuti langkah-langkah pembuatan plugin standar
 4. Simpan widget
 
 ### 3. Membuat HTML Widget
-1. Akses halaman **Pengaturan** → **Widgets**
+1. Akses halaman **Pengaturan** â†’ **Widgets**
 2. Klik "Tambah Widget"
 3. Isi form dengan:
    - Nama: "Widget Khusus"
@@ -270,7 +270,7 @@ Jika ingin membuat widget plugin, ikuti langkah-langkah pembuatan plugin standar
 4. Simpan widget
 
 ### 4. Membuat Plugin Widget
-1. Akses halaman **Pengaturan** → **Widgets**
+1. Akses halaman **Pengaturan** â†’ **Widgets**
 2. Klik "Tambah Widget"
 3. Isi form dengan:
    - Nama: "Widget Plugin"
@@ -457,7 +457,7 @@ Sistem stelloCMS menyediakan contoh implementasi widget dalam plugin Berita. Wid
 
 ### Cara Membuat Widget Berita Terbaru
 1. Pastikan plugin Berita sudah terinstal dan aktif
-2. Akses halaman **Pengaturan** → **Widgets** 
+2. Akses halaman **Pengaturan** â†’ **Widgets** 
 3. Klik "Tambah Widget"
 4. Isi form dengan:
    - Nama: "Berita Terbaru"
@@ -604,13 +604,13 @@ Route ini memungkinkan tema dan widget mengakses homepage dengan `route('home')`
 
 ### Route untuk Widget
 Sistem widgets menggunakan route-route berikut:
-- `GET /panel/widgets` → Menampilkan halaman manajemen widgets dengan tampilan grid 3x3 berdasarkan posisi
-- `POST /panel/widgets/update-order` → Memperbarui urutan dan posisi widget melalui drag-and-drop
-- `GET /panel/widgets/create` → Menampilkan form pembuatan widget baru
-- `POST /panel/widgets` → Menyimpan widget baru
-- `GET /panel/widgets/{id}/edit` → Menampilkan form edit widget
-- `PUT /panel/widgets/{id}` → Memperbarui widget
-- `DELETE /panel/widgets/{id}` → Menghapus widget
+- `GET /panel/widgets` â†’ Menampilkan halaman manajemen widgets dengan tampilan grid 3x3 berdasarkan posisi
+- `POST /panel/widgets/update-order` â†’ Memperbarui urutan dan posisi widget melalui drag-and-drop
+- `GET /panel/widgets/create` â†’ Menampilkan form pembuatan widget baru
+- `POST /panel/widgets` â†’ Menyimpan widget baru
+- `GET /panel/widgets/{id}/edit` â†’ Menampilkan form edit widget
+- `PUT /panel/widgets/{id}` â†’ Memperbarui widget
+- `DELETE /panel/widgets/{id}` â†’ Menghapus widget
 
 Route-route ini menjamin fungsionalitas penuh dari sistem manajemen widget.
 
@@ -711,7 +711,7 @@ Sistem widgets juga mendukung pemindahan widget antar posisi yang berbeda hanya 
 - Menyimpan perubahan posisi dan urutan secara otomatis ke database
 
 ### Cara Menggunakan Fitur Pemindahan
-1. Akses halaman **Pengaturan** → **Widgets** 
+1. Akses halaman **Pengaturan** â†’ **Widgets** 
 2. Klik pada tab posisi widget yang ingin Anda kelola
 3. Untuk mengubah urutan dalam posisi yang sama: Geser widget ke atas atau bawah
 4. Untuk memindahkan ke posisi lain: Geser widget ke tab posisi lain
@@ -866,14 +866,14 @@ Tema baru harus mengikuti struktur namespace yang benar. Contoh struktur direkto
 
 ```
 app/Themes/frontend/standard/
-├── layouts/
-│   └── app.blade.php            // View dengan namespace: theme.frontend.standard::layouts.app
-├── home/
-│   └── index.blade.php          // View dengan namespace: theme.frontend.standard::home.index
-├── css/
-├── js/
-├── img/
-└── theme.json
+â”œâ”€â”€ layouts/
+â”‚   â””â”€â”€ app.blade.php            // View dengan namespace: theme.frontend.standard::layouts.app
+â”œâ”€â”€ home/
+â”‚   â””â”€â”€ index.blade.php          // View dengan namespace: theme.frontend.standard::home.index
+â”œâ”€â”€ css/
+â”œâ”€â”€ js/
+â”œâ”€â”€ img/
+â””â”€â”€ theme.json
 ```
 
 Setelah struktur ini dibuat dan namespace diatur dengan benar, helper `view_theme()` akan otomatis mengarahkan ke tema yang aktif sesuai konfigurasi sistem.
@@ -883,20 +883,20 @@ Setelah struktur ini dibuat dan namespace diatur dengan benar, helper `view_them
 ### Aktivasi Tema Standar
 1. Pastikan struktur file tema sudah benar
 2. Tema akan otomatis terdeteksi oleh sistem
-3. Aktifkan tema di **Pengaturan** → **Tema**
+3. Aktifkan tema di **Pengaturan** â†’ **Tema**
 4. Set tema 'standard' sebagai tema default frontend
 5. Tema akan aktif untuk semua halaman frontend
 
 ### Mengakses Halaman Widgets
 1. Login sebagai admin atau operator
-2. Akses **Pengaturan** → **Widgets**
+2. Akses **Pengaturan** â†’ **Widgets**
 3. Gunakan tabs untuk mengelola widget berdasarkan posisinya
 4. Gunakan drag-and-drop untuk mengurutkan widget
 5. Semua perubahan akan langsung disimpan ke database
 
 ### Perubahan Default Tema
 Untuk mengganti tema default frontend, Anda bisa:
-1. Melalui antarmuka admin di **Pengaturan** → **Tema**
+1. Melalui antarmuka admin di **Pengaturan** â†’ **Tema**
 2. Atau dengan mengedit file `.env` dan mengganti `FRONTEND_THEME` ke nama tema yang diinginkan
 3. Atau melalui database dengan mengganti record di tabel `themes` dengan setting `is_default=1`
 
@@ -950,36 +950,5 @@ Sistem widgets dengan tampilan modern ini memberikan fleksibilitas tinggi dalam 
 "- Penanganan error yang tepat jika update gagal"  
 "- Update nomor urutan di tampilan UI setelah pembaruan"  
 ""  
-  
-"## Implementasi dan Pembaruan Terbaru"  
-  
-"### Struktur Tabel untuk Posisi Widget"  
-"Kolom \`position\` dalam tabel \`widgets\` mencakup nilai berikut:"  
-"- \`header\` - Untuk widget yang ditampilkan di bagian atas halaman"  
-"- \`sidebar-left\` - Untuk widget di sidebar kiri"  
-"- \`sidebar-right\` - Untuk widget di sidebar kanan"  
-"- \`footer\` - Untuk widget di bagian bawah halaman"  
-"- \`home\` - Untuk widget di halaman utama"  
-  
-"### Fitur Drag-and-Drop Lengkap"  
-"Sistem grid 3x3 dilengkapi dengan fitur drag-and-drop yang lengkap:"  
-"1. **Perpindahan Antar Posisi**: Widget dapat dipindahkan dari posisi satu ke posisi lain (misalnya dari sidebar ke home)"  
-"2. **Pengurutan dalam Posisi**: Widget dalam posisi yang sama dapat diurutkan dengan drag-and-drop"  
-"3. **Update Otomatis**: Urutan dan posisi disimpan otomatis ke database saat perubahan selesai"  
-"4. **Tampilan Real-time**: UI menampilkan perubahan secara langsung tanpa reload"  
-"5. **Validasi dan Keamanan**: Semua perubahan melewati validasi CSRF untuk keamanan"  
-  
-"### Penanganan Perubahan Posisi"  
-"Ketika widget dipindahkan ke posisi lain:"  
-"- Sistem akan memperbarui kolom \`position\` di database"  
-"- Sistem secara otomatis juga memperbarui urutan untuk widget di posisi baru"  
-"- Nomor urutan widget diperbarui di UI sesuai dengan perubahan di database"  
-"- Tidak perlu refresh halaman untuk melihat perubahan"  
-  
-"### Pengelompokan Widget"  
-"Tampilan grid memberikan pengelompokan visual yang jelas untuk setiap posisi:"  
-"- Header widgets ditampilkan di baris atas dengan span 3 kolom"  
-"- Sidebar left, home, dan sidebar right widgets ditampilkan di baris tengah"  
-"- Footer widgets ditampilkan di baris bawah dengan span 3 kolom"  
-  
-"Dengan sistem grid 3x3 dan drag-and-drop yang dapat diakses antar posisi, pengguna sekarang memiliki pengalaman manajemen widget yang jauh lebih baik, intuitif, dan visual dalam sistem stelloCMS."  
+
+## Implementasi dan Pembaruan Terbaru

@@ -689,4 +689,47 @@ class BeritaController extends Controller
 
         return response()->json($randomNews);
     }
+
+    /**
+     * Fungsi untuk mendapatkan widget slider berita yang memiliki gambar
+     */
+    public function getSliderNewsWidget($limit = 5)
+    {
+        // Ambil berita aktif yang memiliki gambar secara acak
+        $beritaWithImages = Berita::where('aktif', true)
+                                  ->whereNotNull('gambar')
+                                  ->where('gambar', '!=', '')
+                                  ->select(['id', 'judul', 'tanggal_publikasi', 'gambar', 'slug'])
+                                  ->get();
+        
+        if ($beritaWithImages->count() == 0) {
+            // Jika tidak ada berita dengan gambar, kembalikan template kosong
+            return view('berita::widget.slider-news', ['sliderNews' => collect([])])->render();
+        }
+        
+        // Ambil berita secara acak sesuai limit
+        $randomNews = $beritaWithImages->shuffle()->take($limit);
+        
+        return view('berita::widget.slider-news', compact('randomNews'))->render();
+    }
+
+    /**
+     * Fungsi untuk mendapatkan data slider berita (API untuk widget)
+     */
+    public function getSliderNewsData($limit = 5)
+    {
+        $beritaWithImages = Berita::where('aktif', true)
+                                  ->whereNotNull('gambar')
+                                  ->where('gambar', '!=', '')
+                                  ->select(['id', 'judul', 'tanggal_publikasi', 'gambar', 'slug'])
+                                  ->get();
+        
+        if ($beritaWithImages->count() == 0) {
+            return response()->json(collect([]));
+        }
+        
+        $randomNews = $beritaWithImages->shuffle()->take($limit);
+        
+        return response()->json($randomNews);
+    }
 }

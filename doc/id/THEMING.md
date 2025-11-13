@@ -396,3 +396,15 @@ Route `home` sangat penting untuk tema frontend yang mungkin merujuk ke route in
 - Jadikan asset tema responsif dan kompatibel dengan mode gelap/terang
 - Gunakan caching untuk elemen yang sering diakses untuk meningkatkan performa
 - Implementasikan error handling untuk konten dinamis dari plugin
+
+### Fitur Tema Standar Baru
+Tema Standar adalah tema modern yang menggantikan tema stocker sebagai tema default dengan fitur-fitur canggih:
+
+- **Desain Modern**: Tampilan yang terinspirasi dari Canva.com menggunakan teknologi terbaru
+- **Tabs untuk Widget**: Widget dikelompokkan berdasarkan posisi (header, sidebar kiri/kanan, footer, home) dalam tabs terpisah
+- **Drag-and-Drop Sorting**: Fitur pengurutan widget dengan drag-and-drop yang menyimpan perubahan secara real-time
+- **Alpine.js Integration**: Interaktivitas ringan dan cepat tanpa beratnya JavaScript framework besar
+- **Responsive Design**: Desain yang fleksibel dan responsif di berbagai ukuran perangkat
+- **Dark Mode**: Mode gelap dan terang yang bisa diaktifkan melalui toggle
+
+Tema ini memberikan contoh terbaik implementasi sistem tema modern dalam ekosistem stelloCMS dan menunjukkan fleksibilitas dari sistem theming.

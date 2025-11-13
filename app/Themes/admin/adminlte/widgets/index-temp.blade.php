@@ -18,17 +18,17 @@
                 </div>
                 <!-- /.card-header -->
 
-                <!-- Grid 3x3 untuk widget berdasarkan posisi -->
                 <div class="card-body">
+                    <!-- Grid 3x3 untuk widget berdasarkan posisi -->
                     <div class="grid-container">
                         <table class="table table-bordered">
                             <tbody>
                                 <!-- Baris 1: Header (span 3 kolom) -->
                                 <tr>
-                                    <td colspan="3" class="position-header bg-gray-light p-4">
+                                    <td colspan="3" class="p-3 position-header bg-gray-100">
                                         <div class="d-flex justify-content-between align-items-center mb-2">
                                             <h4 class="position-title mb-0">
-                                                <i class="fas fa-heading mr-2"></i> Header Widgets
+                                                <i class="fas fa-header mr-2"></i> Header Widgets
                                             </h4>
                                             <span class="badge badge-primary">{{ $headerWidgets->count() }} widgets</span>
                                         </div>
@@ -39,7 +39,7 @@
                                                     <div class="card-body p-2">
                                                         <div class="d-flex justify-content-between">
                                                             <div class="flex-grow-1">
-                                                                <h6 class="mb-1">{{ Str::limit($widget->name, 30) }}</h6>
+                                                                <h6 class="card-title mb-1">{{ Str::limit($widget->name, 30) }}</h6>
                                                                 <div class="small text-muted">
                                                                     <span class="badge badge-{{ $widget->type === 'plugin' ? 'info' : ($widget->type === 'text' ? 'warning' : 'success') }}">
                                                                         {{ ucfirst($widget->type) }}
@@ -49,7 +49,6 @@
                                                                     </span>
                                                                     <small>Urutan: {{ $widget->order }}</small>
                                                                 </div>
-                                                                <p class="mb-1 mt-1 text-truncate">{{ Str::limit(strip_tags($widget->content ?? ''), 60, '...') }}</p>
                                                             </div>
                                                             <div class="btn-group btn-group-sm ml-2">
                                                                 <a href="{{ route('panel.widgets.show', $widget->id) }}" class="btn btn-info" title="Lihat">
@@ -71,7 +70,7 @@
                                                 </div>
                                                 @endforeach
                                             @else
-                                                <div class="alert alert-info text-center mb-0">
+                                                <div class="alert alert-secondary text-center mb-0 py-4">
                                                     <i class="fas fa-info-circle mb-2"></i>
                                                     <p class="mb-0">Tidak ada widget di posisi Header</p>
                                                 </div>
@@ -83,21 +82,21 @@
                                 <!-- Baris 2: Sidebar Left (kolom 1), Home (kolom 2), Sidebar Right (kolom 3) -->
                                 <tr>
                                     <!-- Sidebar Left -->
-                                    <td class="position-sidebar-left bg-gray-light p-4">
+                                    <td class="p-3 position-sidebar-left bg-gray-100">
                                         <div class="d-flex justify-content-between align-items-center mb-2">
                                             <h4 class="position-title mb-0">
                                                 <i class="fas fa-align-left mr-2"></i> Sidebar Kiri
                                             </h4>
                                             <span class="badge badge-primary">{{ $sidebarLeftWidgets->count() }} widgets</span>
                                         </div>
-                                        <div class="position-widgets-container sortable-widget" data-position="sidebar-left" id="left-widgets-container">
+                                        <div class="position-widgets-container sortable-widget" data-position="sidebar-left" id="sidebar-left-widgets-container">
                                             @if($sidebarLeftWidgets->count() > 0)
                                                 @foreach($sidebarLeftWidgets as $widget)
                                                 <div class="position-widget card mb-2" data-id="{{ $widget->id }}" data-position="{{ $widget->position }}">
                                                     <div class="card-body p-2">
                                                         <div class="d-flex justify-content-between">
                                                             <div class="flex-grow-1">
-                                                                <h6 class="mb-1">{{ Str::limit($widget->name, 25) }}</h6>
+                                                                <h6 class="card-title mb-1">{{ Str::limit($widget->name, 25) }}</h6>
                                                                 <div class="small text-muted">
                                                                     <span class="badge badge-{{ $widget->type === 'plugin' ? 'info' : ($widget->type === 'text' ? 'warning' : 'success') }}">
                                                                         {{ ucfirst($widget->type) }}
@@ -107,7 +106,6 @@
                                                                     </span>
                                                                     <small>Urutan: {{ $widget->order }}</small>
                                                                 </div>
-                                                                <p class="mb-1 mt-1 text-truncate">{{ Str::limit(strip_tags($widget->content ?? ''), 40, '...') }}</p>
                                                             </div>
                                                             <div class="btn-group btn-group-sm ml-2">
                                                                 <a href="{{ route('panel.widgets.show', $widget->id) }}" class="btn btn-info" title="Lihat">
@@ -129,7 +127,7 @@
                                                 </div>
                                                 @endforeach
                                             @else
-                                                <div class="alert alert-info text-center">
+                                                <div class="alert alert-secondary text-center mb-0 py-4">
                                                     <i class="fas fa-info-circle mb-2"></i>
                                                     <p class="mb-0">Tidak ada widget di posisi Sidebar Kiri</p>
                                                 </div>
@@ -138,10 +136,10 @@
                                     </td>
                                     
                                     <!-- Home -->
-                                    <td class="position-home bg-gray-light p-4">
+                                    <td class="p-3 position-home bg-gray-100">
                                         <div class="d-flex justify-content-between align-items-center mb-2">
                                             <h4 class="position-title mb-0">
-                                                <i class="fas fa-home mr-2"></i> Home Widgets
+                                                <i class="fas fa-home mr-2"></i> Home
                                             </h4>
                                             <span class="badge badge-primary">{{ $homeWidgets->count() }} widgets</span>
                                         </div>
@@ -152,7 +150,7 @@
                                                     <div class="card-body p-2">
                                                         <div class="d-flex justify-content-between">
                                                             <div class="flex-grow-1">
-                                                                <h6 class="mb-1">{{ Str::limit($widget->name, 25) }}</h6>
+                                                                <h6 class="card-title mb-1">{{ Str::limit($widget->name, 25) }}</h6>
                                                                 <div class="small text-muted">
                                                                     <span class="badge badge-{{ $widget->type === 'plugin' ? 'info' : ($widget->type === 'text' ? 'warning' : 'success') }}">
                                                                         {{ ucfirst($widget->type) }}
@@ -162,7 +160,6 @@
                                                                     </span>
                                                                     <small>Urutan: {{ $widget->order }}</small>
                                                                 </div>
-                                                                <p class="mb-1 mt-1 text-truncate">{{ Str::limit(strip_tags($widget->content ?? ''), 40, '...') }}</p>
                                                             </div>
                                                             <div class="btn-group btn-group-sm ml-2">
                                                                 <a href="{{ route('panel.widgets.show', $widget->id) }}" class="btn btn-info" title="Lihat">
@@ -184,7 +181,7 @@
                                                 </div>
                                                 @endforeach
                                             @else
-                                                <div class="alert alert-info text-center">
+                                                <div class="alert alert-secondary text-center mb-0 py-4">
                                                     <i class="fas fa-info-circle mb-2"></i>
                                                     <p class="mb-0">Tidak ada widget di posisi Home</p>
                                                 </div>
@@ -193,21 +190,21 @@
                                     </td>
                                     
                                     <!-- Sidebar Right -->
-                                    <td class="position-sidebar-right bg-gray-light p-4">
+                                    <td class="p-3 position-sidebar-right bg-gray-100">
                                         <div class="d-flex justify-content-between align-items-center mb-2">
                                             <h4 class="position-title mb-0">
                                                 <i class="fas fa-align-right mr-2"></i> Sidebar Kanan
                                             </h4>
                                             <span class="badge badge-primary">{{ $sidebarRightWidgets->count() }} widgets</span>
                                         </div>
-                                        <div class="position-widgets-container sortable-widget" data-position="sidebar-right" id="right-widgets-container">
+                                        <div class="position-widgets-container sortable-widget" data-position="sidebar-right" id="sidebar-right-widgets-container">
                                             @if($sidebarRightWidgets->count() > 0)
                                                 @foreach($sidebarRightWidgets as $widget)
                                                 <div class="position-widget card mb-2" data-id="{{ $widget->id }}" data-position="{{ $widget->position }}">
                                                     <div class="card-body p-2">
                                                         <div class="d-flex justify-content-between">
                                                             <div class="flex-grow-1">
-                                                                <h6 class="mb-1">{{ Str::limit($widget->name, 25) }}</h6>
+                                                                <h6 class="card-title mb-1">{{ Str::limit($widget->name, 25) }}</h6>
                                                                 <div class="small text-muted">
                                                                     <span class="badge badge-{{ $widget->type === 'plugin' ? 'info' : ($widget->type === 'text' ? 'warning' : 'success') }}">
                                                                         {{ ucfirst($widget->type) }}
@@ -217,7 +214,6 @@
                                                                     </span>
                                                                     <small>Urutan: {{ $widget->order }}</small>
                                                                 </div>
-                                                                <p class="mb-1 mt-1 text-truncate">{{ Str::limit(strip_tags($widget->content ?? ''), 40, '...') }}</p>
                                                             </div>
                                                             <div class="btn-group btn-group-sm ml-2">
                                                                 <a href="{{ route('panel.widgets.show', $widget->id) }}" class="btn btn-info" title="Lihat">
@@ -239,7 +235,7 @@
                                                 </div>
                                                 @endforeach
                                             @else
-                                                <div class="alert alert-info text-center">
+                                                <div class="alert alert-secondary text-center mb-0 py-4">
                                                     <i class="fas fa-info-circle mb-2"></i>
                                                     <p class="mb-0">Tidak ada widget di posisi Sidebar Kanan</p>
                                                 </div>
@@ -250,7 +246,7 @@
                                 
                                 <!-- Baris 3: Footer (span 3 kolom) -->
                                 <tr>
-                                    <td colspan="3" class="position-footer bg-gray-light p-4">
+                                    <td colspan="3" class="p-3 position-footer bg-gray-100">
                                         <div class="d-flex justify-content-between align-items-center mb-2">
                                             <h4 class="position-title mb-0">
                                                 <i class="fas fa-file-alt mr-2"></i> Footer Widgets
@@ -264,7 +260,7 @@
                                                     <div class="card-body p-2">
                                                         <div class="d-flex justify-content-between">
                                                             <div class="flex-grow-1">
-                                                                <h6 class="mb-1">{{ Str::limit($widget->name, 30) }}</h6>
+                                                                <h6 class="card-title mb-1">{{ Str::limit($widget->name, 30) }}</h6>
                                                                 <div class="small text-muted">
                                                                     <span class="badge badge-{{ $widget->type === 'plugin' ? 'info' : ($widget->type === 'text' ? 'warning' : 'success') }}">
                                                                         {{ ucfirst($widget->type) }}
@@ -274,7 +270,6 @@
                                                                     </span>
                                                                     <small>Urutan: {{ $widget->order }}</small>
                                                                 </div>
-                                                                <p class="mb-1 mt-1 text-truncate">{{ Str::limit(strip_tags($widget->content ?? ''), 60, '...') }}</p>
                                                             </div>
                                                             <div class="btn-group btn-group-sm ml-2">
                                                                 <a href="{{ route('panel.widgets.show', $widget->id) }}" class="btn btn-info" title="Lihat">
@@ -296,7 +291,7 @@
                                                 </div>
                                                 @endforeach
                                             @else
-                                                <div class="alert alert-info text-center mb-0">
+                                                <div class="alert alert-secondary text-center mb-0 py-4">
                                                     <i class="fas fa-info-circle mb-2"></i>
                                                     <p class="mb-0">Tidak ada widget di posisi Footer</p>
                                                 </div>
@@ -315,57 +310,13 @@
     </div>
 </div>
 
-<style>
-    .ui-sortable-placeholder {
-        height: 50px;
-        background: #f39c12 !important;
-        border: 1px dashed #ccc !important;
-        visibility: visible !important;
-        margin-bottom: 10px;
-        border-radius: 5px;
-    }
-    
-    .position-widget {
-        cursor: move;
-    }
-    
-    .grid-container {
-        width: 100%;
-    }
-    
-    .grid-container table {
-        border-collapse: separate;
-        border-spacing: 10px;
-    }
-    
-    .grid-container td {
-        vertical-align: top;
-        border: 1px solid #dee2e6;
-        border-radius: 5px;
-    }
-    
-    /* Gaya untuk tombol-tombol aksi dalam widget agar ukurannya konsisten */
-    .position-widget .btn-icon {
-        min-width: 36px;
-        min-height: 36px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0.25rem 0.5rem !important;
-    }
-    
-    .position-widget .btn-group-sm .btn-icon {
-        min-width: 32px;
-        min-height: 32px;
-        padding: 0.125rem 0.25rem !important;
-    }
-</style>
-@endsection
+<!-- Tambahkan script untuk drag-and-drop -->
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 
-@section('scripts')
 <script>
 $(document).ready(function() {
-    // Initialize sortable for all widget containers with cross-position dragging enabled
+    // Enable sortable untuk semua container widget dengan koneksi antar container
     $('.sortable-widget').each(function() {
         const $container = $(this);
         const position = $container.data('position');
@@ -374,39 +325,45 @@ $(document).ready(function() {
             placeholder: 'ui-sortable-placeholder',
             cursor: 'move',
             opacity: 0.7,
-            connectWith: '.sortable-widget', // Enable dragging between different positions
-            handle: '.card-body', // Use card body as handle to allow clicking links/buttons
+            connectWith: '.sortable-widget', // Izinkan drag antar posisi
             update: function(event, ui) {
-                updateWidgetOrder(position);
+                // Update order saat widget dipindahkan di dalam posisi yang sama atau berbeda
+                updateWidgetOrder();
             },
             stop: function(event, ui) {
-                // Get the new position after move
+                // Dapatkan posisi baru setelah dipindahkan 
                 const newPosition = $(ui.item).closest('.sortable-widget').data('position');
+                const oldPosition = position; // Position saat inisialisasi container
                 
-                // If widget was moved to a different position, update its position in the database
-                if (position !== newPosition) {
-                    const widgetId = ui.item.attr('data-id');
+                // Jika widget dipindahkan ke posisi berbeda, update posisi di database
+                if (oldPosition !== newPosition) {
+                    const widgetId = ui.item.data('id');
                     updateWidgetPosition(widgetId, newPosition);
                 }
                 
-                // Update the order in the new position
-                updateWidgetOrder(newPosition);
+                // Update order untuk semua posisi setelah perubahan selesai
+                updateWidgetOrder();
             }
         });
     });
     
-    // Function to update widget order via AJAX
-    function updateWidgetOrder(position) {
-        const widgetIds = [];
-        $(`[data-position="${position}"]`).find('[data-id]').each(function(index) {
-            const widgetId = parseInt($(this).attr('data-id'));
-            widgetIds.push({
-                id: widgetId,
-                order: index + 1
+    // Function untuk update urutan dan posisi semua widget
+    function updateWidgetOrder() {
+        // Kumpulkan semua widget dari semua posisi
+        const allWidgetsData = [];
+        
+        $('.sortable-widget').each(function() {
+            const position = $(this).data('position');
+            $(this).find('[data-id]').each(function(index) {
+                allWidgetsData.push({
+                    id: $(this).data('id'),
+                    position: position,
+                    order: index + 1
+                });
             });
         });
         
-        if (widgetIds.length > 0) {
+        if (allWidgetsData.length > 0) {
             $.ajax({
                 url: '{{ route("panel.widgets.update-order") }}',
                 method: 'POST',
@@ -414,30 +371,31 @@ $(document).ready(function() {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 data: {
-                    position: position,
-                    widget_ids: widgetIds
+                    all_widgets: allWidgetsData  // Kirim semua widget beserta posisi dan urutan
                 },
                 success: function(response) {
-                    console.log('Order updated successfully for ' + position + ':', response);
+                    console.log('Order and position updated successfully:', response);
                     
-                    // Update order numbers in the UI for this position
-                    $(`[data-position="${position}"]`).find('[data-id]').each(function(index) {
-                        const $smallElements = $(this).find('small');
-                        const $smallElement = $smallElements.last(); // Get the last small element for order
-                        $smallElement.text('Urutan: ' + (index + 1));
+                    // Update nomor urutan di UI untuk semua posisi
+                    $('.sortable-widget').each(function() {
+                        const position = $(this).data('position');
+                        $(this).find('[data-id]').each(function(index) {
+                            $(this).find('small:last').text('Urutan: ' + (index + 1));
+                        });
                     });
                 },
                 error: function(xhr, status, error) {
-                    console.error('Error updating order for ' + position + ':', error);
-                    alert('Gagal memperbarui urutan widget. Silakan coba lagi.');
-                    location.reload(); // Reload page to revert changes in case of error
+                    console.error('Error updating order and position:', error);
+                    alert('Gagal memperbarui urutan dan posisi widget. Silakan coba lagi.');
+                    location.reload(); // Reload untuk kembalikan ke urutan sebelum error
                 }
             });
         }
     }
     
-    // Function to update widget position when moved between containers
+    // Function untuk update posisi widget
     function updateWidgetPosition(widgetId, newPosition) {
+        // Fungsi ini tetap diperlukan untuk update posisi ke database
         $.ajax({
             url: '{{ route("panel.widgets.update-position") }}',
             method: 'POST',
@@ -449,21 +407,58 @@ $(document).ready(function() {
                 position: newPosition
             },
             success: function(response) {
-                console.log('Position updated successfully for widget ' + widgetId + ' to ' + newPosition + ':', response);
+                console.log('Position updated successfully for widget ' + widgetId + ' to ' + newPosition);
                 
-                // Update the position attribute in the DOM
+                // Update posisi di data attribute DOM
                 $(`[data-id="${widgetId}"]`).attr('data-position', newPosition);
             },
             error: function(xhr, status, error) {
                 console.error('Error updating position for widget ' + widgetId + ':', error);
                 alert('Gagal memperbarui posisi widget. Silakan coba lagi.');
-                
-                // Reload page to revert changes in case of error
-                location.reload();
+                location.reload(); // Reload untuk kembalikan ke posisi sebelum error
             }
         });
     }
 });
-</script>
-@endsection
 
+// Tambahkan CSS untuk placeholder sortable
+$('head').append('<style> .ui-sortable-placeholder { height: 60px; background: #f39c12 !important; border: 1px dashed #ccc !important; visibility: visible !important; margin-bottom: 10px; border-radius: 0.25rem; }</style>');
+
+// CSS tambahan untuk interaktivitas
+$('head').append(`<style>
+    .position-widget {
+        cursor: move;
+        transition: all 0.2s ease;
+    }
+    
+    .position-widget:hover {
+        background-color: #f8f9fa;
+        transform: translateX(2px);
+    }
+    
+    .position-header, .position-footer {
+        vertical-align: top;
+    }
+    
+    .position-widgets-container {
+        min-height: 100px;
+        padding: 10px;
+    }
+    
+    .position-title {
+        display: flex;
+        align-items: center;
+    }
+    
+    .position-title i {
+        margin-right: 8px;
+    }
+    
+    .bg-gray-100 {
+        background-color: #f8f9fa;
+    }
+</style>`);
+
+// Ambil tag meta CSRF sebelum menggunakannya di AJAX
+$.ajaxSetup({
+    headers: {
