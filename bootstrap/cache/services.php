@@ -34,6 +34,7 @@
     30 => 'App\\Providers\\RouteServiceProvider',
     31 => 'App\\Providers\\ThemeServiceProvider',
     32 => 'App\\Providers\\PluginServiceProvider',
+    33 => 'App\\Providers\\WidgetServiceProvider',
   ),
   'eager' => 
   array (
@@ -56,6 +57,7 @@
     16 => 'App\\Providers\\RouteServiceProvider',
     17 => 'App\\Providers\\ThemeServiceProvider',
     18 => 'App\\Providers\\PluginServiceProvider',
+    19 => 'App\\Providers\\WidgetServiceProvider',
   ),
   'deferred' => 
   array (

@@ -6,7 +6,7 @@ use App\Models\Menu;
 use App\Models\Widget;
 use Illuminate\Http\Request;
 
-class HomeController extends Controller
+class HomeController extends FrontendController
 {
     /**
      * Show the application dashboard.
@@ -22,39 +22,11 @@ class HomeController extends Controller
                            ->orderBy('order')
                            ->get();
 
-        // Ambil widget berdasarkan posisi
-        $headerWidgets = Widget::aktif()
-                               ->byPosition('header')
-                               ->orderBy('order')
-                               ->get();
+        // Ambil widget home khusus untuk halaman ini
+        $homeWidgets = Widget::aktif()->byPosition('home')->orderBy('order')->get();
 
-        $sidebarLeftWidgets = Widget::aktif()
-                                    ->byPosition('sidebar-left')
-                                    ->orderBy('order')
-                                    ->get();
-
-        $sidebarRightWidgets = Widget::aktif()
-                                     ->byPosition('sidebar-right')
-                                     ->orderBy('order')
-                                     ->get();
-
-        $footerWidgets = Widget::aktif()
-                               ->byPosition('footer')
-                               ->orderBy('order')
-                               ->get();
-
-        $homeWidgets = Widget::aktif()
-                             ->byPosition('home')
-                             ->orderBy('order')
-                             ->get();
-
-        return view_theme('frontend', 'home.index', compact(
-            'headerMenus',
-            'headerWidgets',
-            'sidebarLeftWidgets',
-            'sidebarRightWidgets',
-            'footerWidgets',
-            'homeWidgets'
+        return $this->view_theme_with_widgets('frontend', 'home.index', compact(
+            'headerMenus'
         ));
     }
 }

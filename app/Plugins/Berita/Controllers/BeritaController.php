@@ -248,10 +248,10 @@ class BeritaController extends Controller
         // Check if accessed via admin route or public route
         if (request()->routeIs('panel.berita.*')) {
             // If accessed from admin route, return admin view
-            return view('berita::show', compact('berita'));
+            return view_theme('admin', 'berita.show', compact('berita'));
         } else {
             // If accessed from public route, return frontend view
-            return view('berita::frontend.show', compact('berita'));
+            return view_theme('frontend', 'berita.frontend.show', compact('berita'));
         }
     }
 
@@ -500,8 +500,8 @@ class BeritaController extends Controller
                   ->orderBy('tanggal_publikasi', 'desc')
                   ->paginate(10);
 
-        // Untuk view publik, kita gunakan view khusus frontend
-        return view('berita::frontend.index', compact('berita'));
+        // Untuk view publik, kita gunakan view khusus frontend melalui helper view_theme
+        return view_theme('frontend', 'berita.frontend.index', compact('berita'));
     }
 
     public function publicShow($slug)
@@ -511,7 +511,7 @@ class BeritaController extends Controller
         // Increment viewer count
         $berita->increment('viewer');
 
-        return view('berita::frontend.show', compact('berita'));
+        return view_theme('frontend', 'berita.frontend.show', compact('berita'));
     }
 
     public function searchUnsplash(Request $request)

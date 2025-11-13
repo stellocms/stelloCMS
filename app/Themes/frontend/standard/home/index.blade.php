@@ -4,7 +4,7 @@
 @section('description', 'Platform CMS modern dan mudah digunakan untuk mengelola konten website Anda')
 
 @section('content')
-<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 {{ isset($sidebarLeftWidgets) && $sidebarLeftWidgets->count() > 0 ? 'lg:ml-0' : '' }} {{ isset($sidebarRightWidgets) && $sidebarRightWidgets->count() > 0 ? 'lg:mr-0' : '' }}">
     <!-- Hero Section -->
     <section class="py-12 md:py-20">
         <div class="max-w-7xl mx-auto">
@@ -110,9 +110,9 @@
         </div>
     </section>
 
-    <!-- Widgets Home Section -->
+    <!-- Home Widgets Section -->
     @if(isset($homeWidgets) && $homeWidgets->count() > 0)
-    <section class="py-16 bg-gray-50 dark:bg-gray-900/30 rounded-2xl my-12">
+    <section class="py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
                 <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">Konten Tambahan</h2>
@@ -148,10 +148,10 @@
                             if (class_exists($pluginClass)) {
                                 $controller = new $pluginClass();
                                 if (method_exists($controller, 'getWidgetContent')) {
-                                    echo $controller->getWidgetContent();
+                                    echo $controller->getWidgetContent($widget);
                                 } elseif (method_exists($controller, 'get' . $widget->plugin_name . 'Widget')) {
                                     $method = 'get' . $widget->plugin_name . 'Widget';
-                                    echo $controller->$method();
+                                    echo $controller->$method($widget);
                                 }
                             }
                         @endphp

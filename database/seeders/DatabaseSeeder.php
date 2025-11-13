@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             MenusSeeder::class,
+            BeritaSeeder::class,
             // Tambahkan seeder lainnya di sini jika diperlukan
         ]);
     }

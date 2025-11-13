@@ -182,15 +182,135 @@
                 @endif
             </div>
         </div>
+        
+        <!-- Header Widgets -->
+        @if(isset($headerWidgets) && $headerWidgets->count() > 0)
+            <div class="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600 py-2">
+                <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex flex-wrap gap-4 justify-center md:justify-start">
+                        @foreach($headerWidgets as $widget)
+                            <div class="flex items-center">
+                                @if($widget->type === 'html')
+                                    <div class="text-sm text-gray-700 dark:text-gray-300">{!! $widget->content !!}</div>
+                                @elseif($widget->type === 'text')
+                                    <div class="text-sm text-gray-700 dark:text-gray-300">{{ Str::limit(strip_tags($widget->content ?? ''), 50, '...') }}</div>
+                                @elseif($widget->type === 'plugin' && $widget->plugin_name)
+                                    @php
+                                        $pluginClass = "App\\Plugins\\" . $widget->plugin_name . "\\Controllers\\" . $widget->plugin_name . "Controller";
+                                        if (class_exists($pluginClass)) {
+                                            $controller = new $pluginClass();
+                                            if (method_exists($controller, 'getWidgetContent')) {
+                                                echo $controller->getWidgetContent($widget);
+                                            } elseif (method_exists($controller, 'get' . $widget->plugin_name . 'Widget')) {
+                                                $method = 'get' . $widget->plugin_name . 'Widget';
+                                                echo $controller->$method($widget);
+                                            }
+                                        }
+                                    @endphp
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        @endif
     </header>
 
     <!-- Main Content -->
     <main class="flex-grow">
-        @yield('content')
+        @if(isset($sidebarLeftWidgets) && $sidebarLeftWidgets->count() > 0)
+            <div class="hidden md:block fixed left-0 top-16 bottom-0 w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto z-10">
+                <div class="p-4">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Sidebar Kiri</h3>
+                    @foreach($sidebarLeftWidgets as $widget)
+                        <div class="mb-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
+                            <h4 class="font-medium text-gray-900 dark:text-white mb-2">{{ $widget->name }}</h4>
+                            @if($widget->type === 'html')
+                                <div class="text-gray-700 dark:text-gray-300 text-sm">{!! $widget->content !!}</div>
+                            @elseif($widget->type === 'text')
+                                <div class="text-gray-700 dark:text-gray-300 text-sm">{{ Str::limit(strip_tags($widget->content ?? ''), 100, '...') }}</div>
+                            @elseif($widget->type === 'plugin' && $widget->plugin_name)
+                                @php
+                                    $pluginClass = "App\\Plugins\\" . $widget->plugin_name . "\\Controllers\\" . $widget->plugin_name . "Controller";
+                                    if (class_exists($pluginClass)) {
+                                        $controller = new $pluginClass();
+                                        if (method_exists($controller, 'getWidgetContent')) {
+                                            echo $controller->getWidgetContent($widget);
+                                        } elseif (method_exists($controller, 'get' . $widget->plugin_name . 'Widget')) {
+                                            $method = 'get' . $widget->plugin_name . 'Widget';
+                                            echo $controller->$method($widget);
+                                        }
+                                    }
+                                @endphp
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endif
+
+        <div class="{{ isset($sidebarLeftWidgets) && $sidebarLeftWidgets->count() > 0 ? 'md:ml-64' : '' }} {{ isset($sidebarRightWidgets) && $sidebarRightWidgets->count() > 0 ? 'md:mr-64' : '' }}">
+            @yield('content')
+        </div>
+
+        @if(isset($sidebarRightWidgets) && $sidebarRightWidgets->count() > 0)
+            <div class="hidden md:block fixed right-0 top-16 bottom-0 w-64 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 overflow-y-auto z-10">
+                <div class="p-4">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Sidebar Kanan</h3>
+                    @foreach($sidebarRightWidgets as $widget)
+                        <div class="mb-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
+                            <h4 class="font-medium text-gray-900 dark:text-white mb-2">{{ $widget->name }}</h4>
+                            @if($widget->type === 'html')
+                                <div class="text-gray-700 dark:text-gray-300 text-sm">{!! $widget->content !!}</div>
+                            @elseif($widget->type === 'text')
+                                <div class="text-gray-700 dark:text-gray-300 text-sm">{{ Str::limit(strip_tags($widget->content ?? ''), 100, '...') }}</div>
+                            @elseif($widget->type === 'plugin' && $widget->plugin_name)
+                                @php
+                                    $pluginClass = "App\\Plugins\\" . $widget->plugin_name . "\\Controllers\\" . $widget->plugin_name . "Controller";
+                                    if (class_exists($pluginClass)) {
+                                        $controller = new $pluginClass();
+                                        if (method_exists($controller, 'getWidgetContent')) {
+                                            echo $controller->getWidgetContent($widget);
+                                        } elseif (method_exists($controller, 'get' . $widget->plugin_name . 'Widget')) {
+                                            $method = 'get' . $widget->plugin_name . 'Widget';
+                                            echo $controller->$method($widget);
+                                        }
+                                    }
+                                @endphp
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endif
     </main>
 
     <!-- Footer -->
     <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-auto">
+        <!-- Footer Widgets -->
+        @if(isset($footerWidgets) && $footerWidgets->count() > 0)
+            <div class="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600 py-6">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        @foreach($footerWidgets as $widget)
+                            <div class="p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600 shadow-sm">
+                                <h4 class="font-medium text-gray-900 dark:text-white mb-2">{{ $widget->name }}</h4>
+                                @if($widget->type === 'plugin' && $widget->plugin_name)
+                                    <div class="text-gray-700 dark:text-gray-300 text-sm">
+                                        {!! $widget->rendered_content !!}
+                                    </div>
+                                @elseif($widget->type === 'html')
+                                    <div class="text-gray-700 dark:text-gray-300 text-sm">{!! $widget->content !!}</div>
+                                @elseif($widget->type === 'text')
+                                    <div class="text-gray-700 dark:text-gray-300 text-sm">{{ Str::limit(strip_tags($widget->content ?? ''), 100, '...') }}</div>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        @endif
+        
         <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <!-- Site Info -->

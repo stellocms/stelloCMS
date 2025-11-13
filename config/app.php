@@ -198,6 +198,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\ThemeServiceProvider::class,
         App\Providers\PluginServiceProvider::class,
+        App\Providers\WidgetServiceProvider::class,
     ],
 
     /*

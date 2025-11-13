@@ -185,15 +185,136 @@
                 <?php endif; ?>
             </div>
         </div>
+        
+        <!-- Header Widgets -->
+        <?php if(isset($headerWidgets) && $headerWidgets->count() > 0): ?>
+            <div class="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600 py-2">
+                <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex flex-wrap gap-4 justify-center md:justify-start">
+                        <?php $__currentLoopData = $headerWidgets; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $widget): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <div class="flex items-center">
+                                <?php if($widget->type === 'html'): ?>
+                                    <div class="text-sm text-gray-700 dark:text-gray-300"><?php echo $widget->content; ?></div>
+                                <?php elseif($widget->type === 'text'): ?>
+                                    <div class="text-sm text-gray-700 dark:text-gray-300"><?php echo e(Str::limit(strip_tags($widget->content ?? ''), 50, '...')); ?></div>
+                                <?php elseif($widget->type === 'plugin' && $widget->plugin_name): ?>
+                                    <?php
+                                        $pluginClass = "App\\Plugins\\" . $widget->plugin_name . "\\Controllers\\" . $widget->plugin_name . "Controller";
+                                        if (class_exists($pluginClass)) {
+                                            $controller = new $pluginClass();
+                                            if (method_exists($controller, 'getWidgetContent')) {
+                                                echo $controller->getWidgetContent($widget);
+                                            } elseif (method_exists($controller, 'get' . $widget->plugin_name . 'Widget')) {
+                                                $method = 'get' . $widget->plugin_name . 'Widget';
+                                                echo $controller->$method($widget);
+                                            }
+                                        }
+                                    ?>
+                                <?php endif; ?>
+                            </div>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
     </header>
 
     <!-- Main Content -->
     <main class="flex-grow">
-        <?php echo $__env->yieldContent('content'); ?>
+        <?php if(isset($sidebarLeftWidgets) && $sidebarLeftWidgets->count() > 0): ?>
+            <div class="hidden md:block fixed left-0 top-16 bottom-0 w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto z-10">
+                <div class="p-4">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Sidebar Kiri</h3>
+                    <?php $__currentLoopData = $sidebarLeftWidgets; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $widget): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <div class="mb-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
+                            <h4 class="font-medium text-gray-900 dark:text-white mb-2"><?php echo e($widget->name); ?></h4>
+                            <?php if($widget->type === 'html'): ?>
+                                <div class="text-gray-700 dark:text-gray-300 text-sm"><?php echo $widget->content; ?></div>
+                            <?php elseif($widget->type === 'text'): ?>
+                                <div class="text-gray-700 dark:text-gray-300 text-sm"><?php echo e(Str::limit(strip_tags($widget->content ?? ''), 100, '...')); ?></div>
+                            <?php elseif($widget->type === 'plugin' && $widget->plugin_name): ?>
+                                <?php
+                                    $pluginClass = "App\\Plugins\\" . $widget->plugin_name . "\\Controllers\\" . $widget->plugin_name . "Controller";
+                                    if (class_exists($pluginClass)) {
+                                        $controller = new $pluginClass();
+                                        if (method_exists($controller, 'getWidgetContent')) {
+                                            echo $controller->getWidgetContent($widget);
+                                        } elseif (method_exists($controller, 'get' . $widget->plugin_name . 'Widget')) {
+                                            $method = 'get' . $widget->plugin_name . 'Widget';
+                                            echo $controller->$method($widget);
+                                        }
+                                    }
+                                ?>
+                            <?php endif; ?>
+                        </div>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                </div>
+            </div>
+        <?php endif; ?>
+
+        <div class="<?php echo e(isset($sidebarLeftWidgets) && $sidebarLeftWidgets->count() > 0 ? 'md:ml-64' : ''); ?> <?php echo e(isset($sidebarRightWidgets) && $sidebarRightWidgets->count() > 0 ? 'md:mr-64' : ''); ?>">
+            <?php echo $__env->yieldContent('content'); ?>
+        </div>
+
+        <?php if(isset($sidebarRightWidgets) && $sidebarRightWidgets->count() > 0): ?>
+            <div class="hidden md:block fixed right-0 top-16 bottom-0 w-64 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 overflow-y-auto z-10">
+                <div class="p-4">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Sidebar Kanan</h3>
+                    <?php $__currentLoopData = $sidebarRightWidgets; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $widget): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <div class="mb-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
+                            <h4 class="font-medium text-gray-900 dark:text-white mb-2"><?php echo e($widget->name); ?></h4>
+                            <?php if($widget->type === 'html'): ?>
+                                <div class="text-gray-700 dark:text-gray-300 text-sm"><?php echo $widget->content; ?></div>
+                            <?php elseif($widget->type === 'text'): ?>
+                                <div class="text-gray-700 dark:text-gray-300 text-sm"><?php echo e(Str::limit(strip_tags($widget->content ?? ''), 100, '...')); ?></div>
+                            <?php elseif($widget->type === 'plugin' && $widget->plugin_name): ?>
+                                <?php
+                                    $pluginClass = "App\\Plugins\\" . $widget->plugin_name . "\\Controllers\\" . $widget->plugin_name . "Controller";
+                                    if (class_exists($pluginClass)) {
+                                        $controller = new $pluginClass();
+                                        if (method_exists($controller, 'getWidgetContent')) {
+                                            echo $controller->getWidgetContent($widget);
+                                        } elseif (method_exists($controller, 'get' . $widget->plugin_name . 'Widget')) {
+                                            $method = 'get' . $widget->plugin_name . 'Widget';
+                                            echo $controller->$method($widget);
+                                        }
+                                    }
+                                ?>
+                            <?php endif; ?>
+                        </div>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                </div>
+            </div>
+        <?php endif; ?>
     </main>
 
     <!-- Footer -->
     <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-auto">
+        <!-- Footer Widgets -->
+        <?php if(isset($footerWidgets) && $footerWidgets->count() > 0): ?>
+            <div class="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600 py-6">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <?php $__currentLoopData = $footerWidgets; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $widget): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <div class="p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600 shadow-sm">
+                                <h4 class="font-medium text-gray-900 dark:text-white mb-2"><?php echo e($widget->name); ?></h4>
+                                <?php if($widget->type === 'plugin' && $widget->plugin_name): ?>
+                                    <div class="text-gray-700 dark:text-gray-300 text-sm">
+                                        <?php echo $widget->rendered_content; ?>
+
+                                    </div>
+                                <?php elseif($widget->type === 'html'): ?>
+                                    <div class="text-gray-700 dark:text-gray-300 text-sm"><?php echo $widget->content; ?></div>
+                                <?php elseif($widget->type === 'text'): ?>
+                                    <div class="text-gray-700 dark:text-gray-300 text-sm"><?php echo e(Str::limit(strip_tags($widget->content ?? ''), 100, '...')); ?></div>
+                                <?php endif; ?>
+                            </div>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
+        
         <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <!-- Site Info -->
