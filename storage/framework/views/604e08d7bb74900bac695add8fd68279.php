@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}" x-data="{ darkMode: false }" :class="{ 'dark': darkMode }">
+<html lang="<?php echo e(app()->getLocale()); ?>" x-data="{ darkMode: false }" :class="{ 'dark': darkMode }">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', cms_name())</title>
+    <title><?php echo $__env->yieldContent('title', cms_name()); ?></title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -98,9 +98,9 @@
     </style>
     
     <!-- Meta Tags -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="description" content="@yield('description', cms_description())">
-    <meta name="author" content="{{ cms_name() }}">
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
+    <meta name="description" content="<?php echo $__env->yieldContent('description', cms_description()); ?>">
+    <meta name="author" content="<?php echo e(cms_name()); ?>">
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 min-h-screen flex flex-col">
     <!-- Header -->
@@ -109,24 +109,26 @@
             <div class="flex items-center justify-between h-16">
                 <!-- Logo -->
                 <div class="flex-shrink-0 flex items-center">
-                    <a href="{{ url('/') }}" class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">
-                        {{ cms_name() }}
+                    <a href="<?php echo e(url('/')); ?>" class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">
+                        <?php echo e(cms_name()); ?>
+
                     </a>
                 </div>
                 
                 <!-- Desktop Navigation -->
                 <nav class="hidden md:flex space-x-8">
-                    @if(isset($headerMenus))
-                        @foreach($headerMenus as $menu)
-                            <a href="{{ isset($menu->route) && Route::has($menu->route) ? route($menu->route) : ($menu->url ?? '#') }}"
+                    <?php if(isset($headerMenus)): ?>
+                        <?php $__currentLoopData = $headerMenus; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $menu): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <a href="<?php echo e(isset($menu->route) && Route::has($menu->route) ? route($menu->route) : ($menu->url ?? '#')); ?>"
                                class="text-gray-700 hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">
-                                @if($menu->icon)
-                                    <i class="{{ $menu->icon }} mr-1"></i>
-                                @endif
-                                {{ $menu->title }}
+                                <?php if($menu->icon): ?>
+                                    <i class="<?php echo e($menu->icon); ?> mr-1"></i>
+                                <?php endif; ?>
+                                <?php echo e($menu->title); ?>
+
                             </a>
-                        @endforeach
-                    @endif
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    <?php endif; ?>
                 </nav>
                 
                 <!-- Dark Mode Toggle -->
@@ -169,33 +171,34 @@
              x-transition:leave-start="opacity-100 transform scale-100"
              x-transition:leave-end="opacity-0 transform scale-95">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                @if(isset($headerMenus))
-                    @foreach($headerMenus as $menu)
-                        <a href="{{ isset($menu->route) && Route::has($menu->route) ? route($menu->route) : ($menu->url ?? '#') }}"
+                <?php if(isset($headerMenus)): ?>
+                    <?php $__currentLoopData = $headerMenus; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $menu): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <a href="<?php echo e(isset($menu->route) && Route::has($menu->route) ? route($menu->route) : ($menu->url ?? '#')); ?>"
                            class="text-gray-700 hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400 block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">
-                            @if($menu->icon)
-                                <i class="{{ $menu->icon }} mr-2"></i>
-                            @endif
-                            {{ $menu->title }}
+                            <?php if($menu->icon): ?>
+                                <i class="<?php echo e($menu->icon); ?> mr-2"></i>
+                            <?php endif; ?>
+                            <?php echo e($menu->title); ?>
+
                         </a>
-                    @endforeach
-                @endif
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                <?php endif; ?>
             </div>
         </div>
         
         <!-- Header Widgets -->
-        @if(isset($headerWidgets) && $headerWidgets->count() > 0)
+        <?php if(isset($headerWidgets) && $headerWidgets->count() > 0): ?>
             <div class="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600 py-2">
                 <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="flex flex-wrap gap-4 justify-center md:justify-start">
-                        @foreach($headerWidgets as $widget)
+                        <?php $__currentLoopData = $headerWidgets; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $widget): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <div class="flex items-center">
-                                @if($widget->type === 'html')
-                                    <div class="text-sm text-gray-700 dark:text-gray-300">{!! $widget->content !!}</div>
-                                @elseif($widget->type === 'text')
-                                    <div class="text-sm text-gray-700 dark:text-gray-300">{{ Str::limit(strip_tags($widget->content ?? ''), 50, '...') }}</div>
-                                @elseif($widget->type === 'plugin' && $widget->plugin_name)
-                                    @php
+                                <?php if($widget->type === 'html'): ?>
+                                    <div class="text-sm text-gray-700 dark:text-gray-300"><?php echo $widget->content; ?></div>
+                                <?php elseif($widget->type === 'text'): ?>
+                                    <div class="text-sm text-gray-700 dark:text-gray-300"><?php echo e(Str::limit(strip_tags($widget->content ?? ''), 50, '...')); ?></div>
+                                <?php elseif($widget->type === 'plugin' && $widget->plugin_name): ?>
+                                    <?php
                                         $pluginClass = "App\\Plugins\\" . $widget->plugin_name . "\\Controllers\\" . $widget->plugin_name . "Controller";
                                         if (class_exists($pluginClass)) {
                                             $controller = new $pluginClass();
@@ -206,118 +209,40 @@
                                                 echo $controller->$method($widget);
                                             }
                                         }
-                                    @endphp
-                                @endif
+                                    ?>
+                                <?php endif; ?>
                             </div>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </div>
                 </div>
             </div>
-        @endif
+        <?php endif; ?>
     </header>
 
     <!-- Main Content -->
     <main class="flex-grow">
-        {{-- @if(isset($sidebarLeftWidgets) && $sidebarLeftWidgets->count() > 0)
-            <div class="hidden md:block fixed left-0 top-16 bottom-0 w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto z-10">
-                <div class="p-4">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Sidebar Kiri</h3>
-                    @foreach($sidebarLeftWidgets as $widget)
-                        <div class="mb-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
-                            <h4 class="font-medium text-gray-900 dark:text-white mb-2">{{ $widget->name }}</h4>
-                            @if($widget->type === 'html')
-                                <div class="text-gray-700 dark:text-gray-300 text-sm">{!! $widget->content !!}</div>
-                            @elseif($widget->type === 'text')
-                                <div class="text-gray-700 dark:text-gray-300 text-sm">{{ Str::limit(strip_tags($widget->content ?? ''), 100, '...') }}</div>
-                            @elseif($widget->type === 'plugin' && $widget->plugin_name)
-                                @php
-                                    $pluginClass = "App\\Plugins\\" . $widget->plugin_name . "\\Controllers\\" . $widget->plugin_name . "Controller";
-                                    if (class_exists($pluginClass)) {
-                                        $controller = new $pluginClass();
-                                        if (method_exists($controller, 'getWidgetContent')) {
-                                            echo $controller->getWidgetContent($widget);
-                                        } elseif (method_exists($controller, 'get' . $widget->plugin_name . 'Widget')) {
-                                            $method = 'get' . $widget->plugin_name . 'Widget';
-                                            echo $controller->$method($widget);
-                                        }
-                                    }
-                                @endphp
-                            @endif
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        @endif --}}
+        
 
-        <div class="{{ isset($sidebarLeftWidgets) && $sidebarLeftWidgets->count() > 0 ? 'md:ml-64' : '' }} {{ isset($sidebarRightWidgets) && $sidebarRightWidgets->count() > 0 ? 'md:mr-64' : '' }}">
-            @yield('content')
+        <div class="<?php echo e(isset($sidebarLeftWidgets) && $sidebarLeftWidgets->count() > 0 ? 'md:ml-64' : ''); ?> <?php echo e(isset($sidebarRightWidgets) && $sidebarRightWidgets->count() > 0 ? 'md:mr-64' : ''); ?>">
+            <?php echo $__env->yieldContent('content'); ?>
         </div>
 
-        {{-- @if(isset($sidebarRightWidgets) && $sidebarRightWidgets->count() > 0)
-            <div class="hidden md:block fixed right-0 top-16 bottom-0 w-64 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 overflow-y-auto z-10">
-                <div class="p-4">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Sidebar Kanan</h3>
-                    @foreach($sidebarRightWidgets as $widget)
-                        <div class="mb-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
-                            <h4 class="font-medium text-gray-900 dark:text-white mb-2">{{ $widget->name }}</h4>
-                            @if($widget->type === 'html')
-                                <div class="text-gray-700 dark:text-gray-300 text-sm">{!! $widget->content !!}</div>
-                            @elseif($widget->type === 'text')
-                                <div class="text-gray-700 dark:text-gray-300 text-sm">{{ Str::limit(strip_tags($widget->content ?? ''), 100, '...') }}</div>
-                            @elseif($widget->type === 'plugin' && $widget->plugin_name)
-                                @php
-                                    $pluginClass = "App\\Plugins\\" . $widget->plugin_name . "\\Controllers\\" . $widget->plugin_name . "Controller";
-                                    if (class_exists($pluginClass)) {
-                                        $controller = new $pluginClass();
-                                        if (method_exists($controller, 'getWidgetContent')) {
-                                            echo $controller->getWidgetContent($widget);
-                                        } elseif (method_exists($controller, 'get' . $widget->plugin_name . 'Widget')) {
-                                            $method = 'get' . $widget->plugin_name . 'Widget';
-                                            echo $controller->$method($widget);
-                                        }
-                                    }
-                                @endphp
-                            @endif
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        @endif --}}
+        
     </main>
 
     <!-- Footer -->
     <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-auto">
         <!-- Footer Widgets -->
-        {{-- @if(isset($footerWidgets) && $footerWidgets->count() > 0)
-            <div class="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600 py-6">
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        @foreach($footerWidgets as $widget)
-                            <div class="p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600 shadow-sm">
-                                <h4 class="font-medium text-gray-900 dark:text-white mb-2">{{ $widget->name }}</h4>
-                                @if($widget->type === 'plugin' && $widget->plugin_name)
-                                    <div class="text-gray-700 dark:text-gray-300 text-sm">
-                                        {!! $widget->rendered_content !!}
-                                    </div>
-                                @elseif($widget->type === 'html')
-                                    <div class="text-gray-700 dark:text-gray-300 text-sm">{!! $widget->content !!}</div>
-                                @elseif($widget->type === 'text')
-                                    <div class="text-gray-700 dark:text-gray-300 text-sm">{{ Str::limit(strip_tags($widget->content ?? ''), 100, '...') }}</div>
-                                @endif
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-        @endif --}}
+        
         
         <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <!-- Site Info -->
                 <div class="col-span-1 md:col-span-2">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ cms_name() }}</h3>
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4"><?php echo e(cms_name()); ?></h3>
                     <p class="text-gray-600 dark:text-gray-400 mb-4">
-                        {{ cms_description() }}
+                        <?php echo e(cms_description()); ?>
+
                     </p>
                     <div class="flex space-x-4">
                         <a href="#" class="text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400">
@@ -344,10 +269,10 @@
             </div>
             <div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-8 md:flex md:items-center md:justify-between">
                 <p class="mt-8 text-center text-base text-gray-500 dark:text-gray-400 md:mt-0">
-                    &copy; {{ date('Y') }} {{ cms_name() }}. Hak Cipta Dilindungi.
+                    &copy; <?php echo e(date('Y')); ?> <?php echo e(cms_name()); ?>. Hak Cipta Dilindungi.
                 </p>
             </div>
         </div>
     </footer>
 </body>
-</html>
+</html><?php /**PATH D:\htdocs\stelloCMS\app\Themes\frontend\standard\layouts\app.blade.php ENDPATH**/ ?>

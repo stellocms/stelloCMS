@@ -562,6 +562,56 @@
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <!-- <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2.0/dist/js/pages/dashboard.js"></script> -->
 
+<script>
+// Wait for document ready and adminLTE initialization
+$(document).ready(function() {
+    // Small delay to ensure all AdminLTE components are initialized
+    setTimeout(function() {
+        // Fix for overlay scrollbars that might overlay clickable elements
+        // This targets the overlay scrollbars that could interfere with clicks
+        
+        // Check if overlay scrollbars are active and causing issues
+        $('.os-scrollbar').each(function() {
+            // Reduce potential z-index conflicts
+            if ($(this).css('z-index') > 1000) {
+                $(this).css('z-index', 'auto');
+            }
+        });
+
+        // Also check for any .os-overlay elements 
+        $('.os-overlay').each(function() {
+            $(this).css({
+                'pointer-events': 'none',
+                'z-index': 'auto'
+            });
+        });
+
+        // Ensure wrapper does not have problematic styling
+        $('.wrapper').css('transform', 'none');
+    }, 500); // Delay to ensure initialization
+});
+
+// Alternative fix in case jQuery approach doesn't work initially
+document.addEventListener('DOMContentLoaded', function() {
+    // Check for overlay scrollbars overlay elements
+    setTimeout(function() {
+        // Look for overlay scrollbar overlays and adjust if needed
+        const elements = document.querySelectorAll('.os-scrollbar, .os-scrollbar-corner, .os-overlay');
+        elements.forEach(element => {
+            if (element && element.style) {
+                // Adjust z-index to prevent overlays from blocking interaction
+                if (parseInt(window.getComputedStyle(element).zIndex) > 1000) {
+                    element.style.zIndex = 'auto';
+                }
+                // If these elements are blocking interaction, make them transparent to clicks
+                element.style.pointerEvents = 'none';
+            }
+        });
+    }, 1000);
+});
+</script>
+
 <?php echo $__env->yieldContent('scripts'); ?>
 </body>
-</html><?php /**PATH D:\htdocs\stelloCMS\app\Themes/admin/adminlte/layouts/app.blade.php ENDPATH**/ ?>
+</html>
+<?php /**PATH D:\htdocs\stelloCMS\app\Themes\admin\adminlte\layouts\app.blade.php ENDPATH**/ ?>
